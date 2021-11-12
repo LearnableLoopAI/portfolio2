@@ -1,1 +1,1 @@
-Sitemap: https://learnableloopai.github.io/portfolio2/sitemap.xml
+Sitemap: https://learnableloop.ai/portfolio2/sitemap.xml
