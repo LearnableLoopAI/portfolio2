@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://www.learnableloop.ai/markdown/2020/01/14/test-markdown-post.html</loc>
+<loc>https://www.learnableloop.ai/portfolio2/markdown/2020/01/14/test-markdown-post.html</loc>
 <lastmod>2020-01-14T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://www.learnableloop.ai/jupyter/2020/02/20/test.html</loc>
+<loc>https://www.learnableloop.ai/portfolio2/jupyter/2020/02/20/test.html</loc>
 <lastmod>2020-02-20T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://www.learnableloop.ai/investment_industry/reinforcement_learning/a2c/ppo/openai/gym/finrl/stable_baselines3/pyfolio/2021/11/11/PortfolioManagement.html</loc>
+<loc>https://www.learnableloop.ai/portfolio2/investment_industry/reinforcement_learning/a2c/ppo/openai/gym/finrl/stable_baselines3/pyfolio/2021/11/11/PortfolioManagement.html</loc>
 <lastmod>2021-11-11T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://www.learnableloop.ai/about/</loc>
+<loc>https://www.learnableloop.ai/portfolio2/about/</loc>
 </url>
 <url>
-<loc>https://www.learnableloop.ai/</loc>
+<loc>https://www.learnableloop.ai/portfolio2/</loc>
 </url>
 <url>
-<loc>https://www.learnableloop.ai/search/</loc>
+<loc>https://www.learnableloop.ai/portfolio2/search/</loc>
 </url>
 <url>
-<loc>https://www.learnableloop.ai/categories/</loc>
+<loc>https://www.learnableloop.ai/portfolio2/categories/</loc>
 </url>
 </urlset>
