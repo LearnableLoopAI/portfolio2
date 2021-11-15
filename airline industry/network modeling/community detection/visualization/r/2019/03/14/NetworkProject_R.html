@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Network Analysis on USA Airports | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Network Analysis on USA Airports" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Community detection algorithms: Cliques, Edge-betweenness, Leading eigenvector, Fast-greedy, Louvain, Walktrap, Label propagation, InfoMAP, Spinglass" />
+<meta property="og:description" content="Community detection algorithms: Cliques, Edge-betweenness, Leading eigenvector, Fast-greedy, Louvain, Walktrap, Label propagation, InfoMAP, Spinglass" />
+<link rel="canonical" href="https://learnableloop.com/airline%20industry/network%20modeling/community%20detection/visualization/r/2019/03/14/NetworkProject_R.html" />
+<meta property="og:url" content="https://learnableloop.com/airline%20industry/network%20modeling/community%20detection/visualization/r/2019/03/14/NetworkProject_R.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/net_fig9.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-14T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"Community detection algorithms: Cliques, Edge-betweenness, Leading eigenvector, Fast-greedy, Louvain, Walktrap, Label propagation, InfoMAP, Spinglass","url":"https://learnableloop.com/airline%20industry/network%20modeling/community%20detection/visualization/r/2019/03/14/NetworkProject_R.html","@type":"BlogPosting","headline":"Network Analysis on USA Airports","dateModified":"2019-03-14T00:00:00-05:00","datePublished":"2019-03-14T00:00:00-05:00","image":"https://learnableloop.com/images/net_fig9.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/airline%20industry/network%20modeling/community%20detection/visualization/r/2019/03/14/NetworkProject_R.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Network Analysis on USA Airports</h1><p class="page-description">Community detection algorithms: Cliques, Edge-betweenness, Leading eigenvector, Fast-greedy, Louvain, Walktrap, Label propagation, InfoMAP, Spinglass</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-14T00:00:00-05:00" itemprop="datePublished">
+        Mar 14, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      26 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Airline Industry">Airline Industry</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Network Modeling">Network Modeling</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Community Detection">Community Detection</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Visualization">Visualization</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#R">R</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Purpose">Purpose </a></li>
+<li class="toc-entry toc-h2"><a href="#Dataset">Dataset </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Vertex-attributes">Vertex attributes </a></li>
+<li class="toc-entry toc-h3"><a href="#Edge-attributes">Edge attributes </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Visualization-and-Network-Summary">Visualization and Network Summary </a></li>
+<li class="toc-entry toc-h2"><a href="#Community-Detection">Community Detection </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Cliques">Cliques </a></li>
+<li class="toc-entry toc-h3"><a href="#Edge-betweenness-algorithm">Edge-betweenness algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Leading-eigenvector-algorithm">Leading eigenvector algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Fast-greedy-algorithm">Fast-greedy algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Louvain-algorithm">Louvain algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Walktrap-algorithm">Walktrap algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Label-propagation-algorithm">Label propagation algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#InfoMAP-algorithm">InfoMAP algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Spinglass-algorithm">Spinglass algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Most-interesting-community-structure">Most interesting community structure </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Network-Modeling">Network Modeling </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Null-model">Null model </a></li>
+<li class="toc-entry toc-h3"><a href="#Population-effect">Population effect </a></li>
+<li class="toc-entry toc-h3"><a href="#Homophily-effect">Homophily effect </a></li>
+<li class="toc-entry toc-h3"><a href="#Differential-Homophily-effect">Differential Homophily effect </a></li>
+<li class="toc-entry toc-h3"><a href="#Differential-Homophily-effect-2">Differential Homophily effect 2 </a></li>
+<li class="toc-entry toc-h3"><a href="#Differential-Homophily-effect-3">Differential Homophily effect 3 </a></li>
+<li class="toc-entry toc-h3"><a href="#Relational-terms-(network-predictors)">Relational terms (network predictors) </a></li>
+<li class="toc-entry toc-h3"><a href="#Local-structural-predictors-(dyad-dependency)">Local structural predictors (dyad dependency) </a></li>
+<li class="toc-entry toc-h3"><a href="#Goodness-of-fit">Goodness-of-fit </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Bibliography">Bibliography </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2019-03-14-NetworkProject_R.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Purpose">
+<a class="anchor" href="#Purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose<a class="anchor-link" href="#Purpose"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The purpose of this project is to gain insights from a <em>network analysis</em> of USA airports. This network consists of passenger flights between airports in the United States that occurred during December of 2010.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dataset">
+<a class="anchor" href="#Dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset<a class="anchor-link" href="#Dataset"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data comes from the Research and Innovative Technology Administration (RITA). See <a href="http://www.rita.dot.gov/about_rita/">http://www.rita.dot.gov/about_rita/</a> for details. The airport position information was collected from Wikipedia (by Gabor) and other public online sources.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dataset is a directed network with edge directions aligning with flight directions. The network contains multiple edges between many vertices. Each edge is associated with a single carrier aircraft type. Multiple carriers between the same pair of airports will have multiple edges between the vertices for the airports. This kind of network is sometimes called a <em>multigraph</em>. In total the network has 755 vertices and 23,473 edges.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The analysis was performed in R using the igraphdata package, written by Gabor Csardi (Gabor, 2015). He also maintains the package. The package is available in the CRAN repository (<a href="https://cran.r-project.org/web/packages/igraphdata/igraphdata.pdf">https://cran.r-project.org/web/packages/igraphdata/igraphdata.pdf</a>). This package consists of a collection of network datasets to use with the igraph package. Examples of these datasets are: The Enron email network, various food webs, interactions in the immunoglobulin protein, the karate club network, Koenigsberg's bridges, visuotactile brain areas of the macaque monkey, UK faculty friendship network, and the domestic US flights network.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will start by working with the complete dataset. The dataset will be slimmed down progressively until I arrive at a suitable subset for my purposes. I have a general interest in the operations of airlines. In addition, the network seemed rich in terms of the number of attributes and the multiplicity of edges.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I will describe the attributes included with the network. The network has a ‘name’ graph attribute. It also has several vertex and edge attributes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Vertex-attributes">
+<a class="anchor" href="#Vertex-attributes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vertex attributes<a class="anchor-link" href="#Vertex-attributes"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>name:</strong> Symbolic vertex name, this is the three letter IATA airport code.</li>
+<li>
+<strong>City:</strong> City and state, where the airport is located.</li>
+<li>
+<strong>Position:</strong> Position of the airport, in WGS coordinates.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Edge-attributes">
+<a class="anchor" href="#Edge-attributes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Edge attributes<a class="anchor-link" href="#Edge-attributes"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Carrier:</strong> Name of the airline. The network includes both domestic and international carriers that performed at least one flight in December of 2010.</li>
+<li>
+<strong>Departures:</strong> The number of departures (for a given airline and aircraft type.</li>
+<li>
+<strong>Seats:</strong> The total number of seats available on the flights carried out by a given airline, using a given aircraft type.</li>
+<li>
+<strong>Passengers:</strong> The total number of passengers on the flights carried out by a given airline, using a given aircraft type.</li>
+<li>
+<strong>Aircraft:</strong> Type of the aircraft.</li>
+<li>
+<strong>Distance:</strong> The distance between the two airports, in miles.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Visualization-and-Network-Summary">
+<a class="anchor" href="#Visualization-and-Network-Summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualization and Network Summary<a class="anchor-link" href="#Visualization-and-Network-Summary"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Although the terms “node” and “link” (rather than <em>vertex</em> and <em>edge</em>) are more digestible to the general reader, I have decided, for the sake of preciseness, to use the more technical <em>vertex</em> and <em>edge</em>. This usage will be extended to the visualizations as well.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A summary of this network in R confirms that it is <em>directed</em> and <em>named</em>. It is not <em>bipartite</em>; neither is it <em>weighted</em>. There are, however, edge attributes that can be used to make it weighted.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="n">bf6202d</span> <span class="n">DN</span><span class="o">--</span> <span class="m">755</span> <span class="m">23473</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Carrier </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Aircraft </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">!</span><span class="p">[</span><span class="n">image.png</span><span class="p">](</span><span class="n">attachment</span><span class="o">:</span><span class="n">image.png</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 1 shows a visualization of the network. Note that the size of vertices has been made proportional to the log of the degree due to the large variation of the degree of vertices. The symbolic vertex names (airport codes) are not shown to improve clarity. There are 755 vertices and 23,473 edges (although this is not apparent from the visualization). It is quite clear that, as we might expect, that this is a <em>scale-free</em> (rather than a random) network. A number of prominent, highly connected vertices are easy to spot.  Another characteristic of this network is its apparent partitioning of vertices into a number of cohesive subgroups. There seems to be two main subgroups and several smaller ones. There are even small “islands” of a few connected vertices. The visualization reveals the presence of some <em>self-loops</em> in the network.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig1.png" alt="Figure 1  Network with vertex size proportional to the log of the number of connected edges" title="Figure 1  Network with vertex size proportional to the log of the number of connected edges"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The R-code finds 53 self-loops:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">sum</span><span class="p">(</span><span class="nf">which_loop</span><span class="p">(</span><span class="n">usa</span><span class="p">))</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">53</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 2 shows the network again, this time without taking the log of the degree. This provides some additional insights.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig2.png" alt="Figure 2  Network with vertex size proportional to the number of connected edges" title="Figure 2  Network with vertex size proportional to the number of connected edges"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 3 is the same as Figure 2 except that the layout of the vertices is along a circle. This visualization emphasizes how highly-connected the hub vertices are in this scale-free network.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig3.png" alt="Figure 3  Network with vertex size proportional to the number of connected edges" title="Figure 3  Network with vertex size proportional to the number of connected edges"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Community-Detection">
+<a class="anchor" href="#Community-Detection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Community Detection<a class="anchor-link" href="#Community-Detection"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can approach the presence of cohesion in a network from a number of angles. One approach is to consider <em>cliques</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Cliques">
+<a class="anchor" href="#Cliques" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cliques<a class="anchor-link" href="#Cliques"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A clique is a maximally complete subgraph, in other words, a subset of vertices that have all possible ties among them. Cliques are usually considered in the context of undirected networks. It is, however, somewhat interesting to pretend for a moment that our network is undirected and consider the presence of cliques.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The R code reveals that there are cliques present and that the size of the largest maximally complete subgraph is 27:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">clique.number</span><span class="p">(</span><span class="n">usa</span><span class="p">)</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">27</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To proceed toward proper community detection, we will remove all the self-loops in the network. The occurrence of these are somewhat abnormal. They could be data errors or simply the fact that an airplane had to turn back to its takeoff airport due to problems that were experienced. As mentioned above, there are 53 self-loops in the network.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After removal, we have this network:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa2</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="n">b11c16a</span> <span class="n">DN</span><span class="o">--</span> <span class="m">755</span> <span class="m">23420</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Carrier </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Aircraft </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I will simplify the network by collapsing all the multi-edges. In other words, I will turn the multigraph into a simple graph. Doing this will simplify the analysis. It does not make sense to combine the values for <em>Carrier</em> and <em>Aircraft</em> from multiple edges into a single value for my purposes. I will ignore these edge attributes. For the other edge attributes I will combine them by summing. This means I will sum all the <em>Departures</em>, <em>Seats</em>, and <em>Passengers</em> for all the similarly-directed edges between a given vertex pair. The network will still be directional. The <em>Distance</em> edge attribute values will be combined by taking the max of sets of equal values. After simplification, we have:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa3</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="n">ddbc561</span> <span class="n">DN</span><span class="o">--</span> <span class="m">755</span> <span class="m">8228</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+<span class="o">&gt;</span> <span class="nf">is_simple</span><span class="p">(</span><span class="n">usa3</span><span class="p">)</span> <span class="c1">#confirm that usa3 is now a simple graph</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="kc">TRUE</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I will turn the graph into a <em>weighted</em> network. I will use the <em>Distance</em> edge attribute to weight each edge.  After weighting, we have:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa4</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="n">ddbc561</span> <span class="n">DNW</span><span class="o">-</span> <span class="m">755</span> <span class="m">8228</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">weight </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first ten edges now look like this:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">E</span><span class="p">(</span><span class="n">usa4</span><span class="p">)[[</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">]]</span><span class="o">+</span> <span class="m">10</span><span class="o">/</span><span class="m">8228</span> <span class="n">edges</span> <span class="n">from</span> <span class="nf">ddbc561 </span><span class="p">(</span><span class="n">vertex</span> <span class="n">names</span><span class="p">)</span><span class="o">:</span>
+   <span class="n">tail</span> <span class="n">head</span> <span class="n">tid</span> <span class="n">hid</span> <span class="n">Departures</span> <span class="n">Seats</span> <span class="n">Passengers</span> <span class="n">Distance</span> <span class="n">weight</span>
+<span class="m">1</span>   <span class="n">BGR</span>  <span class="n">BOS</span>   <span class="m">1</span>   <span class="m">2</span>          <span class="m">1</span>    <span class="m">34</span>          <span class="m">6</span>      <span class="m">201</span>    <span class="m">201</span>
+<span class="m">2</span>   <span class="n">BGR</span>  <span class="n">JFK</span>   <span class="m">1</span>   <span class="m">4</span>          <span class="m">2</span>   <span class="m">525</span>        <span class="m">446</span>      <span class="m">382</span>    <span class="m">382</span>
+<span class="m">3</span>   <span class="n">BGR</span>  <span class="n">MIA</span>   <span class="m">1</span>   <span class="m">6</span>          <span class="m">1</span>    <span class="m">12</span>          <span class="m">4</span>     <span class="m">1459</span>   <span class="m">1459</span>
+<span class="m">4</span>   <span class="n">BGR</span>  <span class="n">EWR</span>   <span class="m">1</span>   <span class="m">7</span>          <span class="m">4</span>   <span class="m">758</span>        <span class="m">680</span>      <span class="m">393</span>    <span class="m">393</span>
+<span class="m">5</span>   <span class="n">BGR</span>  <span class="n">DCA</span>   <span class="m">1</span>  <span class="m">43</span>          <span class="m">4</span>   <span class="m">200</span>        <span class="m">116</span>      <span class="m">590</span>    <span class="m">590</span>
+<span class="m">6</span>   <span class="n">BGR</span>  <span class="n">DTW</span>   <span class="m">1</span>  <span class="m">44</span>         <span class="m">55</span>  <span class="m">2750</span>       <span class="m">1955</span>      <span class="m">750</span>    <span class="m">750</span>
+<span class="m">7</span>   <span class="n">BGR</span>  <span class="n">LGA</span>   <span class="m">1</span>  <span class="m">57</span>        <span class="m">130</span>  <span class="m">6266</span>       <span class="m">3640</span>      <span class="m">378</span>    <span class="m">378</span>
+<span class="m">8</span>   <span class="n">BGR</span>  <span class="n">PHL</span>   <span class="m">1</span>  <span class="m">71</span>        <span class="m">100</span>  <span class="m">6274</span>       <span class="m">4953</span>      <span class="m">473</span>    <span class="m">473</span>
+<span class="m">9</span>   <span class="n">BGR</span>  <span class="n">PIE</span>   <span class="m">1</span> <span class="m">157</span>          <span class="m">9</span>  <span class="m">1350</span>       <span class="m">1198</span>     <span class="m">1394</span>   <span class="m">1394</span>
+<span class="m">10</span>  <span class="n">BGR</span>  <span class="n">SFB</span>   <span class="m">1</span> <span class="m">370</span>         <span class="m">11</span>  <span class="m">1650</span>       <span class="m">1491</span>     <span class="m">1299</span>   <span class="m">1299</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After inspecting a much larger listing, we find that there are many flights with only a few passengers. This is also evident from the histogram in Figure 4. For example, there are 128 flights with a single passenger, 256 with 1 or 2 passengers, 522 with 5 or less, and 756 with 10 or fewer passengers:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">length</span><span class="p">(</span><span class="nf">E</span><span class="p">(</span><span class="n">usa4</span><span class="p">)[</span><span class="n">Passengers</span> <span class="o">&lt;=</span> <span class="m">1</span><span class="p">]</span><span class="o">$</span><span class="n">Passengers</span><span class="p">)</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">128</span>
+<span class="o">&gt;</span> <span class="nf">length</span><span class="p">(</span><span class="nf">E</span><span class="p">(</span><span class="n">usa4</span><span class="p">)[</span><span class="n">Passengers</span> <span class="o">&lt;=</span> <span class="m">2</span><span class="p">]</span><span class="o">$</span><span class="n">Passengers</span><span class="p">)</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">256</span>
+<span class="o">&gt;</span> <span class="nf">length</span><span class="p">(</span><span class="nf">E</span><span class="p">(</span><span class="n">usa4</span><span class="p">)[</span><span class="n">Passengers</span> <span class="o">&lt;=</span> <span class="m">5</span><span class="p">]</span><span class="o">$</span><span class="n">Passengers</span><span class="p">)</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">522</span>
+<span class="o">&gt;</span> <span class="nf">length</span><span class="p">(</span><span class="nf">E</span><span class="p">(</span><span class="n">usa4</span><span class="p">)[</span><span class="n">Passengers</span> <span class="o">&lt;=</span> <span class="m">10</span><span class="p">]</span><span class="o">$</span><span class="n">Passengers</span><span class="p">)</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">756</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig4.png" alt="Figure 4  Distribution of number of passengers" title="Figure 4  Distribution of number of passengers"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I will remove all these edges. In fact, I will remove all edges that have 50,000 or less passengers. After this, we have the network:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa5</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="m">6</span><span class="n">d89fa3</span> <span class="n">DNW</span><span class="o">-</span> <span class="m">755</span> <span class="m">131</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">weight </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I will remove all the isolates (vertices without any connected edges). After this step, we have:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa5</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="m">679</span><span class="n">f9d1</span> <span class="n">DNW</span><span class="o">-</span> <span class="m">38</span> <span class="m">131</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">weight </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After this, we can inspect the distribution of the number of flight legs over all geodesics. This is shown in Figure 5. Most flights (in the current dataset) consists of 2 legs (i.e. one transfer). Analyzing this further could open up opportunities to establish new direct flights, or reduced-leg flights. But, this is not our purpose currently.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig5.png" alt="Figure 5  Distribution of number of flight legs over all geodesics" title="Figure 5  Distribution of number of flight legs over all geodesics"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next step is to convert the network to an undirected, unweighted graph. This will allow us more algorithms for the detection of communities. In converting to an undirected network, I will sum the <em>Departures</em> for both directions between a vertex pair. This will also be done for the edge attributes <em>Seats</em> and <em>Passengers</em>. For distance, I will take the max (of two identical numbers). The <em>weight</em> edge attribute will be ignored. After these operations, we have:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa6</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="m">999</span><span class="n">ad18</span> <span class="n">UN</span><span class="o">--</span> <span class="m">38</span> <span class="m">72</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This network consists of two clusters. We extract the largest component and then have:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">summary</span><span class="p">(</span><span class="n">usa7</span><span class="p">)</span>
+<span class="n">IGRAPH</span> <span class="m">6881</span><span class="n">ea4</span> <span class="n">UN</span><span class="o">--</span> <span class="m">36</span> <span class="m">71</span> <span class="o">--</span> <span class="n">US</span> <span class="n">airports</span>
+<span class="o">+</span> <span class="n">attr</span><span class="o">:</span><span class="nf">name </span><span class="p">(</span><span class="n">g</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">name </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">City </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Position </span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">c</span><span class="p">),</span> <span class="nf">Departures </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Seats </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span><span class="o">|</span> <span class="nf">Passengers </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">),</span> <span class="nf">Distance </span><span class="p">(</span><span class="n">e</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This largest component is shown in Figure 6.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig6.png" alt="Figure 6  Largest component of the network" title="Figure 6  Largest component of the network"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We are finally ready for community analysis. <em>Modularity</em> is an internal quality measure of clustering. This is an ideal measure when the ground truth for the 'correctness' of a cluster is not known. I will use this measure. Next, i will submit the network to a number of algorithms to identify communities.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Edge-betweenness-algorithm">
+<a class="anchor" href="#Edge-betweenness-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Edge-betweenness algorithm<a class="anchor-link" href="#Edge-betweenness-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 7 shows the edge-betweenness communities. This algorithm identifies three communities with a modularity of 0.31. One is centralized around Atlanta, GA. Another consists of the airports on the Hawaiian Islands. The third is a conglomeration of the rest of the airports.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig7.png" alt="Figure 7  Edge-betweenness communities" title="Figure 7  Edge-betweenness communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Leading-eigenvector-algorithm">
+<a class="anchor" href="#Leading-eigenvector-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Leading eigenvector algorithm<a class="anchor-link" href="#Leading-eigenvector-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In Figure 8 the communities identified by the leading eigenvector algorithm can be seen. These communities have a modularity of 0.33. This time we have four communities – Austin, TX and Dallas, TX form a separate community on their own. Los Angeles, CA is now part of the “Hawaii community” and so are Houston, TX and Washington, DC.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig8.png" alt="Figure 8  Leading eigenvector communities" title="Figure 8  Leading eigenvector communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Fast-greedy-algorithm">
+<a class="anchor" href="#Fast-greedy-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fast-greedy algorithm<a class="anchor-link" href="#Fast-greedy-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 9 shows the communities identified by the Fast-greedy algorithm. The modularity is 0.34 and we now have five communities. A fifth community seems to straddle parts of the “Atlanta”, “Dallas”, and “Other” communities.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig9.png" alt="Figure 9  Fast-greedy communities" title="Figure 9  Fast-greedy communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Louvain-algorithm">
+<a class="anchor" href="#Louvain-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Louvain algorithm<a class="anchor-link" href="#Louvain-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Louvain algorithm finds four communities with a modularity of 0.35. This is shown in Figure 10. It outlines a community centralized around Chicago, IL. The Atlanta and Hawaii communities are still present as well as the “Other” more “mesh-like” community.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig10.png" alt="Figure 10  Louvain communities" title="Figure 10  Louvain communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Walktrap-algorithm">
+<a class="anchor" href="#Walktrap-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Walktrap algorithm<a class="anchor-link" href="#Walktrap-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In Figure 11 we see the communities outlined by the Walktrap algorithm. The algorithm calculates a modularity of 0.31. We are back to three communities, much like the edge-betweenness algorithm’s result. There is a community centered around Atlanta, one centered around Honolulu, and a “other” community that contains the rest of the airports.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig11.png" alt="Figure 11  Walktrap communities" title="Figure 11  Walktrap communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Label-propagation-algorithm">
+<a class="anchor" href="#Label-propagation-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Label propagation algorithm<a class="anchor-link" href="#Label-propagation-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 12 shows the communities identified by the label propagation algorithm with a modularity of 0.10. This time we only have two communities: One centered around Honolulu and a second one that contains the rest of the airports. The crudeness of this partitioning is reflected in the relatively low modularity score of 0.10.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig12.png" alt="Figure 12  Label propagation communities" title="Figure 12  Label propagation communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="InfoMAP-algorithm">
+<a class="anchor" href="#InfoMAP-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>InfoMAP algorithm<a class="anchor-link" href="#InfoMAP-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In Figure 13 we see the communities outlined by the InfoMAP algorithm. Again, we have a relatively low modularity of 0.10. The two communities identified resembles those from the previous label propagation algorithm.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig13.png" alt="Figure 13  InfoMAP communities" title="Figure 13  InfoMAP communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Spinglass-algorithm">
+<a class="anchor" href="#Spinglass-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Spinglass algorithm<a class="anchor-link" href="#Spinglass-algorithm"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The communities identified by the Spinglass algorithm appears in Figure 14. Here we have a modularity of 0.34. Except for the “Hawaii” cluster, we have a somewhat novel partitioning this time.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig14.png" alt="Figure 14  Spinglass communities" title="Figure 14  Spinglass communities"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Most-interesting-community-structure">
+<a class="anchor" href="#Most-interesting-community-structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Most interesting community structure<a class="anchor-link" href="#Most-interesting-community-structure"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To me, the most interesting community structure was provided by the edge-betweenness algorithm. This structure is repeated in Figure 15 and has a modularity of 0.31. It cleanly partitions the vertices into three communities. One community is strongly centered around Atlanta, GA. It has a particularly central and strong hub (Atlanta) from where a number of “spokes” emanates to smaller airports. This is not a surprise. Most Americans know that Atlanta is a world-wide flight hub. Due to its star-like structure, we expect the density of the subgraph associated with this “Atlanta” community to be low. Indeed, when we form an induced subgraph and calculate its density we get a density of only 0.16:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">community_density</span><span class="p">(</span><span class="n">usa7</span><span class="p">,</span> <span class="nf">V</span><span class="p">(</span><span class="n">usa7</span><span class="p">)[</span><span class="n">ceb</span><span class="p">[[</span><span class="m">1</span><span class="p">]]])</span> <span class="c1">#Atlanta</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">0.1648352</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig15.png" alt="Figure 15  Most interesting community structure" title="Figure 15  Most interesting community structure"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The second community is centered around Honolulu, HI and also has a star structure. This is interesting because the algorithm considers this tiny cluster of only 5 vertices as a “peer” of the other two communities. Once again, this is in line with our expectation. The flight data was collected in December of 2010 which means it is winter in the USA. The fact that the Hawaii cluster is so prominent reflects the substantial holiday traffic associated with this tropical island during the mainland’s winter season. Add to this the fact that the Hawaiian Islands can only (reasonably) be visited by flying there (i.e. no driving) and you have a very “worthy” airport community.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Due to its star-like structure, we also expect the density of the subgraph associated with the “Hawaii” community to be low. However, it has a very small number of vertices and there are not many more links that can be made. So, its density turns out to be 0.4:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">community_density</span><span class="p">(</span><span class="n">usa7</span><span class="p">,</span> <span class="nf">V</span><span class="p">(</span><span class="n">usa7</span><span class="p">)[</span><span class="n">ceb</span><span class="p">[[</span><span class="m">3</span><span class="p">]]])</span> <span class="c1">#Hawaii</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">0.4</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The third community is interesting in the sense that it almost resembles a random (Erdos-Renyi) network (Erdos, Renyi, 1959). It seems like the relatively large airports contained within it compete with each other to be larger hubs and in the process, ends up more-or-less as “peers.” This random appearance suggests that the subgraph associated with this “Other” community might be denser, and indeed it is when compared with the “Atlanta” community which has a density of only 0.16. This community has a density of 0.28:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nf">community_density</span><span class="p">(</span><span class="n">usa7</span><span class="p">,</span> <span class="nf">V</span><span class="p">(</span><span class="n">usa7</span><span class="p">)[</span><span class="n">ceb</span><span class="p">[[</span><span class="m">2</span><span class="p">]]])</span> <span class="c1">#Others</span>
+<span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="m">0.2794118</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For a final visualization of our most interesting community structure we size the edge width according to the total number of passengers flowing back and forth along each edge. See Figure 16. Indeed, we see how relatively strong the flow towards and within the Hawaii community is.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig16.png" alt="Figure 16  Most interesting community structure (2)" title="Figure 16  Most interesting community structure (2)"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Network-Modeling">
+<a class="anchor" href="#Network-Modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Network Modeling<a class="anchor-link" href="#Network-Modeling"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will now add two <em>additional</em> vertex attributes to the network to make analysis more interesting. I suspect that the population of an airport’s city might have an effect on the network’s model. Accordingly, I obtained population information from the 2010 US Census,  <a href="https://www.census.gov/programs-surveys/decennial-census/decade.2010.html">https://www.census.gov/programs-surveys/decennial-census/decade.2010.html</a>. I stored this data in a new numeric vertex attribute called <em>Population</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Another variable I thought might play a role is whether an airport’s city is a coastal city. For this, I added a new boolean vertex variable called <em>Coastal</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will now use ERGM to build progressively richer and more accurate models for the network. The first model is the <em>null</em> model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Null-model">
+<a class="anchor" href="#Null-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Null model<a class="anchor-link" href="#Null-model"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Using only the edge feature, I got this model (called null.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span>   <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">5</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+      <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>   <span class="m">-2.063</span>      <span class="m">0.126</span>      <span class="m">0</span>  <span class="m">-16.38</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">443.7</span>  <span class="n">on</span> <span class="m">629</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">445.7</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">450.1</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The coefficient of edges is significant and is negative (-2.063) which shows that the density of the network is less than 50% (a coefficient of 0 indicates a 50% density). It is typical of real networks to have a density less than 50%. Indeed, the R code reveals that the density of the network is 0.1126984. This value is also the probability of creating an additional edge by adding one more node. The null model gives an AIC value of 445.7.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Population-effect">
+<a class="anchor" href="#Population-effect" aria-hidden="true"><span class="octicon octicon-link"></span></a>Population effect<a class="anchor-link" href="#Population-effect"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Adding the population data to the existing model, I get the following model (called pop.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span>   <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">4</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                     <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>              <span class="m">-2.332e+00</span>  <span class="m">1.743e-01</span>      <span class="m">0</span> <span class="m">-13.375</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodecov.Population</span>  <span class="m">1.023e-07</span>  <span class="m">4.097e-08</span>      <span class="m">0</span>   <span class="m">2.496</span>   <span class="m">0.0126</span> <span class="o">*</span>  
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">438.0</span>  <span class="n">on</span> <span class="m">628</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">442</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">450.9</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The low p value of nodecov.Population shows that the coefficient of nodecov.Population is somewhat significant in predicting the connection between two airport nodes. For example, the 
+likelihood of a flight connection between two cities with population of 1 and 2 million respectively, is:</p>
+<div class="highlight"><pre><span></span><span class="nf">plogis</span><span class="p">(</span><span class="m">-2.332</span> <span class="o">+</span> <span class="m">1.023e-07</span><span class="o">*</span><span class="m">1</span> <span class="o">+</span> <span class="m">1.023e-07</span><span class="o">*</span><span class="m">2</span><span class="p">)</span> <span class="o">=</span> <span class="m">0.08850721</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This value is smaller than the density of the network (0.1126984) which indicates that the role of the population in the present model is not very helpful in the prediction of a connection. Even so, the AIC value of this model is a little lower than that of the null model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Homophily-effect">
+<a class="anchor" href="#Homophily-effect" aria-hidden="true"><span class="octicon octicon-link"></span></a>Homophily effect<a class="anchor-link" href="#Homophily-effect"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I will use homophily to see if matches between Coastal values of vertices might help. Doing this, I got the following model (called hom.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span>   <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span> 
+                         <span class="o">+</span> <span class="nf">nodematch</span><span class="p">(</span><span class="s">"Coastal"</span><span class="p">,</span> <span class="n">diff</span> <span class="o">=</span> <span class="bp">F</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">5</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                     <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>              <span class="m">-2.821e+00</span>  <span class="m">2.524e-01</span>      <span class="m">0</span> <span class="m">-11.176</span>  <span class="o">&lt;</span> <span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodecov.Population</span>  <span class="m">1.103e-07</span>  <span class="m">4.188e-08</span>      <span class="m">0</span>   <span class="m">2.634</span>  <span class="m">0.00843</span> <span class="o">**</span> 
+<span class="n">nodematch.Coastal</span>   <span class="m">8.241e-01</span>  <span class="m">2.671e-01</span>      <span class="m">0</span>   <span class="m">3.085</span>  <span class="m">0.00203</span> <span class="o">**</span> 
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">428.0</span>  <span class="n">on</span> <span class="m">627</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">434</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">447.3</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The low p value of nodematch.Coastal shows that its coefficient is significant in predicting the connection between two airport vertices. (We notice that the significance of the nodecov.Population parameter has improved too.) For example, the likelihood of a flight connection between two cities with population of 1 and 2 million respectively, and matching <em>Coastal</em> values is:</p>
+<div class="highlight"><pre><span></span><span class="nf">plogis</span><span class="p">(</span><span class="m">-2.821</span> <span class="o">+</span> <span class="m">1.103e-07</span><span class="o">*</span><span class="m">1</span> <span class="o">+</span> <span class="m">1.103e-07</span><span class="o">*</span><span class="m">2</span> <span class="o">+</span> <span class="m">8.241e-01</span><span class="p">)</span><span class="o">=</span><span class="m">0.1195288</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This value is larger than the density of the network (0.1126984) which indicates that the effect of whether an airport is at the coast or not is indeed helpful in the prediction of a connection. In addition, the AIC has improved too, now at 434.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Differential-Homophily-effect">
+<a class="anchor" href="#Differential-Homophily-effect" aria-hidden="true"><span class="octicon octicon-link"></span></a>Differential Homophily effect<a class="anchor-link" href="#Differential-Homophily-effect"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will now use homophily of the Coastal vertex attribute in a more in-depth way, known as differential homophily. This means we will match for both No-No as well as Yes-Yes. Doing so gave me the following model (called difhom1.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span>   <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span> 
+                         <span class="o">+</span> <span class="nf">nodematch</span><span class="p">(</span><span class="s">"Coastal"</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">5</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                          <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>                   <span class="m">-2.905e+00</span>  <span class="m">2.642e-01</span>      <span class="m">0</span> <span class="m">-10.994</span>  <span class="o">&lt;</span> <span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodecov.Population</span>       <span class="m">1.355e-07</span>  <span class="m">4.513e-08</span>      <span class="m">0</span>   <span class="m">3.002</span> <span class="m">0.002686</span> <span class="o">**</span> 
+<span class="n">nodematch.Coastal.FALSE</span>  <span class="m">1.070e+00</span>  <span class="m">2.982e-01</span>      <span class="m">0</span>   <span class="m">3.587</span> <span class="m">0.000334</span> <span class="o">***</span>
+<span class="n">nodematch.Coastal.TRUE</span>   <span class="m">4.444e-01</span>  <span class="m">3.567e-01</span>      <span class="m">0</span>   <span class="m">1.246</span> <span class="m">0.212748</span>    
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">424.8</span>  <span class="n">on</span> <span class="m">626</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">432.8</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">450.6</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We see that the significance of nodematch.Coastal.FALSE is higher than the significance of nodematch.Coastal in the previous model. In our example, the 
+likelihood of a flight connection between two cities with population of 1 and 2 million respectively, and miss-matching <em>Coastal</em> values is:</p>
+<div class="highlight"><pre><span></span><span class="nf">plogis</span><span class="p">(</span><span class="m">-2.905</span> <span class="o">+</span> <span class="m">1.335e-07</span><span class="o">*</span><span class="m">1</span> <span class="o">+</span> <span class="m">1.335e-07</span><span class="o">*</span><span class="m">2</span> <span class="o">+</span> <span class="m">1</span><span class="o">*</span><span class="m">1.070</span><span class="p">)</span><span class="o">=</span> <span class="m">0.1376438</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The AIC value is even better (lower), now at 432.8.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Differential-Homophily-effect-2">
+<a class="anchor" href="#Differential-Homophily-effect-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Differential Homophily effect 2<a class="anchor-link" href="#Differential-Homophily-effect-2"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will now use differential homophily of the Coastal vertex attribute to only match for No-No. This gave me the following model (called difhom2.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span> <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span> 
+                       <span class="o">+</span> <span class="nf">nodematch</span><span class="p">(</span><span class="s">"Coastal"</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">5</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                          <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>                   <span class="m">-2.790e+00</span>  <span class="m">2.418e-01</span>      <span class="m">0</span> <span class="m">-11.535</span>  <span class="o">&lt;</span> <span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodecov.Population</span>       <span class="m">1.435e-07</span>  <span class="m">4.477e-08</span>      <span class="m">0</span>   <span class="m">3.206</span> <span class="m">0.001347</span> <span class="o">**</span> 
+<span class="n">nodematch.Coastal.FALSE</span>  <span class="m">9.397e-01</span>  <span class="m">2.737e-01</span>      <span class="m">0</span>   <span class="m">3.433</span> <span class="m">0.000597</span> <span class="o">***</span>
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">426.3</span>  <span class="n">on</span> <span class="m">627</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">432.3</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">445.7</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We see that the significance of all the previous parameters have remained. In addition, the AIC value is slightly lower to 432.3.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Differential-Homophily-effect-3">
+<a class="anchor" href="#Differential-Homophily-effect-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Differential Homophily effect 3<a class="anchor-link" href="#Differential-Homophily-effect-3"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This time I will have the Coastal vertex attribute to only match for Yes-Yes. This gave me the following model (called difhom2.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span> <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span> 
+                       <span class="o">+</span> <span class="nf">nodematch</span><span class="p">(</span><span class="s">"Coastal"</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">4</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                         <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>                  <span class="m">-2.334e+00</span>  <span class="m">1.791e-01</span>      <span class="m">0</span> <span class="m">-13.035</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodecov.Population</span>      <span class="m">1.017e-07</span>  <span class="m">4.183e-08</span>      <span class="m">0</span>   <span class="m">2.432</span>    <span class="m">0.015</span> <span class="o">*</span>  
+<span class="n">nodematch.Coastal.TRUE</span>  <span class="m">1.992e-02</span>  <span class="m">3.196e-01</span>      <span class="m">0</span>   <span class="m">0.062</span>    <span class="m">0.950</span>    
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">438.0</span>  <span class="n">on</span> <span class="m">627</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">444</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">457.3</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This time we have a <em>weaker</em> model in terms of the significance of the parameter estimates. In addition, the AIC value is up to 444.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Relational-terms-(network-predictors)">
+<a class="anchor" href="#Relational-terms-(network-predictors)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Relational terms (network predictors)<a class="anchor-link" href="#Relational-terms-(network-predictors)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To try and improve the model further I will add some relational predictors. This means information about ties among the network members is used to predict the likelihood of the dependent variable tie. No matter how I combined edge attributes, I always got a model that did not converge:</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span> <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> 
+               <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span> 
+<span class="o">+</span> <span class="nf">nodematch</span><span class="p">(</span><span class="s">"Coastal"</span><span class="p">,</span> <span class="n">diff</span> <span class="o">=</span> <span class="bp">T</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="m">1</span><span class="p">)</span> 
+<span class="o">+</span> <span class="nf">edgecov</span><span class="p">(</span><span class="n">usa.n</span><span class="p">,</span> <span class="n">attr</span> <span class="o">=</span> <span class="s">"Departures"</span><span class="p">)</span> 
+<span class="o">+</span> <span class="nf">edgecov</span><span class="p">(</span><span class="n">usa.n</span><span class="p">,</span> <span class="n">attr</span> <span class="o">=</span> <span class="s">"Seats"</span><span class="p">)</span> 
+<span class="o">+</span> <span class="nf">edgecov</span><span class="p">(</span><span class="n">usa.n</span><span class="p">,</span> <span class="n">attr</span> <span class="o">=</span> <span class="s">"Passengers"</span><span class="p">)</span> 
+<span class="o">+</span> <span class="nf">edgecov</span><span class="p">(</span><span class="n">usa.n</span><span class="p">,</span> <span class="n">attr</span> <span class="o">=</span> <span class="s">"Distance"</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">25</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                          <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> % <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>
+<span class="n">edges</span>                   <span class="m">-2.684e+01</span>  <span class="m">2.559e+04</span>      <span class="m">0</span>  <span class="m">-0.001</span>    <span class="m">0.999</span>
+<span class="n">nodecov.Population</span>      <span class="m">-6.178e-09</span>  <span class="m">6.083e-03</span>      <span class="m">0</span>   <span class="m">0.000</span>    <span class="m">1.000</span>
+<span class="n">nodematch.Coastal.FALSE</span>  <span class="m">1.447e+00</span>  <span class="m">2.587e+04</span>      <span class="m">0</span>   <span class="m">0.000</span>    <span class="m">1.000</span>
+<span class="n">edgecov.Departures</span>       <span class="m">3.049e-02</span>  <span class="m">1.231e+03</span>      <span class="m">0</span>   <span class="m">0.000</span>    <span class="m">1.000</span>
+<span class="n">edgecov.Seats</span>           <span class="m">-8.836e-04</span>  <span class="m">2.166e+01</span>      <span class="m">0</span>   <span class="m">0.000</span>    <span class="m">1.000</span>
+<span class="n">edgecov.Passengers</span>       <span class="m">1.720e-03</span>  <span class="m">1.664e+01</span>      <span class="m">0</span>   <span class="m">0.000</span>    <span class="m">1.000</span>
+<span class="n">edgecov.Distance</span>         <span class="m">3.731e-03</span>  <span class="m">7.526e+01</span>      <span class="m">0</span>   <span class="m">0.000</span>    <span class="m">1.000</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">8.734e+02</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">7.314e-09</span>  <span class="n">on</span> <span class="m">623</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">14</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">45.12</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Local-structural-predictors-(dyad-dependency)">
+<a class="anchor" href="#Local-structural-predictors-(dyad-dependency)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local structural predictors (dyad dependency)<a class="anchor-link" href="#Local-structural-predictors-(dyad-dependency)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lastly, I tried to include a predictor that uses local structural properties. This gave me the following model (called dyad.mod in the R code):</p>
+<div class="highlight"><pre><span></span><span class="o">==========================</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">model</span> <span class="n">fit</span>
+<span class="o">==========================</span>
+
+<span class="n">Formula</span><span class="o">:</span>   <span class="n">usa.n</span> <span class="o">~</span> <span class="n">edges</span> 
+                   <span class="o">+</span> <span class="nf">nodecov</span><span class="p">(</span><span class="s">"Population"</span><span class="p">)</span> 
+                   <span class="o">+</span> <span class="nf">nodematch</span><span class="p">(</span><span class="s">"Coastal"</span><span class="p">,</span> <span class="n">diff</span> <span class="o">=</span> <span class="bp">T</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="m">1</span><span class="p">)</span> 
+                   <span class="o">+</span> <span class="nf">gwesp</span><span class="p">(</span><span class="m">0.7</span><span class="p">,</span> <span class="n">fixed</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">Iterations</span><span class="o">:</span>  <span class="m">3</span> <span class="n">out</span> <span class="n">of</span> <span class="m">20</span> 
+
+<span class="n">Monte</span> <span class="n">Carlo</span> <span class="n">MLE</span> <span class="n">Results</span><span class="o">:</span>
+                          <span class="n">Estimate</span> <span class="n">Std.</span> <span class="n">Error</span> <span class="n">MCMC</span> %  <span class="n">z</span> <span class="n">value</span> <span class="nf">Pr</span><span class="p">(</span><span class="o">&gt;|</span><span class="n">z</span><span class="o">|</span><span class="p">)</span>    
+<span class="n">edges</span>                   <span class="m">-3.533e+00</span>  <span class="m">4.262e-03</span>    <span class="m">100</span> <span class="m">-828.828</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodecov.Population</span>       <span class="m">7.585e-08</span>  <span class="m">1.472e-08</span>      <span class="m">0</span>    <span class="m">5.153</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">nodematch.Coastal.FALSE</span>  <span class="m">5.196e-01</span>  <span class="m">3.694e-03</span>    <span class="m">100</span>  <span class="m">140.663</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="n">gwesp.fixed.0.7</span>          <span class="m">6.979e-01</span>  <span class="m">2.173e-03</span>    <span class="m">100</span>  <span class="m">321.149</span>   <span class="o">&lt;</span><span class="m">1e-04</span> <span class="o">***</span>
+<span class="o">---</span>
+<span class="n">Signif.</span> <span class="n">codes</span><span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="n">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+
+     <span class="n">Null</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">873.4</span>  <span class="n">on</span> <span class="m">630</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+ <span class="n">Residual</span> <span class="n">Deviance</span><span class="o">:</span> <span class="m">397.6</span>  <span class="n">on</span> <span class="m">626</span>  <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span>
+
+<span class="n">AIC</span><span class="o">:</span> <span class="m">405.6</span>    <span class="n">BIC</span><span class="o">:</span> <span class="m">423.3</span>    <span class="p">(</span><span class="n">Smaller</span> <span class="n">is</span> <span class="n">better.</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Not only did this approach have a wholesome effect on the significance of all the parameters I used, but it also lowered the AIC value to 405.6.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will next investigate the goodness-of-fit of the above models.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Goodness-of-fit">
+<a class="anchor" href="#Goodness-of-fit" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goodness-of-fit<a class="anchor-link" href="#Goodness-of-fit"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The simulation statistics show that the dyad.mod (the last model) seems to perform better than the other models, in particular in the case of triangles:</p>
+<div class="highlight"><pre><span></span><span class="n">edges</span> <span class="n">degree0</span> <span class="n">degree1</span> <span class="n">degree2</span> <span class="n">degree3</span> <span class="n">degree4</span> <span class="n">degree5</span> <span class="n">triangle</span>
+<span class="n">usa.n</span>          <span class="m">71</span>       <span class="m">0</span>      <span class="m">14</span>       <span class="m">5</span>       <span class="m">3</span>       <span class="m">3</span>       <span class="m">3</span>       <span class="m">47</span>
+<span class="n">null.mod</span>       <span class="m">83</span>       <span class="m">0</span>       <span class="m">2</span>       <span class="m">3</span>       <span class="m">6</span>       <span class="m">6</span>       <span class="m">9</span>       <span class="m">15</span>
+<span class="n">hom.mod</span>        <span class="m">69</span>       <span class="m">0</span>       <span class="m">4</span>       <span class="m">4</span>       <span class="m">6</span>      <span class="m">12</span>       <span class="m">4</span>        <span class="m">9</span>
+<span class="n">difhom1.mod</span>    <span class="m">69</span>       <span class="m">0</span>       <span class="m">3</span>       <span class="m">6</span>       <span class="m">8</span>       <span class="m">8</span>       <span class="m">5</span>        <span class="m">8</span>
+<span class="n">difhom2.mod</span>    <span class="m">74</span>       <span class="m">1</span>       <span class="m">4</span>       <span class="m">4</span>       <span class="m">8</span>       <span class="m">3</span>       <span class="m">2</span>       <span class="m">12</span>
+<span class="n">difhom3.mod</span>    <span class="m">79</span>       <span class="m">0</span>       <span class="m">2</span>       <span class="m">0</span>       <span class="m">8</span>      <span class="m">10</span>       <span class="m">7</span>       <span class="m">13</span>
+<span class="n">dyad.mod</span>       <span class="m">84</span>       <span class="m">2</span>       <span class="m">5</span>       <span class="m">4</span>       <span class="m">4</span>       <span class="m">5</span>       <span class="m">2</span>       <span class="m">50</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next I will plot some charts that will indicate the goodness-of-fit of the best model: dyad.mod. See Figure 17. When the dark line falls within the gray lines it indicates a good fit. The gray lines indicate the confidence interval. As is evident from Figure 17 and Figure 18, most elements have been fitted well.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig17.png" alt="Figure 17  Goodness-of-fit diagnostics (1)" title="Figure 17  Goodness-of-fit diagnostics (1)"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 18 shows the same information except for the vertical axes that are calibrated to display log-odds values.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig18.png" alt="Figure 18  Goodness-of-fit diagnostics (2)" title="Figure 18  Goodness-of-fit diagnostics (2)"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 19 shows the MCMC goodness-of-fit diagnostics.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/net_fig19.png" alt="Figure 19  Goodness-of-fit diagnostics: MCMC" title="Figure 19  Goodness-of-fit diagnostics: MCMC"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lastly, we will look at the <em>p-values</em> of the goodness-of-fit simulations. When p-values are high it shows that there are no significant differences between the simulated networks and the original network. The problematic p-values have been highlighted. In terms of <em>minimum geodesic distance</em>, we have a good fit. For degree, we have a good fit except for degree values of 1 and 19.  In the case of <em>edgewise shared partner</em>, we have a good fit. For <em>dyadwise shared partner</em>, the only problem is at dsp1. <em>Triad census</em> shows a good fit too. The same is true for the <em>model statistics</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">dyad.mod.gof</span> <span class="c1">#goodness-of-fit for the dyad.mod network</span>
+
+<span class="n">Goodness</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">fit</span> <span class="n">for</span> <span class="n">minimum</span> <span class="n">geodesic</span> <span class="n">distance</span> 
+
+    <span class="n">obs</span> <span class="n">min</span>   <span class="n">mean</span> <span class="n">max</span> <span class="n">MC</span> <span class="n">p</span><span class="o">-</span><span class="n">value</span>
+<span class="m">1</span>    <span class="m">71</span>  <span class="m">24</span>  <span class="m">71.33</span> <span class="m">123</span>       <span class="m">1.00</span>
+<span class="m">2</span>   <span class="m">261</span>  <span class="m">28</span> <span class="m">178.31</span> <span class="m">333</span>       <span class="m">0.18</span>
+<span class="m">3</span>   <span class="m">198</span>  <span class="m">31</span> <span class="m">152.75</span> <span class="m">225</span>       <span class="m">0.24</span>
+<span class="m">4</span>    <span class="m">95</span>   <span class="m">3</span>  <span class="m">62.22</span> <span class="m">147</span>       <span class="m">0.22</span>
+<span class="m">5</span>     <span class="m">5</span>   <span class="m">0</span>  <span class="m">18.87</span>  <span class="m">69</span>       <span class="m">0.52</span>
+<span class="m">6</span>     <span class="m">0</span>   <span class="m">0</span>   <span class="m">5.26</span>  <span class="m">45</span>       <span class="m">0.98</span>
+<span class="m">7</span>     <span class="m">0</span>   <span class="m">0</span>   <span class="m">1.43</span>  <span class="m">27</span>       <span class="m">1.00</span>
+<span class="m">8</span>     <span class="m">0</span>   <span class="m">0</span>   <span class="m">0.34</span>  <span class="m">12</span>       <span class="m">1.00</span>
+<span class="m">9</span>     <span class="m">0</span>   <span class="m">0</span>   <span class="m">0.09</span>   <span class="m">5</span>       <span class="m">1.00</span>
+<span class="m">10</span>    <span class="m">0</span>   <span class="m">0</span>   <span class="m">0.03</span>   <span class="m">2</span>       <span class="m">1.00</span>
+<span class="kc">Inf</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">139.37</span> <span class="m">454</span>       <span class="m">0.06</span>
+
+<span class="n">Goodness</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">fit</span> <span class="n">for</span> <span class="n">degree</span> 
+
+   <span class="n">obs</span> <span class="n">min</span> <span class="n">mean</span> <span class="n">max</span> <span class="n">MC</span> <span class="n">p</span><span class="o">-</span><span class="n">value</span>
+<span class="m">0</span>    <span class="m">0</span>   <span class="m">0</span> <span class="m">3.71</span>  <span class="m">10</span>       <span class="m">0.06</span>
+<span class="m">1</span>   <span class="m">14</span>   <span class="m">0</span> <span class="m">4.76</span>  <span class="m">16</span>       <span class="m">0.02</span>
+<span class="m">2</span>    <span class="m">5</span>   <span class="m">1</span> <span class="m">5.11</span>  <span class="m">11</span>       <span class="m">1.00</span>
+<span class="m">3</span>    <span class="m">3</span>   <span class="m">0</span> <span class="m">4.72</span>  <span class="m">13</span>       <span class="m">0.64</span>
+<span class="m">4</span>    <span class="m">3</span>   <span class="m">1</span> <span class="m">4.16</span>  <span class="m">10</span>       <span class="m">0.80</span>
+<span class="m">5</span>    <span class="m">3</span>   <span class="m">1</span> <span class="m">3.69</span>   <span class="m">8</span>       <span class="m">0.98</span>
+<span class="m">6</span>    <span class="m">1</span>   <span class="m">0</span> <span class="m">3.03</span>   <span class="m">9</span>       <span class="m">0.48</span>
+<span class="m">7</span>    <span class="m">2</span>   <span class="m">0</span> <span class="m">2.21</span>   <span class="m">6</span>       <span class="m">1.00</span>
+<span class="m">8</span>    <span class="m">1</span>   <span class="m">0</span> <span class="m">1.52</span>   <span class="m">7</span>       <span class="m">1.00</span>
+<span class="m">9</span>    <span class="m">0</span>   <span class="m">0</span> <span class="m">1.13</span>   <span class="m">4</span>       <span class="m">0.78</span>
+<span class="m">10</span>   <span class="m">1</span>   <span class="m">0</span> <span class="m">0.79</span>   <span class="m">5</span>       <span class="m">0.90</span>
+<span class="m">11</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">0.42</span>   <span class="m">3</span>       <span class="m">1.00</span>
+<span class="m">12</span>   <span class="m">1</span>   <span class="m">0</span> <span class="m">0.31</span>   <span class="m">4</span>       <span class="m">0.50</span>
+<span class="m">13</span>   <span class="m">1</span>   <span class="m">0</span> <span class="m">0.21</span>   <span class="m">2</span>       <span class="m">0.34</span>
+<span class="m">14</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">0.11</span>   <span class="m">2</span>       <span class="m">1.00</span>
+<span class="m">15</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">0.05</span>   <span class="m">1</span>       <span class="m">1.00</span>
+<span class="m">16</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">0.03</span>   <span class="m">1</span>       <span class="m">1.00</span>
+<span class="m">17</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">0.01</span>   <span class="m">1</span>       <span class="m">1.00</span>
+<span class="m">18</span>   <span class="m">0</span>   <span class="m">0</span> <span class="m">0.03</span>   <span class="m">1</span>       <span class="m">1.00</span>
+<span class="m">19</span>   <span class="m">1</span>   <span class="m">0</span> <span class="m">0.00</span>   <span class="m">0</span>       <span class="m">0.00</span>
+
+<span class="n">Goodness</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">fit</span> <span class="n">for</span> <span class="n">edgewise</span> <span class="n">shared</span> <span class="n">partner</span> 
+
+     <span class="n">obs</span> <span class="n">min</span>  <span class="n">mean</span> <span class="n">max</span> <span class="n">MC</span> <span class="n">p</span><span class="o">-</span><span class="n">value</span>
+<span class="n">esp0</span>  <span class="m">20</span>   <span class="m">3</span> <span class="m">14.90</span>  <span class="m">33</span>       <span class="m">0.34</span>
+<span class="n">esp1</span>  <span class="m">17</span>   <span class="m">4</span> <span class="m">23.98</span>  <span class="m">41</span>       <span class="m">0.26</span>
+<span class="n">esp2</span>  <span class="m">12</span>   <span class="m">1</span> <span class="m">17.16</span>  <span class="m">38</span>       <span class="m">0.52</span>
+<span class="n">esp3</span>   <span class="m">4</span>   <span class="m">0</span>  <span class="m">9.25</span>  <span class="m">26</span>       <span class="m">0.52</span>
+<span class="n">esp4</span>  <span class="m">11</span>   <span class="m">0</span>  <span class="m">3.92</span>  <span class="m">22</span>       <span class="m">0.22</span>
+<span class="n">esp5</span>   <span class="m">2</span>   <span class="m">0</span>  <span class="m">1.46</span>   <span class="m">9</span>       <span class="m">0.66</span>
+<span class="n">esp6</span>   <span class="m">3</span>   <span class="m">0</span>  <span class="m">0.46</span>   <span class="m">5</span>       <span class="m">0.08</span>
+<span class="n">esp7</span>   <span class="m">1</span>   <span class="m">0</span>  <span class="m">0.17</span>   <span class="m">4</span>       <span class="m">0.22</span>
+<span class="n">esp9</span>   <span class="m">1</span>   <span class="m">0</span>  <span class="m">0.03</span>   <span class="m">1</span>       <span class="m">0.06</span>
+
+<span class="n">Goodness</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">fit</span> <span class="n">for</span> <span class="n">dyadwise</span> <span class="n">shared</span> <span class="n">partner</span> 
+
+     <span class="n">obs</span> <span class="n">min</span>   <span class="n">mean</span> <span class="n">max</span> <span class="n">MC</span> <span class="n">p</span><span class="o">-</span><span class="n">value</span>
+<span class="n">dsp0</span> <span class="m">318</span> <span class="m">182</span> <span class="m">395.26</span> <span class="m">597</span>       <span class="m">0.32</span>
+<span class="n">dsp1</span> <span class="m">206</span>  <span class="m">31</span> <span class="m">142.54</span> <span class="m">201</span>       <span class="m">0.00</span>
+<span class="n">dsp2</span>  <span class="m">66</span>   <span class="m">2</span>  <span class="m">59.01</span> <span class="m">140</span>       <span class="m">0.74</span>
+<span class="n">dsp3</span>  <span class="m">10</span>   <span class="m">0</span>  <span class="m">21.69</span>  <span class="m">71</span>       <span class="m">0.52</span>
+<span class="n">dsp4</span>  <span class="m">20</span>   <span class="m">0</span>   <span class="m">7.90</span>  <span class="m">46</span>       <span class="m">0.18</span>
+<span class="n">dsp5</span>   <span class="m">5</span>   <span class="m">0</span>   <span class="m">2.62</span>  <span class="m">15</span>       <span class="m">0.40</span>
+<span class="n">dsp6</span>   <span class="m">3</span>   <span class="m">0</span>   <span class="m">0.73</span>   <span class="m">8</span>       <span class="m">0.22</span>
+<span class="n">dsp7</span>   <span class="m">1</span>   <span class="m">0</span>   <span class="m">0.21</span>   <span class="m">5</span>       <span class="m">0.24</span>
+<span class="n">dsp8</span>   <span class="m">0</span>   <span class="m">0</span>   <span class="m">0.01</span>   <span class="m">1</span>       <span class="m">1.00</span>
+<span class="n">dsp9</span>   <span class="m">1</span>   <span class="m">0</span>   <span class="m">0.03</span>   <span class="m">1</span>       <span class="m">0.06</span>
+
+<span class="n">Goodness</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">fit</span> <span class="n">for</span> <span class="n">triad</span> <span class="n">census</span> 
+
+   <span class="n">obs</span>  <span class="n">min</span>    <span class="n">mean</span>  <span class="n">max</span> <span class="n">MC</span> <span class="n">p</span><span class="o">-</span><span class="n">value</span>
+<span class="m">0</span> <span class="m">5186</span> <span class="m">3732</span> <span class="m">5053.56</span> <span class="m">6357</span>       <span class="m">0.84</span>
+<span class="m">1</span> <span class="m">1541</span>  <span class="m">752</span> <span class="m">1785.41</span> <span class="m">2728</span>       <span class="m">0.48</span>
+<span class="m">2</span>  <span class="m">366</span>   <span class="m">29</span>  <span class="m">263.28</span>  <span class="m">592</span>       <span class="m">0.40</span>
+<span class="m">3</span>   <span class="m">47</span>    <span class="m">2</span>   <span class="m">37.75</span>   <span class="m">97</span>       <span class="m">0.54</span>
+
+<span class="n">Goodness</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">fit</span> <span class="n">for</span> <span class="n">model</span> <span class="n">statistics</span> 
+
+                                 <span class="n">obs</span>          <span class="n">min</span>         <span class="n">mean</span>          <span class="n">max</span> <span class="n">MC</span> <span class="n">p</span><span class="o">-</span><span class="n">value</span>
+<span class="n">edges</span>                   <span class="m">7.100000e+01</span> <span class="m">2.400000e+01</span> <span class="m">7.133000e+01</span> <span class="m">1.230000e+02</span>       <span class="m">1.00</span>
+<span class="n">nodecov.Population</span>      <span class="m">2.182382e+08</span> <span class="m">6.183536e+07</span> <span class="m">2.176689e+08</span> <span class="m">3.786887e+08</span>       <span class="m">0.96</span>
+<span class="n">nodematch.Coastal.FALSE</span> <span class="m">3.200000e+01</span> <span class="m">1.200000e+01</span> <span class="m">3.229000e+01</span> <span class="m">5.600000e+01</span>       <span class="m">0.94</span>
+<span class="n">gwesp.fixed.0.7</span>         <span class="m">7.664400e+01</span> <span class="m">5.503415e+00</span> <span class="m">7.757239e+01</span> <span class="m">1.734378e+02</span>       <span class="m">0.92</span>
+<span class="o">&gt;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Bibliography">
+<a class="anchor" href="#Bibliography" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bibliography<a class="anchor-link" href="#Bibliography"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Gabor, Csardi. igraphdata: A Collection of Network Data Sets for the 'igraph' Package, 2015.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Erdos, P., Renyi, A. On Random Graphs, 1959.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>CRAN repository, igraphdata. 
+<a href="https://cran.r-project.org/web/packages/igraphdata/igraphdata.pdf">https://cran.r-project.org/web/packages/igraphdata/igraphdata.pdf</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>2010 US Census,  <a href="https://www.census.gov/programs-surveys/decennial-census/decade.2010.html">https://www.census.gov/programs-surveys/decennial-census/decade.2010.html</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>RITA. The Research and Innovative Technology Administration, 2010. <a href="http://www.rita.dot.gov/about_rita/">http://www.rita.dot.gov/about_rita/</a></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/airline%20industry/network%20modeling/community%20detection/visualization/r/2019/03/14/NetworkProject_R.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
