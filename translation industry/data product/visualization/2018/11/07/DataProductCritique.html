@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Critique of a Data Product (Annual Report) | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Critique of a Data Product (Annual Report)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Communicating about data is a special art…" />
+<meta property="og:description" content="Communicating about data is a special art…" />
+<link rel="canonical" href="https://learnableloop.com/translation%20industry/data%20product/visualization/2018/11/07/DataProductCritique.html" />
+<meta property="og:url" content="https://learnableloop.com/translation%20industry/data%20product/visualization/2018/11/07/DataProductCritique.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/dpc_fig1_replacement.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-11-07T00:00:00-06:00" />
+<script type="application/ld+json">
+{"description":"Communicating about data is a special art…","url":"https://learnableloop.com/translation%20industry/data%20product/visualization/2018/11/07/DataProductCritique.html","@type":"BlogPosting","headline":"Critique of a Data Product (Annual Report)","dateModified":"2018-11-07T00:00:00-06:00","datePublished":"2018-11-07T00:00:00-06:00","image":"https://learnableloop.com/images/dpc_fig1_replacement.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/translation%20industry/data%20product/visualization/2018/11/07/DataProductCritique.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Critique of a Data Product (Annual Report)</h1><p class="page-description">Communicating about data is a special art...</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-11-07T00:00:00-06:00" itemprop="datePublished">
+        Nov 7, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Translation Industry">Translation Industry</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Data Product">Data Product</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Visualization">Visualization</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Purpose">Purpose </a></li>
+<li class="toc-entry toc-h2"><a href="#Description-of-the-Data-Product">Description of the Data Product </a></li>
+<li class="toc-entry toc-h2"><a href="#Finding-Your-Purpose-and-Message">Finding Your Purpose and Message </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Actionable-data">Actionable data </a></li>
+<li class="toc-entry toc-h3"><a href="#Balance">Balance </a></li>
+<li class="toc-entry toc-h3"><a href="#Audience-factors">Audience factors </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Information-Discrimination">Information Discrimination </a></li>
+<li class="toc-entry toc-h2"><a href="#Defining-Meaningful-and-Actionable-Metrics">Defining Meaningful and Actionable Metrics </a></li>
+<li class="toc-entry toc-h2"><a href="#Creating-Structure-and-Flow-to-your-Data-Products">Creating Structure and Flow to your Data Products </a></li>
+<li class="toc-entry toc-h2"><a href="#Designing-Attractive,-Easy-to-understand-Data-Products">Designing Attractive, Easy-to-understand Data Products </a></li>
+<li class="toc-entry toc-h2"><a href="#Creating-Dialogue-with-Your-Data-Products">Creating Dialogue with Your Data Products </a></li>
+<li class="toc-entry toc-h2"><a href="#Summary">Summary </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2018-11-07-DataProductCritique.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Purpose">
+<a class="anchor" href="#Purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose<a class="anchor-link" href="#Purpose"> </a>
+</h2>
+<p>This project involves the critique of the format and contents of the annual report of a non-profit. The annual report is about the operations of an initiative known as MissionTran. The need that the client has is to evaluate the current structure and contents of the annual report in the light of best-practice data communication standards, as well as obtain recommendations to improve the data communication aspects of it. A copy of the annual report may be found <a href="/portfolio/AnnualReport2018.pdf">here</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Description-of-the-Data-Product">
+<a class="anchor" href="#Description-of-the-Data-Product" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description of the Data Product<a class="anchor-link" href="#Description-of-the-Data-Product"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The MissionTran project uses a team of volunteers to proofread machine-translated sermons into a number of languages. Users proofread and correct machine-translated sentences one-by-one. Each proofreading effort to a sentence is called a <em>contribution</em> and comes in the form of an <em>edit</em>.</p>
+<p>There are two kinds of contributions: <em>Votes</em> and <em>Creates</em>. A vote contribution happens when the user decides to simply vote for the provided translation, i.e. the user deems the translation to be correct. A create contribution happens when the user edits the translation to correct it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are a number of <em>bases</em> upon which a contribution is made. For <em>vote</em> contributions, the bases are:</p>
+<ul>
+<li>By <em>accepting</em> the machine-translated sentence as is (‘a’)</li>
+<li>By <em>creating</em> a new edit (‘c’)</li>
+<li>By <em>topping</em>, i.e. by voting for the current edit with the most votes (‘t’)</li>
+<li>By <em>picking</em> another edit to vote for (‘p’)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For create contributions the bases are:</p>
+<ul>
+<li>By <em>clearing</em> (‘k’)</li>
+<li>By <em>modifying</em> (‘m’)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A number of metrics are collected by the system:</p>
+<ul>
+<li>time used to make a vote contribution </li>
+<li>time used to make a create contribution </li>
+<li>vote time spent to proofread a complete translation (assignment)</li>
+<li>create time spent to proofread a complete translation (assignment)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The components of the system may be summarized as follows:</p>
+<ul>
+<li>a Translation has many<ul>
+<li>Sentences has many<ul>
+<li>Edits has many<ul>
+<li>Contributions</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>a Translation has many<ul>
+<li>Assignments has many<ul>
+<li>Contributions</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>A User has many<ul>
+<li>Assignments</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Finding-Your-Purpose-and-Message">
+<a class="anchor" href="#Finding-Your-Purpose-and-Message" aria-hidden="true"><span class="octicon octicon-link"></span></a>Finding Your Purpose and Message<a class="anchor-link" href="#Finding-Your-Purpose-and-Message"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Actionable-data">
+<a class="anchor" href="#Actionable-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Actionable data<a class="anchor-link" href="#Actionable-data"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The location of <em>actionable data</em> in the annual report is not straightforward. Most charts seem to simply dump data. Only some charts seem to suggest its use as a trigger for action. One such chart is the report's Figure 12 which shows the number of contributions by username by contribution kind:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig12.png" alt="" title="Figure 12:  Number of contributions by username by contribution kind"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This chart shows how productive users were by showing the total number of contributions each made. This number is further broken down into <em>vote</em> contribution and <em>create</em> contributions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Balance">
+<a class="anchor" href="#Balance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Balance<a class="anchor-link" href="#Balance"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There should be a balance between the representations for the <em>data</em>, the <em>author</em>, and the <em>audience</em>. In the report, the balance is tilted strongly in the direction of the data. There is a strong impression that all available data has simply been dropped into the document. The consumer is then expected to pick out pieces for consumption.</p>
+<p>The document does not reveal much about the objectives of the <em>author</em>, except maybe to communicate the progress of the translation team.</p>
+<p>There is an implication that the <em>audience’s</em> need is simply to know the progress of the project.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Audience-factors">
+<a class="anchor" href="#Audience-factors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Audience factors<a class="anchor-link" href="#Audience-factors"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>role</em> of the audience seems to be stakeholders interested in the status of the project. There is hardly any structure that would make it easy and direct to answer high-priority questions.</p>
+<p>The <em>workflow</em> of the audience might be catered for as the information is presented in the form of charts that can be accessed easily in an office setting.</p>
+<p>There is no elaboration on the <em>data comfort and skills</em> of the audience. The author does point out that “The workings of the translation system will not be presented here as most stakeholders are well aware of the details.” This suggests that the audience possess the <em>industry and data expertise</em> and does not need embedded explanations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Information-Discrimination">
+<a class="anchor" href="#Information-Discrimination" aria-hidden="true"><span class="octicon octicon-link"></span></a>Information Discrimination<a class="anchor-link" href="#Information-Discrimination"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is no identifiable core problem/theme. The report is simply a series of charts that try to convey the performance of the team. There is not a good separation of <em>reporting</em> from <em>exploration</em>. Some charts, like Figure 10, are totally unnecessary. This chart should have at least been pushed to an appendix but there is no appendix. Here is Figure 10:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig10.png" alt="" title="Figure 10:  Joint distribution of assignment total vote/create time"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 10 seems much too technical and does not belong with the remaining charts.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is a section (at the end) on “Day of Week.” The chart in this section (Figure 13), breaks down contribution effort (in seconds) by day-of-week by contribution kind:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig13.png" alt="" title="Figure 13:  Distribution of effort by day-of-week by contribution kind"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It seems unnatural to do this kind of breakdown. Why would distribution of effort per contribution vary with day of week. I cannot think of a fundamental reason why a user’s need for time to proofread a specific sentence would vary by day-of-week. This is not a meaningful chart. It should be thrown out.</p>
+<p>With a stretch of imagination one could think of the following scenario. Let us say on Mondays, there are always a series of celebrations in the large conference room next door. This might be distracting to the proofreaders. This kind of scenario, however, should be investigated in the 'backroom'. It should not be part of regular annual report.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If the author happens to insist on keeping this chart, it should be changed considerably. Its current form hardly shows the required information. The presence of a few outliers compresses the real data so much that nothing is revealed. Here is a first suggestion. The weekdays are ordered, the axis labels are improved, and a measure of transparency is given to the markers. This helps to show how much overlap of points there are:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig13_replacement1.png" alt="" title="Figure 13-1:  Replacement suggestion 1"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Even better, we can provide a small amount of sideways random jitter to help reveal the overlap:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig13_replacement2.png" alt="" title="Figure 13-2:  Replacement suggestion 2"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we remove the outliers, the chart becomes more effective:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig13_replacement3.png" alt="" title="Figure 13-3:  Replacement suggestion 3"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We may also use a boxplot which is commonly used in a case like this:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig13_replacement4.png" alt="" title="Figure 13-4:  Replacement suggestion 4"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A violin plot will also be effective:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig13_replacement5.png" alt="" title="Figure 13-5:  Replacement suggestion 5"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The latest plots all reveal that there is no real variation in contribution effort per sentence over day-of-week. This was certainly not evident from the original chart.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Defining-Meaningful-and-Actionable-Metrics">
+<a class="anchor" href="#Defining-Meaningful-and-Actionable-Metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Defining Meaningful and Actionable Metrics<a class="anchor-link" href="#Defining-Meaningful-and-Actionable-Metrics"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The area of metrics is the strong point of the document. Metrics are:</p>
+<ul>
+<li>not too <em>simplistic</em>
+</li>
+<li>not overly <em>complex</em>
+</li>
+<li>not too <em>many</em>
+</li>
+<li>none are <em>vanity</em> metrics</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The metrics have a <em>common interpretation</em>, e.g.</p>
+<ul>
+<li>time used to make a vote contribution </li>
+<li>time used to make a create contribution </li>
+<li>vote time spent to proofread a complete translation (assignment)</li>
+<li>create time spent to proofread a complete translation (assignment)</li>
+<li>total vote time spent during an assignment.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Metrics are mostly <em>actionable</em>; e.g. how much time is spent per sentence.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Metrics are <em>accessible</em> and also <em>transparent</em> with simple calculations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-Structure-and-Flow-to-your-Data-Products">
+<a class="anchor" href="#Creating-Structure-and-Flow-to-your-Data-Products" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating Structure and Flow to your Data Products<a class="anchor-link" href="#Creating-Structure-and-Flow-to-your-Data-Products"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is a simplistic logical structure and <em>no narrative</em> at all – very poor!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The author could have chosen one of many narrative flows, e.g. to</p>
+<ul>
+<li>show how machine-translated assisted proofreading is more efficient than humans translating from scratch</li>
+<li>show how the productivity of users varies by language</li>
+<li>show the work patterns of users, i.e. a steady amount each workday, or only on one day per week, etc.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is no meaningful flow however. There is no notion of the “guided safari” storytelling, or even of a traditional story. This is a glaring weakness in the data product.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Designing-Attractive,-Easy-to-understand-Data-Products">
+<a class="anchor" href="#Designing-Attractive,-Easy-to-understand-Data-Products" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designing Attractive, Easy-to-understand Data Products<a class="anchor-link" href="#Designing-Attractive,-Easy-to-understand-Data-Products"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The presentation looks rough and unfinished (low aesthetic value). Given the author’s comment about the stakeholders’ understanding of the workings of the system, this might be overlooked somewhat.</p>
+<p>There is no need for <em>connectivity</em>, <em>data detail</em>, <em>interactivity</em>, and <em>mobility</em> as this is an annual report.</p>
+<p>The use of <em>color</em> in charts was mostly acceptable.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The author often did not choose the most appropriate chart type, e.g. in Figures 1 and 2 a line chart should have been used instead of the heat maps:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig1.png" alt="" title="Figure 1:  Contributions"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If the author insists on having a heat map, it could have been made simpler and more effective:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig1_replacement.png" alt="" title="Figure 1-1:  Replacement suggestion"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The chart type for Figure 6 was chosen poorly and the presence of a few outliers hide most of the real data:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig6.png" alt="" title="Figure 6:  Distribution of effort by contribution kind by sentence type"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following chart would have been more effective (after removing the outliers):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig6_replacement.png" alt="" title="Figure 6-1:  Replacement suggestion"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Creating-Dialogue-with-Your-Data-Products">
+<a class="anchor" href="#Creating-Dialogue-with-Your-Data-Products" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating Dialogue with Your Data Products<a class="anchor-link" href="#Creating-Dialogue-with-Your-Data-Products"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In general, there is not a lot of <em>chart junk</em>. The author mostly used sufficient <em>contrast</em>. <em>Readability of labels</em> are generally bad. A serious omission is that no chart has a heading! For example, Figure 11:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig11.png" alt="" title="Figure 11:  Distribution of effort"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The time units are always in seconds which is often inappropriate. Although the meaning of variables is explained, it is bothersome that they appear in their “software” form on axes, as in Figure 8:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig8.png" alt="" title="Figure 8:  Assignment total create time versus translation sentence count"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Sentence types are not defined anywhere.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>Sorting for comprehension</em> could have been done in Figure 5 and 12:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig5.png" alt="" title="Figure 5:  Distribution of effort by language by sentence type"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/dpc_fig12.png" alt="" title="Figure 12:  Number of contributions by username by contribution kind"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In addition, monotone <em>color variants</em> could have been used in Figure 12.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">
+<a class="anchor" href="#Summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary<a class="anchor-link" href="#Summary"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The annual report showcases a lot of data. The disappointing part is that it has been done ineffectively and unprofessionally.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main weaknesses are:</p>
+<ul>
+<li>No purpose or message</li>
+<li>Use of data indiscriminately</li>
+<li>Weak structure and no narrative flow </li>
+<li>No mentionable design</li>
+<li>Will not trigger conversation and dialogue in a straightforward way</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The one strength:</p>
+<ul>
+<li>Meaningful metrics</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/translation%20industry/data%20product/visualization/2018/11/07/DataProductCritique.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
