@@ -227,73 +227,49 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>$s_1 = \text{Value of AAPL holdings}$
-$s_2 = \text{Value of AMGN holdings}$
-$s_3 = \text{Value of AXP holdings}$
-$\text{...}$
-.
-.
-.
-$s_{29} = \text{Value of WBA holdings}$
-$s_{30} = \text{Value of WMT holdings}$</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-\begin{align}
-&amp; a_1=\text{Fraction to be invested in AAPL this cycle} \\
-&amp; a_2=\text{Fraction to be invested in AMGN this cycle} \\
-&amp; a_3=\text{Fraction to be invested in AXP this cycle} \\
-&amp; \text{...} \\
-&amp; a_{29}=\text{Fraction to be invested in WBA this cycle} \\
-&amp; a_{30}=\text{Fraction to be invested in WMT this cycle} \\
-\end{align}\begin{align}
-r(s,a,s')=log(v'/v)
-\end{align}\begin{align}
-&amp; \theta_1=\text{Initial Amount} \\
-&amp; \theta_2=\text{Transaction Cost Pct} \\
-&amp; \theta_3=\text{Size of State and Action Spaces} \\
-&amp; \theta_4=\text{Reward Scaling} \\
-&amp; \theta_5=\text{Technical Indicator List} \\
-\end{align}
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="2.-Solution-Proposal">
 <a class="anchor" href="#2.-Solution-Proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Solution Proposal<a class="anchor-link" href="#2.-Solution-Proposal"> </a>
 </h2>
 <p>Investment decisions are sequential by nature. Furthermore, an optimal decision in the present may turn out not to be optimal over the longer term. Then there are the complexities of the investment landscape like varying market conditions, political disruptive event, and other economic uncertainties. The ideal tool for this kind of problem is <strong>Reinforcement Learning</strong>.</p>
 <p>The solution requires the setup of a <strong>digital twin</strong> for the investor's portfolio. In RL parlance this model of the portfolio is called an <strong>environment</strong>. The environment contains <strong>states</strong> which are modified by applying <strong>actions</strong> to it.</p>
 <p>We will choose the following <strong>states</strong> (measured daily in our case) for the environment:</p>
-<p>s1 = Value of AAPL holdings</p>
-<p>s2 = Value of AMGN holdings</p>
-<p>s3 = Value of AXP holdings</p>
-<p>...</p>
-<p>s29 = Value of WBA holdings</p>
-<p>s30 = Value of WMT holdings</p>
+<p>
+$$s_1 = \text{Value of AAPL holdings}$$
+</p>
+<p>
+$$s_2 = \text{Value of AMGN holdings}$$
+</p>
+<p>
+$$s_3 = \text{Value of AXP holdings}$$
+</p>
+<p>
+$$...$$
+</p>
+<p>
+$$s_{29} = \text{Value of WBA holdings}$$
+</p>
+<p>
+$$s_{30} = \text{Value of WMT holdings}$$
+</p>
 <p>The following <strong>actions</strong> (applied daily in our case) will be setup to influence the environment/portfolio:</p>
-<p>a1 = Fraction to be invested in AAPL this cycle}</p>
-<p>a2 = Fraction to be invested in AMGN this cycle}</p>
-<p>a3 = Fraction to be invested in AXP this cycle}</p>
-<p>...</p>
-<p>a29 = Fraction to be invested in WBA this cycle}</p>
-<p>a30 = Fraction to be invested in WMT this cycle}</p>
+<p>$a_1 = \text{Fraction to be invested in AAPL this cycle}$</p>
+<p>$a_2 = \text{Fraction to be invested in AMGN this cycle}$</p>
+<p>$a_3 = \text{Fraction to be invested in AXP this cycle}$</p>
+<p>$...$</p>
+<p>$a_{29} = \text{Fraction to be invested in WBA this cycle}$</p>
+<p>$a_{30} = \text{Fraction to be invested in WMT this cycle}$</p>
 <p>All action values are in the [0, 1] interval.</p>
 <p>The <em>reward</em> <em>r</em> is given by</p>
-<p>r(s,a,s') = log(v'/v)</p>
+<p>
+$$r(s,a,s') = log(v'/v)$$
+</p>
 <p>where <em>v</em> and <em>v'</em> are the portfolio value at states $s'$ and $s$ respectively.</p>
 <p>The model of the portfolio/environment will have the following <strong>parameters</strong>:</p>
-<p>p1=Initial Amount</p>
-<p>p2=Transaction Cost Pct</p>
-<p>p3=Size of State and Action Spaces</p>
-<p>p4=Reward Scaling</p>
-<p>p5=Technical Indicator List</p>
+<p>$\theta_1=\text{Initial Amount}$</p>
+<p>$\theta_2=\text{Transaction Cost Pct}$</p>
+<p>$\theta_3=\text{Size of State and Action Spaces}$</p>
+<p>$\theta_4=\text{Reward Scaling}$</p>
+<p>$\theta_5=\text{Technical Indicator List}$</p>
 
 </div>
 </div>
