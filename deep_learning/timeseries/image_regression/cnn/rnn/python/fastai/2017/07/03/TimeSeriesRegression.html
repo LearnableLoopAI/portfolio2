@@ -10,14 +10,14 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="CNNs are used after converting time-series to images" />
 <meta property="og:description" content="CNNs are used after converting time-series to images" />
-<link rel="canonical" href="https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" />
-<meta property="og:url" content="https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" />
+<link rel="canonical" href="https://learnableloop.com/deep_learning/timeseries/image_regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" />
+<meta property="og:url" content="https://learnableloop.com/deep_learning/timeseries/image_regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" />
 <meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
 <meta property="og:image" content="https://learnableloop.com/images/tsr_fig4.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2017-07-03T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"CNNs are used after converting time-series to images","url":"https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html","@type":"BlogPosting","headline":"Time-series Regression (Deep Learning to Detect Change Points)","dateModified":"2017-07-03T00:00:00-05:00","datePublished":"2017-07-03T00:00:00-05:00","image":"https://learnableloop.com/images/tsr_fig4.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html"},"@context":"https://schema.org"}</script>
+{"description":"CNNs are used after converting time-series to images","url":"https://learnableloop.com/deep_learning/timeseries/image_regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html","@type":"BlogPosting","headline":"Time-series Regression (Deep Learning to Detect Change Points)","dateModified":"2017-07-03T00:00:00-05:00","datePublished":"2017-07-03T00:00:00-05:00","image":"https://learnableloop.com/images/tsr_fig4.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/deep_learning/timeseries/image_regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -116,13 +116,13 @@ window.onload = wrap_img;
     
       <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
       
-        <a class="category-tags-link" href="/categories/#Deep Learning">Deep Learning</a>
+        <a class="category-tags-link" href="/categories/#Deep_Learning">Deep_Learning</a>
         &nbsp;
       
-        <a class="category-tags-link" href="/categories/#Time series">Time series</a>
+        <a class="category-tags-link" href="/categories/#Timeseries">Timeseries</a>
         &nbsp;
       
-        <a class="category-tags-link" href="/categories/#Image Regression">Image Regression</a>
+        <a class="category-tags-link" href="/categories/#Image_Regression">Image_Regression</a>
         &nbsp;
       
         <a class="category-tags-link" href="/categories/#CNN">CNN</a>
@@ -476,10 +476,10 @@ window.onload = wrap_img;
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{a}^{&lt;t&gt;} &amp;= g(\mathbf{W}_{aa} \mathbf{a}^{&lt;t-1&gt;} + \mathbf{W}_{ax} \mathbf{x}^{&lt;t&gt;} + \mathbf{b}_a) \\
 \hat{\mathbf{y}}^{&lt;t&gt;}  &amp;= g(\mathbf W_{ya}\mathbf{a}^{&lt;t&gt;} + \mathbf{b_y})
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -596,10 +596,10 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{Z}^{[l]} &amp;= \mathbf{W}^{[l]} \ast \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]} \qquad(1) \\
 \mathbf{A}^{[l]} &amp;= g^{[l]}(\mathbf{Z}^{[l]}) \qquad\qquad\qquad\qquad\,(2)
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -735,10 +735,10 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{z}^{[l]} &amp;= \mathbf{W}^{[l]}\mathbf{a}^{[l-1]}+\mathbf{b}^{[l]}\qquad\qquad (7)\\
 \mathbf{a}^{[l]} &amp;= g^{[l]}(\mathbf{z}^{[l]})\qquad\qquad\qquad\qquad\quad(8)
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -838,10 +838,10 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{Z}^{[l]} &amp;= \mathbf{W}^{[l]} \ast \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]} \\
 \mathbf{A}^{[l]} &amp;= g^{[l]}(\mathbf{Z}^{[l]})
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -858,10 +858,10 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{Z}^{[l+1]} &amp;= \mathbf{W}^{[l+1]} \ast \mathbf{A}^{[l]} + \mathbf{b}^{[l+1]} \qquad(11) \\
 \mathbf{A}^{[l+1]} &amp;= g^{[l+1]}(\mathbf{Z}^{[l+1]}) \qquad\qquad\qquad\qquad\,(12)
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -878,10 +878,10 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{Z}^{[l+2]} &amp;= \mathbf{W}^{[l+2]} \ast \mathbf{A}^{[l+1]} + \mathbf{b}^{[l+2]} \qquad(13) \\
 \mathbf{A}^{[l+2]} &amp;= g^{[l+2]}(\mathbf{Z}^{[l+2]}) \qquad\qquad\qquad\qquad\quad(14)
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -915,10 +915,10 @@ $$
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 $$ \Large
-\begin{align}
+\begin{aligned}
 \mathbf{Z}^{[l+2]} &amp;= \mathbf{W}^{[l+2]} \ast \mathbf{A}^{[l+1]} + \mathbf{b}^{[l+2]} \qquad(15) \\
 \mathbf{A}^{[l+2]} &amp;= g^{[l+2]}(\mathbf{Z}^{[l+2]} + \mathbf{A}^{[l]}) \qquad\qquad\quad(16)
-\end{align}
+\end{aligned}
 $$
 </div>
 </div>
@@ -1346,7 +1346,7 @@ $$
         theme="github-light"
         crossorigin="anonymous"
         async>
-</script><a class="u-url" href="/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" hidden></a>
+</script><a class="u-url" href="/deep_learning/timeseries/image_regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" hidden></a>
 </article>
       </div>
     </main><footer class="site-footer h-card">
