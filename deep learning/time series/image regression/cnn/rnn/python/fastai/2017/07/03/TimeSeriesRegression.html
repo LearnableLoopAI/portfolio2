@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Time-series Regression (Deep Learning to Detect Change Points) | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Time-series Regression (Deep Learning to Detect Change Points)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CNNs are used after converting time-series to images" />
+<meta property="og:description" content="CNNs are used after converting time-series to images" />
+<link rel="canonical" href="https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" />
+<meta property="og:url" content="https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/tsr_fig4.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-07-03T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"CNNs are used after converting time-series to images","url":"https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html","@type":"BlogPosting","headline":"Time-series Regression (Deep Learning to Detect Change Points)","dateModified":"2017-07-03T00:00:00-05:00","datePublished":"2017-07-03T00:00:00-05:00","image":"https://learnableloop.com/images/tsr_fig4.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Time-series Regression (Deep Learning to Detect Change Points)</h1><p class="page-description">CNNs are used after converting time-series to images</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2017-07-03T00:00:00-05:00" itemprop="datePublished">
+        Jul 3, 2017
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      22 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Deep Learning">Deep Learning</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Time series">Time series</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Image Regression">Image Regression</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#CNN">CNN</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#RNN">RNN</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#fastai">fastai</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Purpose">Purpose </a></li>
+<li class="toc-entry toc-h2"><a href="#Problem">Problem </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Change-Point-Detection">Change Point Detection </a></li>
+<li class="toc-entry toc-h3"><a href="#Novel-approach-to-Change-Point-Detection">Novel approach to Change Point Detection </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Value-Proposition">Value Proposition </a></li>
+<li class="toc-entry toc-h2"><a href="#Data-Source">Data Source </a></li>
+<li class="toc-entry toc-h2"><a href="#Modeling">Modeling </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Recurrent-Neural-Networks-(RNNs)">Recurrent Neural Networks (RNNs) </a></li>
+<li class="toc-entry toc-h3"><a href="#Disadvantages-of-RNNs">Disadvantages of RNNs </a></li>
+<li class="toc-entry toc-h3"><a href="#Time-series-transformation-to-images">Time-series transformation to images </a></li>
+<li class="toc-entry toc-h3"><a href="#Convolutional-Neural-Networks-(CNNs)">Convolutional Neural Networks (CNNs) </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Convolution-layers">Convolution layers </a></li>
+<li class="toc-entry toc-h4"><a href="#Pooling-layers">Pooling layers </a></li>
+<li class="toc-entry toc-h4"><a href="#Dense-layers">Dense layers </a></li>
+<li class="toc-entry toc-h4"><a href="#Residual-Networks">Residual Networks </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Regression-Model">Regression Model </a></li>
+<li class="toc-entry toc-h2"><a href="#Inference">Inference </a></li>
+<li class="toc-entry toc-h2"><a href="#Test-Dataset">Test Dataset </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusions-&-Recommendations">Conclusions &amp; Recommendations </a></li>
+<li class="toc-entry toc-h2"><a href="#Further-Experimentation">Further Experimentation </a></li>
+<li class="toc-entry toc-h2"><a href="#REFERENCES">REFERENCES </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2017-07-03-TimeSeriesRegression.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Purpose">
+<a class="anchor" href="#Purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose<a class="anchor-link" href="#Purpose"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This project investigates whether it is feasible to use Convolutional Neural Networks (CNNs) to perform time-series regression, rather than more traditional methods. Before a CNN can be used, the time-series has to be converted to a spatial signal point, i.e. an image.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Problem">
+<a class="anchor" href="#Problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem<a class="anchor-link" href="#Problem"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The problem for our purpose is the following: Given a time-series, detect the points in time where changes occur in the value of the time-series. The formal name for this is <em>change point detection</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Change-Point-Detection">
+<a class="anchor" href="#Change-Point-Detection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Change Point Detection<a class="anchor-link" href="#Change-Point-Detection"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In Python, a promising package for the detection of change points, is the <a href="https://github.com/deepcharles/ruptures">ruptures</a> package by Truong, Oudre and Vayatis (2020). This package includes a number of implemented algorithms which are covered in the associated publication called <a href="https://www.sciencedirect.com/science/article/pii/S0165168419303494?via%3Dihub">"Selective review of offline change point detection methods"</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The authors provide the following three highlights:</p>
+<blockquote>
+<ul>
+<li>A structured and didactic review of more than 140 articles related to offline change point detection. Thanks to the methodological framework proposed in this survey, all methods are presented as the combination of three functional blocks, which facilitates comparison between the different approaches.</li>
+<li>The survey provides details on mathematical as well as algorithmic aspects such as complexity, asymptotic consistency, estimation of the number of changes, calibration, etc.</li>
+<li>The review is linked to a Python package that includes most of the pre- sented methods, and allows the user to perform experiments and bench- marks.</li>
+</ul>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>... and this abstract:</p>
+<blockquote>
+<p>This article presents a selective survey of algorithms for the offline detection of multiple change points in multivariate time series. A general yet structuring methodological strategy is adopted to organize this vast body of work. More precisely, detection algorithms considered in this review are characterized by three elements:a cost function, a search method and a constraint on the number of changes. Each of those elements is described, reviewed and discussed separately. Implementations of the main algorithms described in this article are provided within a Python package called ruptures.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This summary comes from the GitHub site:</p>
+<blockquote>
+<p><strong>ruptures</strong> is a Python library for off-line change point detection. This package provides methods for the analysis and segmentation of non-stationary signals. Implemented algorithms include exact and approximate detection for various parametric and non-parametric models. ruptures focuses on ease of use by providing a well-documented and consistent interface. In addition, thanks to its modular structure, different algorithms and models can be connected and extended within this package.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here is an example of how the ruptures package might be used. The following code generates a noisy piecewise constant signal. Then it performs a penalized kernel change point detection and displays the results. Alternating colors outline the true regimes and vertical dashed lines mark the detected change points.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">ruptures</span> <span class="k">as</span> <span class="nn">rpt</span>
+
+<span class="c1"># generate signal</span>
+<span class="n">n_samples</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span>
+<span class="n">n_bkps</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># number of breakpoints</span>
+<span class="n">signal</span><span class="p">,</span> <span class="n">bkps</span> <span class="o">=</span> <span class="n">rpt</span><span class="o">.</span><span class="n">pw_constant</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">n_bkps</span><span class="p">,</span> <span class="n">noise_std</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+
+<span class="c1"># detection</span>
+<span class="n">algo</span> <span class="o">=</span> <span class="n">rpt</span><span class="o">.</span><span class="n">Pelt</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"rbf"</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">pen</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># display</span>
+<span class="n">rpt</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">bkps</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/tsr_fig1.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Novel-approach-to-Change-Point-Detection">
+<a class="anchor" href="#Novel-approach-to-Change-Point-Detection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Novel approach to Change Point Detection<a class="anchor-link" href="#Novel-approach-to-Change-Point-Detection"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the approach of this project, we do not have access to first principles models (i.e. white-box models). Instead we rely on a series of convolution neural networks (CNNs) to learn an empirical model (i.e. black-box model).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>predictor points</em> for our problem are not structured vectors as is common in the case of structured data analysis. Here we have to use a time-series or sequence of scalar-valued predictor points and have the model learn the associated <em>target point</em> which is a vector of scalars that identify the times of the change points in each case.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the deep learning subfield, it is common to use a <em>Recurrent Neural Network</em> (RNN) for this kind of problem. Examples of this, but for the case of time-series classification, rather than regression, are Hüsken and Stagge (2003), and also Sun, Di, and Fang (2019). However, the training of an RNN can be challenging due to high demands on computing resources including processing power, processing time, and memory. There is also the vanishing/exploding gradients problem, addressed in various ways, but is often still lurking in the background.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Consider how easy it is for the human visual system to handle this problem, and in a fraction of a second. In fact, this is exactly how analysts sometimes do their change detections manually. This suggests that we might benefit from tapping into the biological mechanisms for analyzing visual data (i.e. images). Recently, some researchers started adopting this insight. See, for example, Wang and Oates (2015a, 2015b, 2015c) and Wang, Zan and Oates (2017). The essence of this line of thought is the following: Instead of analyzing a sequence of 1-D or scalar-valued <em>temporal</em> data points, we transform them into a single 2-D or matrix-valued <em>spatial</em> data point. The spatial data point is simply an image which means the time-series signal has been transformed into an image. This allows for the application of a large body of relatively well-developed computer vision techniques to the above-stated problem. Most of these techniques center around the <em>Convolutional Neural Network</em> (CNN). In summary, the <em>time-series regression</em> problem has been converted to an <em>image regression</em> problem.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will use a simple transformation technique to transform the time-series into an image. After transformation of the synthetic training dataset of time-series, a CNN will be trained which will serve as a regressor. <em>Transfer learning</em> will be used to speed up the training of the CNNs.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Value-Proposition">
+<a class="anchor" href="#Value-Proposition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Value Proposition<a class="anchor-link" href="#Value-Proposition"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This project seeks to provide value in a number of ways:</p>
+<ul>
+<li>Demonstrates how synthetic time-series can be turned into images for more effective regression</li>
+<li>Demonstrates how transfer learning greatly speedup the time to train a CNN neural network for the regression of time-series</li>
+<li>Satisfies my personal interest to think "outside the box" and apply existing technology in novel ways</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Data-Source">
+<a class="anchor" href="#Data-Source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Source<a class="anchor-link" href="#Data-Source"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This project makes use of synthetic data. Each time-series is generated randomly and has the following properties:</p>
+<ul>
+<li>Consists of two changes, called actions</li>
+<li>Starts at a time (beg_t=0) at a random level (beg_l)</li>
+<li>The first action starts at a later random time (actn1_t) at a random level (actn1_l=beg_l)</li>
+<li>The first action ends at a later random time (comp1_t) at a random level (comp1_l)</li>
+<li>The second action starts at a later random time (actn2_t) at a random level (actn1_l)</li>
+<li>The second action ends at a later random time (comp1_t) at a random level (comp2_l)</li>
+<li>Ends at a time (end_t=0) at a random level (comp2_l=end_l)</li>
+<li>Is captured in a .png file<ul>
+<li>file naming uses the same names as those used in the <a href="https://closedloopai.github.io/portfolio/2019/09/15/TimeSeriesClassification.html">Time Series Classification Project</a>
+</li>
+<li>this is just a convenience and no data from the other project is used</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 2 shows examples of randomly generated synthetic time-series.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/tsr_fig2.png" alt="Figure 2: Examples of synthetic time-series" title="Figure 2: Examples of synthetic time-series"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Modeling">
+<a class="anchor" href="#Modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modeling<a class="anchor-link" href="#Modeling"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this section, we will look at the important concept of time-series regression and how it relates to two of the most important deep learning architectures: Recurrent Neural Networks (RNNs) and Convolutional Neural Networks (CNNs).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There seem to be advantages to the use of deep learning to perform regression on time-series. One specific advantage is the ability to detect time invariant characteristics. This is similar to how spatially invariant filters detect patterns in images.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Recurrent-Neural-Networks-(RNNs)">
+<a class="anchor" href="#Recurrent-Neural-Networks-(RNNs)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Recurrent Neural Networks (RNNs)<a class="anchor-link" href="#Recurrent-Neural-Networks-(RNNs)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Recurrent layers in RNNs are described by the equations:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{a}^{&lt;t&gt;} &amp;= g(\mathbf{W}_{aa} \mathbf{a}^{&lt;t-1&gt;} + \mathbf{W}_{ax} \mathbf{x}^{&lt;t&gt;} + \mathbf{b}_a) \\
+\hat{\mathbf{y}}^{&lt;t&gt;}  &amp;= g(\mathbf W_{ya}\mathbf{a}^{&lt;t&gt;} + \mathbf{b_y})
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The parameters or weights that undergo training are captured in a number of <em>filters</em> or <em>kernels</em>. The <em>feedback</em> filter is $\mathbf{W}_{aa}$, the <em>input</em> filter $\mathbf{W}_{ax}$, and the <em>output</em> filter $\mathbf{W}_{ya}$. The <em>signal</em> is the data that are used as examples during training. The symbols $\mathbf{x}^{&lt;t&gt;}$ and $\mathbf{\hat{y}}^{&lt;t&gt;}$ represent the input and output signals respectively. The hidden state, or internal signal, is given by $\mathbf{a}^{&lt;t&gt;}$. The filters are matrices while the signals are vector-valued. There is often a single layer in an RNN. Note, however, that this architecture is recursive. This means that each time-step could be considered a separate layer in time.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the context of our regression problem, the input is a sequence of scalar-valued continuous predictor points. The output (target point) is a vector of scalar-valued continuous values (after being processed by a sigmoid function). The values of a target point are the two time values where changes occur in the level of the time-series. This type of RNN is also known as a <em>many-to-one</em> RNN because a series of input data points leads to a single output datapoint.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Disadvantages-of-RNNs">
+<a class="anchor" href="#Disadvantages-of-RNNs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disadvantages of RNNs<a class="anchor-link" href="#Disadvantages-of-RNNs"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In 2015 RNNs made a dramatic come-back (Karpathy, 2015). A year or two after this the <em>ResNet</em> (He, Zhang, Ren &amp; Sun, 2016) and the <em>attention</em> mechanism (Xu et al., 2015) were invented. This provided an expanded context for the evaluation of RNNs and the Long Short Term Memory (LSTM). A further two years later, arguably, saw the beginning of a measure of decline of the popularity of the RNN and the LSTM in some disciplines.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Culurciell (2018) points out some shortcomings of RNNs in his article “The fall of RNN / LSTM.” In this regard, he mentions the problem of vanishing gradients and that RNNs are not hardware friendly. RNNs are also harder to train and parallelize.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Time-series-transformation-to-images">
+<a class="anchor" href="#Time-series-transformation-to-images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Time-series transformation to images<a class="anchor-link" href="#Time-series-transformation-to-images"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Before we look at Convolutional Neural Networks (CNNs), we will mention how a time-series can be transformed into an image. The purpose of this transformation is to enable computers to “visually” recognize and perform regression on the time-series signal. By doing this transformation we can take advantage of the impressive successes of deep learning architectures (using CNNs) in computer vision. This allows us to identify the structure of a time-series, leading to, hopefully, more effective regression.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To create this spatial (or image) representation of the time-series, we will use a dark pen on a light background. No graphical annotations will be included, i.e. graphic frame, tick marks, tick labels, axis labels, and heading. Annotations will make the learning process unnecessarily complex.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Convolutional-Neural-Networks-(CNNs)">
+<a class="anchor" href="#Convolutional-Neural-Networks-(CNNs)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Convolutional Neural Networks (CNNs)<a class="anchor-link" href="#Convolutional-Neural-Networks-(CNNs)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Convolutional Neural Networks are structured in a way that enables them to exploit translational invariance. They extract features through receptive fields. Significant weight sharing drastically reduces the number of parameters involved in training them. They are the state-of-the-art architecture in the handling of computer vision tasks.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A CNN consists of different types of layers. The most important ones are <em>convolution</em>, <em>pooling</em>, and <em>dense</em> layers. Convolution and pooling layers often alternate during the initial layers. Near the end, a number of dense layers usually occurs which often ends with a sigmoid or softmax layer in the case of a classification CNN.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Convolution-layers">
+<a class="anchor" href="#Convolution-layers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Convolution layers<a class="anchor-link" href="#Convolution-layers"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Convolution layers are described by the equations:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{Z}^{[l]} &amp;= \mathbf{W}^{[l]} \ast \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]} \qquad(1) \\
+\mathbf{A}^{[l]} &amp;= g^{[l]}(\mathbf{Z}^{[l]}) \qquad\qquad\qquad\qquad\,(2)
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>filter</em> (also called <em>kernel</em>) of a convolution layer is indicated by $\mathbf{W}^{[l]}$ where $l$ is the index of the layer. $\mathbf{W}^{[l]}$ is tensor-valued with each element $w_{ijk}^{[l]} \in \mathbb{R}$. The values of $w_{ijk}^{[l]}$ are learned by the training process. The <em>dimensions</em> (or <em>shape</em>) of $\mathbf{W}^{[l]}$ are $n_C^{[l-1]} \times f^{[l]} \times f^{[l]}$ where $n_C^{[l-1]}$ is the <em>number of filters</em> (also the <em>number of channels</em>) in the previous layer. The filter size is indicated by $f^{[l]}$. If we have multiple filters in layer $l$, the dimensions of $\mathbf{W}^{[l]}$ expand to $n_C^{[l]} \times n_C^{[l-1]} \times f^{[l]} \times f^{[l]}$ making $\mathbf{W}^{[l]}$ a vector of tensors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>activations</em> in layer $l$ are represented by another tensor $\mathbf{A}^{[l]}$. For each layer, we distinguish between the <em>input</em> activations, $\mathbf{A}^{[l-1]}$, and <em>output</em> activations, $\mathbf{A}^{[l]}$. The dimensions of $\mathbf{A}^{[l-1]}$ are $n_C^{[l-1]} \times n_H^{[l-1]} \times n_W^{[l-1]}$ where $n_C^{[l-1]}$ is the number of channels in the previous layer, $n_H^{[l-1]}$ the <em>height</em> of the image in the previous layer, and $n_W^{[l-1]}$ the <em>width</em> of the image in the previous layer.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dimensions of $\mathbf{A}^{[l]}$ are $n_C^{[l]} \times n_H^{[l]} \times n_W^{[l]}$  where</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+n_H^{[l]}=\Bigg \lfloor \frac{n_H^{[l-1]}+2p^{[l]}-f^{[l]}}{s^{[l]}} + 1 \Bigg \rfloor\qquad\qquad\qquad\qquad(3)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+n_W^{[l]}=\Bigg \lfloor \frac{n_W^{[l-1]}+2p^{[l]}-f^{[l]}}{s^{[l]}} + 1 \Bigg \rfloor\qquad\qquad\qquad\qquad(4)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>padding</em> size in layer $l$ is indicated by $p^{[l]}$. The <em>stride</em> is represented by $s^{[l]}$. If we make use of mini-batch training, the dimensions of $\mathbf{A}^{[l]}$ will expand to $n_C^{[l]} \times n_H^{[l]} \times n_W^{[l]}$ where $m$ is the mini-batch size. In this case $\mathbf{A}^{[l]}$ becomes a vector of tensors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>bias</em> vector in layer $l$ is indicated by $\mathbf{b}^{[l]}$. The <em>convolution operation</em> is indicated by the symbol $\ast$. Equation 1 describes the <em>linear</em> part of the convolution. The <em>activation</em> part is captured by Equation 2. The <em>activation function</em>, $g^{[l]}$, is often a rectified linear unit (ReLU).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Equations 1 and 2 can be combined into a single equation:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{A}^{[l]} = g^{[l]}(\mathbf{W}^{[l]} \ast \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]}) \qquad\qquad\qquad\qquad\,(5)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://towardsdatascience.com/gentle-dive-into-math-behind-convolutional-neural-networks-79a07dd44cf9">Piotr  Skalski</a>
+ (2019) has a blog that makes the operation of CNNs easy to understand. It includes a number of animations that provide valuable insight.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Pooling-layers">
+<a class="anchor" href="#Pooling-layers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pooling layers<a class="anchor-link" href="#Pooling-layers"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The filter of a pooling layer has no weights that need to be trained. It has a filter size $f^{[l]}$, and a stride $s^{[l]}$. The value for padding is almost always zero, $p^{[l]}=0$. The filter performs an aggregation operation as it slides over the activation signal. This operation is performed on each of the input channels independently. Types of aggregation operations are <em>maximum</em> and <em>average</em>. The most common type is the <em>max-pool</em> layer. As the $f \times f$ filter slides across the image, it picks the maximum activation for each position and sends that to the output image, thereby reducing the size of the input image according to equations (3) and (4). There is also no activation function. This means pooling layers are described by the following equation:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{A}^{[l]}=\text{max}(\mathbf{A}^{[l-1]}) \qquad\qquad\qquad(6)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Dense-layers">
+<a class="anchor" href="#Dense-layers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dense layers<a class="anchor-link" href="#Dense-layers"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><em>Dense layers</em> always form the last few layers of a CNN that performs classification. These layers are also called <em>fully connected</em> layers. Dense layers are described by Equations 7 and 8:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{z}^{[l]} &amp;= \mathbf{W}^{[l]}\mathbf{a}^{[l-1]}+\mathbf{b}^{[l]}\qquad\qquad (7)\\
+\mathbf{a}^{[l]} &amp;= g^{[l]}(\mathbf{z}^{[l]})\qquad\qquad\qquad\qquad\quad(8)
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice the absence of the convolution operator, which have been replaced by matrix multiplication.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>filter</em> of a dense layer is indicated by $\mathbf{W}^{[l]}$ where $l$ is the index of the layer. $\mathbf{W}^{[l]}$ is matrix-valued with each element $w_{ij}^{[l]}\in\mathbb{R}$. The values of $w_{ij}^{[l]}$ are learned by the training process. The <em>dimensions</em> of $\mathbf{W}^{[l]}$ are $n^{[l]} \times n^{[l-1]}$ where $n^{[l-1]}$ is the <em>number of input features</em> (also the number of output features in the previous layer), and $n^{[l]}$ is the <em>number of output features</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>activations</em> in layer $l$ are represented by a vector $\mathbf{a}^{[l]}$. For each layer, we distinguish between the <em>input</em> activations, $\mathbf{a}^{[l-1]}$, and <em>output</em> activations, $\mathbf{a}^{[l]}$. The dimension of $\mathbf{a}^{[l-1]}$ is $n^{[l-1]}$ where $n^{[l-1]}$ is the number of neurons or hidden units in the previous layer. The dimension of $\mathbf{a}^{[l]}$ is $n^{[l]}$ where $n^{[l]}$ is the number of units in the current layer.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is no concept of padding nor of stride. The <em>bias</em> vector in layer $l$ is indicated by $\mathbf{b}^{[l]}$. Equation 7 describes the <em>linear</em> part of the filter. The <em>activation</em> part is captured by Equation 8. The <em>activation function</em>, $g^{[l]}$, is often a ReLU.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As before, we can combine Equations 7 and 8 into a single equation (see Equation 9).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{a}^{[l]} = g^{[l]}(\mathbf{W}^{[l]} \mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}) \qquad\qquad\qquad\qquad\,(9)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we make use of mini-batch training, the dimensions of $\mathbf{a}^{[l]}$ will expand to $n^{[l]} \times m$ where $m$ is the mini-batch size. In this case $\mathbf{a}^{[l]}$ becomes a matrix $\mathbf{A}^{[l]}$ so that we have</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{A}^{[l]} = g^{[l]}(\mathbf{W}^{[l]} \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]}) \qquad\qquad\qquad\qquad(10)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Residual-Networks">
+<a class="anchor" href="#Residual-Networks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Residual Networks<a class="anchor-link" href="#Residual-Networks"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>He et al. (2016) provides an impressive and state-of-the-art architecture to improve the performance of CNNs even more. This architecture is called a <em>residual network</em>, or a <em>ResNet</em>. <a href="https://towardsdatascience.com/review-resnet-winner-of-ilsvrc-2015-image-classification-localization-detection-e39402bfa5d8">Sik-Ho Tsang</a> (2018) has a blog that presents some of the details in a more digestible form.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A ResNet layer or block is developed as follows. As before, for a convolution layer, we have:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{Z}^{[l]} &amp;= \mathbf{W}^{[l]} \ast \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]} \\
+\mathbf{A}^{[l]} &amp;= g^{[l]}(\mathbf{Z}^{[l]})
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let’s add 1 to the index values for the purpose of deriving:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{Z}^{[l+1]} &amp;= \mathbf{W}^{[l+1]} \ast \mathbf{A}^{[l]} + \mathbf{b}^{[l+1]} \qquad(11) \\
+\mathbf{A}^{[l+1]} &amp;= g^{[l+1]}(\mathbf{Z}^{[l+1]}) \qquad\qquad\qquad\qquad\,(12)
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next layer will then be:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{Z}^{[l+2]} &amp;= \mathbf{W}^{[l+2]} \ast \mathbf{A}^{[l+1]} + \mathbf{b}^{[l+2]} \qquad(13) \\
+\mathbf{A}^{[l+2]} &amp;= g^{[l+2]}(\mathbf{Z}^{[l+2]}) \qquad\qquad\qquad\qquad\quad(14)
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now comes the crucial step. We feed the activations $\mathbf{A}^{[l]}$ in Equation 11 <em>forward</em> by means of a <em>skip-connection</em> (also called a <em>short-circuit-connection</em>) and add them to $\mathbf{Z}^{[l+2]}$ in Equation 13. This means Equation 14 now becomes:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{A}^{[l+2]} = g^{[l+2]}(\mathbf{Z}^{[l+2]} + \mathbf{A}^{[l]})
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The ResNet block is therefore described by the equations:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\begin{align}
+\mathbf{Z}^{[l+2]} &amp;= \mathbf{W}^{[l+2]} \ast \mathbf{A}^{[l+1]} + \mathbf{b}^{[l+2]} \qquad(15) \\
+\mathbf{A}^{[l+2]} &amp;= g^{[l+2]}(\mathbf{Z}^{[l+2]} + \mathbf{A}^{[l]}) \qquad\qquad\quad(16)
+\end{align}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Expressed as a single equation we have:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{A}^{[l+2]} = g^{[l+2]}(\mathbf{W}^{[l+2]} \ast \mathbf{A}^{[l+1]} + \mathbf{b}^{[l+2]} + \mathbf{A}^{[l]})\quad(17)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Adjusting the indexes again, we have</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ \Large
+\mathbf{A}^{[l]} = g^{[l]}(\mathbf{W}^{[l]} \ast \mathbf{A}^{[l-1]} + \mathbf{b}^{[l]} + \mathbf{A}^{[l-2]})\qquad(18)
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The ResNet architecture allows for much deeper networks than before by stacking ResNet blocks as deep as needed. In theory, as the number of layers in a traditional deep neural network increases, the training error should keep on decreasing. The reality is that when the network gets too deep, the training error actually starts to increase again. ResNets rescue this situation, allowing the training error to keep on falling even with the number of layers approaching one thousand.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next we will discuss all the classification models used in this paper. All of them make use of a 50-layer ResNet architecture.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Regression-Model">
+<a class="anchor" href="#Regression-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Regression Model<a class="anchor-link" href="#Regression-Model"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The input datapoints for this model are all the synthetic time-series images. In the software, this model is called <em>mod9</em>. The purpose of the model is to predict the two time points at which changes occur.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The labeled training data appears in the file synthetic.csv:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>dashlink_regression<ul>
+<li>Tail_687_1<ul>
+<li>png9<ul>
+<li>synthetic.csv</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 3 shows the first few records of synthetic.csv.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/tsr_fig3.png" alt="Figure 3: First few records of synthetic.csv" title="Figure 3: First few records of synthetic.csv"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The code for the model is present in Python notebook:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://nbviewer.jupyter.org/github/kobus78/dashlink_regression/blob/master/30_mod9_canon.ipynb">30_mod9_canon.ipynb</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The model’s notebook performs the following steps:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Ingest data<ul>
+<li>Form item list</li>
+<li>Form train and validation item lists<ul>
+<li>Train list is 80% of data</li>
+<li>Validation list is 20% of data</li>
+</ul>
+</li>
+<li>Form label lists<ul>
+<li>The labels come from synthetic.csv</li>
+</ul>
+</li>
+<li>Normalize data using the ImageNet statistics (for transfer learning)</li>
+</ul>
+</li>
+<li>Train model<ul>
+<li>Create a learner with the data and a ResNet-18 architecture</li>
+<li>Plot the Loss vs the Learning Rate that allows selection of the frozen learning rate by inspection </li>
+<li>Fit the learner’s model to the data using the frozen learning rate</li>
+<li>Plot the Train and Validation Loss vs the number of Batches</li>
+<li>Save the frozen model and iterate if necessary</li>
+<li>Unfreeze the model</li>
+<li>Plot the Loss vs the Learning Rate that allows selection of the unfrozen learning rate by inspection </li>
+<li>Fit the learner’s model to the data using the unfrozen learning rate and 10% of the frozen learning rate</li>
+<li>Plot the Train and Validation Loss vs the number of Batches</li>
+<li>Save the unfrozen model and iterate if necessary</li>
+</ul>
+</li>
+<li>Test Inference/Production (on train data)<ul>
+<li>Export the trained, unfrozen model</li>
+<li>Loop through all the data and submit each image to the trained model to predict the locations of the changes</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 4 shows an example of predicted location of changes (green dotted lines).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/tsr_fig4.png" alt="Figure 4: Example of predicted location of changes (green dotted lines)" title="Figure 4: Example of predicted location of changes (green dotted lines)"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This brings us to the end of the modeling section. We looked at the concept of time-series regression and two deep learning architectures that can be used for this.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Inference">
+<a class="anchor" href="#Inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inference<a class="anchor-link" href="#Inference"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We have finally come to the application of the models developed above. During inference (also called testing in this paper) the trained models are presented with previously unseen data points. This is the situation in production when the developed models are called upon to provide value for users.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Test-Dataset">
+<a class="anchor" href="#Test-Dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Test Dataset<a class="anchor-link" href="#Test-Dataset"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dataset for testing/inference will be prepared in the same way as the dataset for training. Note that the datapoints are not labeled for inference. It is a simple matter to generate additional random data and submit it to the trained model and assess the performance. This work is still outstanding.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusions-&amp;-Recommendations">
+<a class="anchor" href="#Conclusions-&amp;-Recommendations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions &amp; Recommendations<a class="anchor-link" href="#Conclusions-&amp;-Recommendations"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We have demonstrated how randomly generated time-series can be turned into images for a novel way of performing time-series regression. Using transfer learning, we showed how quickly a deep learning model could be trained.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We recommend that interested analysts take this work as a starting point and adapt it to suit their needs. This may even involve changing the technology stack, for example, making use of other deep learning libraries and a different programming language. Here we used the fastai Python library (built on top of PyTorch) and the Python language. There are a number of other useful technology environments, e.g. Java, TensorFlow, Julia, and MATLAB.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We suggest that analysts need not shy away from the use of deep learning for analyses that conventionally make use of traditional approaches. The use of transfer learning makes the training of deep learning models very tractable. In our case, transfer learning was based on the ImageNet model which was trained on over 14 million images to classify them into more than 20,000 categories. There are many cloud providers offering the use of GPUs (Graphical Processing Units), ideal for the training process. GPUs are not necessary for inference. Even without access to a GPU, the training process is still tractable on an ordinary laptop. This is the beauty of transfer learning.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Further-Experimentation">
+<a class="anchor" href="#Further-Experimentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Further Experimentation<a class="anchor-link" href="#Further-Experimentation"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are a good number of hyper-parameters that may be adjusted leading to further experiments, for example:</p>
+<ul>
+<li>Fraction of train data dedicated for validation (20% here)</li>
+<li>The batch size during training</li>
+<li>A technique that holds promise is to first down-sample images drastically, say to 32 x 32. Then, after training, transfer learning is used while progressively up-sampling again.</li>
+<li>Learning rates. This is arguably the most influential hyper-parameter during training. It may be worthwhile to adjust the used learning rates, (both for the frozen learning rate, <em>lrf</em>, as well as the unfrozen learning rate, <em>lru</em>.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We used data that always contains exactly two changes. Future experiments can make the occurrance of change points more flexible.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Our synthetic data do not include noise. Future experiments can investigate the performance of the model in the presence of noise.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The CNN architecture used was ResNet-18. We believe ResNet is the current state-of-the-art but there are other promising architectures, i.e. the Inception network.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="REFERENCES">
+<a class="anchor" href="#REFERENCES" aria-hidden="true"><span class="octicon octicon-link"></span></a>REFERENCES<a class="anchor-link" href="#REFERENCES"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Culurciell, E. (2018). The fall of RNN / LSTM. [Weblog]. Retrieved from 
+<a href="https://towardsdatascience.com/the-fall-of-rnn-lstm-2d1594c74ce0">https://towardsdatascience.com/the-fall-of-rnn-lstm-2d1594c74ce0</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>He, K., Zhang, X., Ren, S., &amp; Sun, J. (2016). Deep Residual Learning for Image Recognition. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, 2016, pp. 770-778. doi: 10.1109/CVPR.2016.90</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Hüsken, M., &amp; Stagge, P. (2003). Recurrent neural networks for time series classification. Neurocomputing, 50, 223-235. Retrieved from <a href="https://www.sciencedirect.com/science/article/pii/S0925231201007068?via=ihub">https://www.sciencedirect.com/science/article/pii/S0925231201007068?via=ihub</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Karpathy, A. (2015). The Unreasonable Effectiveness of Recurrent Neural Networks. [Weblog]. Retrieved from <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">http://karpathy.github.io/2015/05/21/rnn-effectiveness/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Sun, Z., Di, L. &amp; Fang, H. (2019). Using long short-term memory recurrent neural network in land cover classification on Landsat and Cropland data layer time series. International Journal of Remote Sensing, 40(2), 593-614. DOI: 10.1080/01431161.2018.1516313. Retrieved from <a href="https://www.tandfonline.com/doi/abs/10.1080/01431161.2018.1516313">https://www.tandfonline.com/doi/abs/10.1080/01431161.2018.1516313</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Truong, C., Oudre, L., &amp; Vayatis, N. (2020). Selective review of offline change point detection methods. Signal Processing, 167:107299, 2020.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Wang, Z., Yan, W., &amp; Oates, T. (2017). Time series classification from scratch with deep neural networks: A strong baseline. 2017 International Joint Conference on Neural Networks (IJCNN), 1578-1585.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Wang, Z., &amp; Oates, T. (2015a). Encoding Time Series as Images for Visual Inspection and Classification Using Tiled Convolutional Neural Networks. Trajectory-Based Behavior Analytics: Papers from the 2015 AAAI Workshop. Retrieved from <a href="https://aaai.org/ocs/index.php/WS/AAAIW15/paper/viewFile/10179/10251">https://aaai.org/ocs/index.php/WS/AAAIW15/paper/viewFile/10179/10251</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Wang, Z., &amp; Oates, T. (2015b). Imaging time-series to improve classification and imputation. International Conference on Artificial Intelligence, pp 3939-3945.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Wang, Z., &amp; Oates, T. (2015c). Spatially Encoding Temporal Correlations to Classify Temporal Data Using Convolutional Neural Networks. ArXiv, abs/1509.07481.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Xu, K., Ba, J., Kiros, R., Cho, K., Courville, A., Salakhudinov, R., … Bengio, Y. (2015). Show, Attend and Tell: Neural Image Caption Generation with Visual Attention. Proceedings of the 32nd International Conference on Machine Learning, in PMLR, 37, 2048-2057.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/deep%20learning/time%20series/image%20regression/cnn/rnn/python/fastai/2017/07/03/TimeSeriesRegression.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
