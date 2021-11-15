@@ -227,18 +227,6 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-$$
-\begin{aligned}
-a + b &amp;= c \\
-d &amp;= e
-\end{aligned}
-$$
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="2.-Solution-Proposal">
 <a class="anchor" href="#2.-Solution-Proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Solution Proposal<a class="anchor-link" href="#2.-Solution-Proposal"> </a>
 </h2>
@@ -255,7 +243,7 @@ s_{29} &amp;= \text{Value of WBA holdings} \\
 s_{30} &amp;= \text{Value of WMT holdings}
 \end{aligned}
 $$<p>The following <strong>actions</strong> (applied daily in our case) will be setup to influence the environment/portfolio:</p>
-$$ 
+$$ \Large
 \begin{aligned}
 a_1 &amp;= \text{Fraction to be invested in AAPL this cycle} \\
 a_2 &amp;= \text{Fraction to be invested in AMGN this cycle} \\
@@ -266,13 +254,13 @@ a_{30} &amp;= \text{Fraction to be invested in WMT this cycle}
 \end{aligned}
 $$<p>All action values are in the [0, 1] interval.</p>
 <p>The <em>reward</em> <em>r</em> is given by</p>
-$$
+$$ \Large
 \begin{aligned}
 r(s,a,s') &amp;= log(v'/v)
 \end{aligned}
 $$<p>where <em>v</em> and <em>v'</em> are the portfolio value at states $s'$ and $s$ respectively.</p>
 <p>The model of the portfolio/environment will have the following <strong>parameters</strong>:</p>
-$$ 
+$$ \Large 
 \begin{aligned}
 \theta_1 &amp;= \text{Initial Amount} \\
 \theta_2 &amp;= \text{Transaction Cost Pct} \\
