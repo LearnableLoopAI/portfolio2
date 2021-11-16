@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Sentiment Analysis | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Sentiment Analysis" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Is the American Public Willing to Change Course with President Trump?" />
+<meta property="og:description" content="Is the American Public Willing to Change Course with President Trump?" />
+<link rel="canonical" href="https://learnableloop.com/api/nlp/python/nltk/r/2017/04/15/SentimentAnalysis.html" />
+<meta property="og:url" content="https://learnableloop.com/api/nlp/python/nltk/r/2017/04/15/SentimentAnalysis.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/sa_fig1.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-04-15T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"Is the American Public Willing to Change Course with President Trump?","url":"https://learnableloop.com/api/nlp/python/nltk/r/2017/04/15/SentimentAnalysis.html","@type":"BlogPosting","headline":"Sentiment Analysis","dateModified":"2017-04-15T00:00:00-05:00","datePublished":"2017-04-15T00:00:00-05:00","image":"https://learnableloop.com/images/sa_fig1.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/api/nlp/python/nltk/r/2017/04/15/SentimentAnalysis.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Sentiment Analysis</h1><p class="page-description">Is the American Public Willing to Change Course with President Trump?</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2017-04-15T00:00:00-05:00" itemprop="datePublished">
+        Apr 15, 2017
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      13 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#API">API</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#NLP">NLP</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#nltk">nltk</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#R">R</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#PURPOSE">PURPOSE </a></li>
+<li class="toc-entry toc-h1"><a href="#SUMMARY">SUMMARY </a></li>
+<li class="toc-entry toc-h1"><a href="#CODE">CODE </a></li>
+<li class="toc-entry toc-h1"><a href="#Part-1.-Capture-training-data-and-train-a-sentiment-classifier">Part 1. Capture training data and train a sentiment classifier </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#IMPORTANT-NOTE:">IMPORTANT NOTE: </a></li>
+<li class="toc-entry toc-h2"><a href="#1.1-Read-in-and-prepare-training-data">1.1 Read in and prepare training data </a></li>
+<li class="toc-entry toc-h2"><a href="#1.2-Gather-all-words-in-a-bag-and-form-tuples-of-(tokenized-tweets,-sentiment)">1.2 Gather all words in a bag and form tuples of (tokenized-tweets, sentiment) </a></li>
+<li class="toc-entry toc-h2"><a href="#1.3-Get-frequency-distribution-of-the-words">1.3 Get frequency distribution of the words </a></li>
+<li class="toc-entry toc-h2"><a href="#1.4-Select-the-top-5000-most-common-words-as-features">1.4 Select the top 5000 most common words as features </a></li>
+<li class="toc-entry toc-h2"><a href="#1.5-Remove-the-30-most-common-words-again">1.5 Remove the 30 most common words again </a></li>
+<li class="toc-entry toc-h2"><a href="#1.6-Prepare-the-word-features">1.6 Prepare the word features </a></li>
+<li class="toc-entry toc-h2"><a href="#1.7-Save-the-word_features">1.7 Save the word_features </a></li>
+<li class="toc-entry toc-h2"><a href="#1.8-Prepare-featuresets-for-the-complete-classifier-data-set">1.8 Prepare featuresets for the complete classifier data set </a></li>
+<li class="toc-entry toc-h2"><a href="#1.9-Split-the-data-set-for-training-and-testing">1.9 Split the data set for training and testing </a></li>
+<li class="toc-entry toc-h2"><a href="#1.10-Train-classifier">1.10 Train classifier </a></li>
+<li class="toc-entry toc-h2"><a href="#1.11-Score-classifier">1.11 Score classifier </a></li>
+<li class="toc-entry toc-h2"><a href="#1.12-Define-a-function-to-estimate-the-sentiment-of-a-tweet">1.12 Define a function to estimate the sentiment of a tweet </a></li>
+<li class="toc-entry toc-h2"><a href="#1.13-Hand-test-classifier">1.13 Hand-test classifier </a></li>
+<li class="toc-entry toc-h2"><a href="#1.14-Save-classifier">1.14 Save classifier </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Part-2.-Capture-twitter-data-on-Trump-Syria-Strike">Part 2. Capture twitter data on Trump Syria Strike </a></li>
+<li class="toc-entry toc-h1"><a href="#3.-Analyze-twitter-data-on-Trump-Syria-Strike">3. Analyze twitter data on Trump Syria Strike </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#3.1-Load-the-json-study-data">3.1 Load the json study data </a></li>
+<li class="toc-entry toc-h2"><a href="#3.2-Load-the-sentiment-classifier">3.2 Load the sentiment classifier </a></li>
+<li class="toc-entry toc-h2"><a href="#3.3-Load-the-word-features-(from-word_features)">3.3 Load the word features (from word_features) </a></li>
+<li class="toc-entry toc-h2"><a href="#3.4-Estimate-the-sentiment-for-each-tweet-in-the-data-on-Trump-Syria-Strike">3.4 Estimate the sentiment for each tweet in the data on Trump Syria Strike </a></li>
+<li class="toc-entry toc-h2"><a href="#3.5-Save-analysis-in-updated-dataframe">3.5 Save analysis in updated dataframe </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#4.-Statistical-proportion-test">4. Statistical proportion test </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#(R-Language)">(R Language) </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2017-04-15-SentimentAnalysis.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="PURPOSE">
+<a class="anchor" href="#PURPOSE" aria-hidden="true"><span class="octicon octicon-link"></span></a>PURPOSE<a class="anchor-link" href="#PURPOSE"> </a>
+</h1>
+<p>The purpose of this project is to demonstrate how social media data can be used to capture public sentiment.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="SUMMARY">
+<a class="anchor" href="#SUMMARY" aria-hidden="true"><span class="octicon octicon-link"></span></a>SUMMARY<a class="anchor-link" href="#SUMMARY"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>President Trump recently authorized a missile strike on Syria in response to an alleged chemical weapon attack by the president of Syria on members of his own population on April 4 2017. This led to the beginning of heated debates about the appropriateness and consequences of this drastic, largely unexpected, and seemingly impulsive act. The presidential election afforded Trump a popular vote of 46%. One might argue that the country’s approval of the missile strike might roughly align with this partition given the recentness of the election. This investigation is about whether this is a valid assumption. My prediction is that the missile strike approval partition will be <em>different</em> from the popular vote partition. This is an interesting question for the American public as this incident of military action represents a dramatic change in direction relative to the president’s campaign stance in this regard.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>Twitter Streaming API</em> was used to collect 5,000 tweets on April 11 2017, 4 days after the missile strike. It was important to collect this information as soon as possible after the event. Only tweets that contain <em>all</em> of the words 'trump syria strike' were collected (the word order did not matter). So-called <em>retweets</em> were also collected, as these were taken to indicate that the person sending the retweet agrees with the originator of the tweet. <em>Sentiment analysis</em> techniques were used. Features were extracted from the tweets in the form of words that convey <em>positive</em> sentiment (interpreted as <em>approval</em> for the strike) or <em>negative</em> sentiment (interpreted as <em>disapproval</em>). A <em>classifier</em> was then trained (using a different <em>labeled</em> data set of 100,000 tweets) to associate patterns of words with the appropriate sentiment. After training, the classifier was used to estimate the sentiment of each of the 5,000 collected tweets on the Syria missile strike. The accuracy of the classifier was found to be 75% (which means it got 75% of classifications correct on the test data).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The analysis found that, out of the 4,999 usable tweets that were collected, 2,918 were estimated to have <em>positive</em> sentiment. These were interpreted as conveying <em>approval</em> for the Syria missile strike. This number represents a 58% approval rating. Compare this with the 46% popularity rating during the presidential election (see the blue columns in Figure 1). Using a statistical proportion test, the assumption that the strike approval rating would align with the popular vote partition, was <em>rejected</em>. Strong evidence was found, therefore, that there is a clear willingness on the part of the American public to support a dramatic change of course undertaken by the president relative to his campaign stance on matters of this sort.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/sa_fig1.png" alt="" title="Figure 1 President Trump's Syria Strike Approval"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="CODE">
+<a class="anchor" href="#CODE" aria-hidden="true"><span class="octicon octicon-link"></span></a>CODE<a class="anchor-link" href="#CODE"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-1.-Capture-training-data-and-train-a-sentiment-classifier">
+<a class="anchor" href="#Part-1.-Capture-training-data-and-train-a-sentiment-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>Part 1. Capture training data and train a sentiment classifier<a class="anchor-link" href="#Part-1.-Capture-training-data-and-train-a-sentiment-classifier"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="IMPORTANT-NOTE:">
+<a class="anchor" href="#IMPORTANT-NOTE:" aria-hidden="true"><span class="octicon octicon-link"></span></a>IMPORTANT NOTE:<a class="anchor-link" href="#IMPORTANT-NOTE:"> </a>
+</h2>
+<p>Please note that the code of a few cells have been commented out. This was done to prevent accidental triggering of longer-running pieces of code (e.g. it takes about 10 minutes to train the classifier). If desired, it is easy to remove the comments to verify this code.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A Naive Bayes classifier will be trained on a labeled data set. This data set will also come from a body of tweets to ensure similarity to the style of text associated with tweets (i.e. to-the-point-ness, conciseness, use of exclamation marks, emoticons, etc.). An example of such a labeled data set is <a href="http://thinknook.com/twitter-sentiment-analysis-training-corpus-dataset-2012-09-22/">http://thinknook.com/twitter-sentiment-analysis-training-corpus-dataset-2012-09-22/</a>. I have selected the first 100,000 rows of this data set for training.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.1-Read-in-and-prepare-training-data">
+<a class="anchor" href="#1.1-Read-in-and-prepare-training-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1 Read in and prepare training data<a class="anchor-link" href="#1.1-Read-in-and-prepare-training-data"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">filetext</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"SentimentAnalysisDataset.csv"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">text_file</span><span class="p">:</span>
+    <span class="n">filetext</span> <span class="o">=</span> <span class="n">text_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">filetext</span> <span class="o">=</span> <span class="n">filetext</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'"" Brokeback Mountain ""'</span><span class="p">,</span> <span class="s1">'Brokeback Mountain'</span><span class="p">)</span>
+    <span class="n">filetext</span> <span class="o">=</span> <span class="n">filetext</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'" Brokeback Mountain "'</span><span class="p">,</span> <span class="s1">'Brokeback Mountain'</span><span class="p">)</span>
+    <span class="n">filetext</span> <span class="o">=</span> <span class="n">filetext</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'" brokeback mountain was terrible.'</span><span class="p">,</span> <span class="s1">'brokeback mountain was terrible.'</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"SentimentAnalysisDataset_fixed.csv"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filetext</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">filetext</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Note that a positive sentiment is indicated by a '1', and a negative sentiment by a '0' in the 'Sentiment' column</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'SentimentAnalysisDataset_fixed.csv'</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">splitpoint</span> <span class="o">=</span> <span class="mi">80000</span> <span class="c1">#train/test: 80%/20%</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">'SentimentSource'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ItemID</th>
+      <th>Sentiment</th>
+      <th>SentimentText</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>is so sad for my APL frie...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>0</td>
+      <td>I missed the New Moon trail...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>omg its already 7:30 :O</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>0</td>
+      <td>.. Omgaga. Im sooo  im gunna CRy. I'...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>i think mi bf is cheating on me!!!   ...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">word_tokenize</span><span class="p">(</span><span class="n">tweet</span><span class="p">):</span>
+    <span class="sd">"""Breaks a string up into words.</span>
+<span class="sd">    This function uses the NLTK package's word_tokenize function to split a string up</span>
+<span class="sd">    into word tokens.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tweet : str</span>
+<span class="sd">        The text of a tweet.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list consisting of the words in the input tweet string.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">nltk</span><span class="o">.</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">tweet</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.2-Gather-all-words-in-a-bag-and-form-tuples-of-(tokenized-tweets,-sentiment)">
+<a class="anchor" href="#1.2-Gather-all-words-in-a-bag-and-form-tuples-of-(tokenized-tweets,-sentiment)" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2 Gather all words in a bag and form tuples of (tokenized-tweets, sentiment)<a class="anchor-link" href="#1.2-Gather-all-words-in-a-bag-and-form-tuples-of-(tokenized-tweets,-sentiment)"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span> <span class="c1">#for progress bar</span>
+<span class="n">all_words</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">tweet_tuples</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()):</span>
+    <span class="n">tweet_words</span> <span class="o">=</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">'SentimentText'</span><span class="p">])</span>
+    <span class="n">tweet_words</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">tweet_words</span><span class="p">))</span>
+    <span class="n">tweet_tuples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">tweet_words</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">'Sentiment'</span><span class="p">]))</span> <span class="p">)</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tweet_words</span><span class="p">:</span>
+        <span class="n">all_words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Number of words: '</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_words</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100000it [00:34, 2870.05it/s]</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of words:  1719434
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">del</span> <span class="n">df</span>
+<span class="k">del</span> <span class="n">index</span>
+<span class="k">del</span> <span class="n">row</span>
+<span class="k">del</span> <span class="n">tweet_words</span>
+<span class="k">del</span> <span class="n">w</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.3-Get-frequency-distribution-of-the-words">
+<a class="anchor" href="#1.3-Get-frequency-distribution-of-the-words" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3 Get frequency distribution of the words<a class="anchor-link" href="#1.3-Get-frequency-distribution-of-the-words"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_words</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">FreqDist</span><span class="p">(</span><span class="n">all_words</span><span class="p">)</span>
+
+<span class="c1"># inspect the frequency distribution of the words</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'The 30 most common words are: '</span><span class="p">,</span> <span class="n">all_words</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">all_words</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The 30 most common words are:  [('@', 90794), ('i', 62578), ('!', 57937), ('.', 51116), (',', 32555), ('the', 29914), ('you', 29844), ('to', 29561), ('?', 25284), ('a', 22062), ('it', 22041), ('...', 18448), ('and', 16303), (';', 16178), ('&amp;', 14440), ('my', 13790), ('that', 13587), ('for', 12553), ('is', 12534), ("'s", 11912), ('in', 11822), ("n't", 11791), ('me', 11025), ('of', 10606), ('have', 10531), ('on', 9618), ('quot', 9153), ('so', 9106), ('but', 8956), ("'m", 8500)]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0AA8+7+3mp62XAK8C7wH8BA4E7gF+6+xVttF+DgkXeuP/+MCW8ri68NoMpU0LC1LNnYdsmhBAdJeqg%0A4JJIaLIxs/5ALXCyu/8zVfYucKO735J6vQewErjA3f+Yev0eMN7d703VORSYB5zo7s+b2VDgNcKH%0A9lKqzunAg8C+7r7CzMYCfwX2cfe6VJ2JwPeAAe6+JUd7ldCIvLJ8OVxwATz6aEvZiBFw112Q4Gah%0AEELkne6+l1MfwIHVAGZ2ALA38Hi6gruvA54DPpIqGkG4u5NZZwGwNKPOicCadDKT4rGU64SMOq+m%0Ak5kUM4HewBGd0DchErPPPvC3v8FNN4X9pQBeeAGOOQamT8+9QrEQQpQyJZfQmJkBPwT+6e5zU8V7%0AE5KOlVnVV6auQXiMtDmV6LRVZ2/CnZ+tuHsTIXHKrJPLQ0YdIQpOWRl84xvw7LNwyCGhbONGuOii%0AMLPq/fcL2z4hhOhMSi6hAX4GHA6ML3RDOsIXv/hFLr30UqqqqlodN954I3V1da3qrl69mpqamq2v%0A0+dvvPHGNiPF169fT01NzTb7ZCxZsoSlS5e2iq+vr6empoZNmza1qvvOO++wcOHCVmVNTU3U1NTw%0A0ksvtSqvra1l/vz52/Rv7ty5Ofsxa9asbepG7UdNTU2rfqSJ2o+ampqt/Vi7dm2H+pH5+Wf/PqL0%0AY86cOa3KO9KP2bNnt/n7iNKPmpqaVr+P4cPhxRfhyitXM21a6Mcf/gBHHQX//GfrfqT7GeXvKlc/%0AMj+n9v6ucvXj2WefJZu2/q5y/T6effbZWN+PdL/jfD/S/Ui3p6Pfj5qamm360tHv+ezZs1uVdaQf%0Ar776aqzvR5qamppY34/GxsZWMXG+55nxHf2eP/PMM5H/rnL14+WXX471/YCWv5WOfj/S/chsY0e+%0AH2+88QYvvPBCq7KOfs9nzZoV6/uRbneUv6sZM2ZQVVXF2LFjGT16NFVVVUyePHmbmJy4e8kchNlH%0AbwGDssoPIMxIOjKr/EngltT5aKAJ2COrzhLCLCaAi4BVWdfLgUbgzNTra4AXs+rsn/If1Ua7h48Y%0AMcKrq6s9DqtWrYoV1xnxcncv95/+5N6nT8u8qLIy96uucm9s7Hp3V8bKLbfc3dddXV3thKcww72d%0AHKFkBgWb2a3AmcDH3H1RjuttDQo+393/FHFQ8GGEQcEjvGVQ8CeAh2gZFPxJ4H5aDwq+GPg+UOnu%0A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%0AgiDoef4FvkE0nqu7KooAAAAASUVORK5CYII=%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.4-Select-the-top-5000-most-common-words-as-features">
+<a class="anchor" href="#1.4-Select-the-top-5000-most-common-words-as-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.4 Select the top 5000 most common words as features<a class="anchor-link" href="#1.4-Select-the-top-5000-most-common-words-as-features"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">freq_tuples</span> <span class="o">=</span> <span class="n">all_words</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.5-Remove-the-30-most-common-words-again">
+<a class="anchor" href="#1.5-Remove-the-30-most-common-words-again" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.5 Remove the 30 most common words again<a class="anchor-link" href="#1.5-Remove-the-30-most-common-words-again"> </a>
+</h2>
+<p>The most common words often have less 'signal' in them and may be ignored.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">freq_tuples</span> <span class="o">=</span> <span class="n">freq_tuples</span><span class="p">[</span><span class="mi">30</span><span class="p">:]</span> <span class="c1">#remove the 30 most common words</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.6-Prepare-the-word-features">
+<a class="anchor" href="#1.6-Prepare-the-word-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.6 Prepare the word features<a class="anchor-link" href="#1.6-Prepare-the-word-features"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">word_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span> <span class="ow">in</span> <span class="n">freq_tuples</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.7-Save-the-word_features">
+<a class="anchor" href="#1.7-Save-the-word_features" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.7 Save the word_features<a class="anchor-link" href="#1.7-Save-the-word_features"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'word_features.pkl'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span>
+<span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">word_features</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">del</span> <span class="n">all_words</span>
+<span class="k">del</span> <span class="n">freq_tuples</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sentiment_features</span><span class="p">(</span><span class="n">tweet_words</span><span class="p">):</span>
+    <span class="sd">"""Extract sentiment features from a tweet.</span>
+<span class="sd">    This function extracts sentiment features from the words of a tweet.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tweet_words : list of words</span>
+<span class="sd">        The text of a tweet, tokenized into words.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary that has a key for each word in the list of word features (word_features).</span>
+<span class="sd">        The value of each entry indicates whether that specific word is present in this tweet.</span>
+<span class="sd">    """</span>
+    <span class="n">uniq_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tweet_words</span><span class="p">)</span> <span class="c1">#keep unique words only</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">word_features</span><span class="p">:</span>
+        <span class="n">features</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="ow">in</span> <span class="n">uniq_words</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.8-Prepare-featuresets-for-the-complete-classifier-data-set">
+<a class="anchor" href="#1.8-Prepare-featuresets-for-the-complete-classifier-data-set" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.8 Prepare featuresets for the complete classifier data set<a class="anchor-link" href="#1.8-Prepare-featuresets-for-the-complete-classifier-data-set"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="n">featuresets</span> <span class="o">=</span> <span class="p">[(</span><span class="n">sentiment_features</span><span class="p">(</span><span class="n">tweet_words</span><span class="p">),</span> <span class="n">sentiment</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">tweet_words</span><span class="p">,</span> <span class="n">sentiment</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">tweet_tuples</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Number of featuresets: '</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">featuresets</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 100000/100000 [01:29&lt;00:00, 1119.71it/s]</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of featuresets:  100000
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">del</span> <span class="n">tweet_tuples</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.9-Split-the-data-set-for-training-and-testing">
+<a class="anchor" href="#1.9-Split-the-data-set-for-training-and-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.9 Split the data set for training and testing<a class="anchor-link" href="#1.9-Split-the-data-set-for-training-and-testing"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">training_set</span> <span class="o">=</span> <span class="n">featuresets</span><span class="p">[:</span><span class="n">splitpoint</span><span class="p">]</span>
+<span class="n">testing_set</span> <span class="o">=</span> <span class="n">featuresets</span><span class="p">[</span><span class="n">splitpoint</span><span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Length of featuresets: '</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">featuresets</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Length of training_set: '</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">training_set</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Length of testing_set: '</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">testing_set</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Length of featuresets:  100000
+Length of training_set:  80000
+Length of testing_set:  20000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">del</span> <span class="n">featuresets</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.10-Train-classifier">
+<a class="anchor" href="#1.10-Train-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.10 Train classifier<a class="anchor-link" href="#1.10-Train-classifier"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""commented out to protect</span>
+<span class="sd">classifier = nltk.NaiveBayesClassifier.train(tqdm(training_set))</span>
+<span class="sd">"""</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 80000/80000 [09:46&lt;00:00, 136.45it/s]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.11-Score-classifier">
+<a class="anchor" href="#1.11-Score-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.11 Score classifier<a class="anchor-link" href="#1.11-Score-classifier"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""commented out to protect</span>
+<span class="sd">accuracy = nltk.classify.accuracy(classifier, testing_set)</span>
+<span class="sd">print('Accuracy: ', accuracy)</span>
+<span class="sd">"""</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Accuracy:  0.75205
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""commented out to protect</span>
+<span class="sd">classifier.show_most_informative_features(40)</span>
+<span class="sd">"""</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Most Informative Features
+               cancelled = True                0 : 1      =     29.0 : 1.0
+                   ak618 = True                0 : 1      =     29.0 : 1.0
+             appreciated = True                1 : 0      =     26.2 : 1.0
+            aaroncarter7 = True                0 : 1      =     24.0 : 1.0
+                 *cries* = True                0 : 1      =     24.0 : 1.0
+                 hurting = True                0 : 1      =     21.4 : 1.0
+                    grrr = True                0 : 1      =     21.4 : 1.0
+                     sad = True                0 : 1      =     21.1 : 1.0
+                canceled = True                0 : 1      =     19.8 : 1.0
+             musicmonday = True                1 : 0      =     19.7 : 1.0
+          recommendation = True                1 : 0      =     18.2 : 1.0
+                 sadness = True                0 : 1      =     18.1 : 1.0
+                  gutted = True                0 : 1      =     17.5 : 1.0
+                 blessed = True                1 : 0      =     16.7 : 1.0
+                 swollen = True                0 : 1      =     16.4 : 1.0
+            followfriday = True                1 : 0      =     16.2 : 1.0
+           disappointing = True                0 : 1      =     15.6 : 1.0
+                   r.i.p = True                0 : 1      =     15.6 : 1.0
+                 *sniff* = True                0 : 1      =     15.6 : 1.0
+                    booo = True                0 : 1      =     15.4 : 1.0
+               3hotwords = True                1 : 0      =     15.1 : 1.0
+                   sadly = True                0 : 1      =     14.4 : 1.0
+                   sucks = True                0 : 1      =     14.2 : 1.0
+                  bummed = True                0 : 1      =     13.9 : 1.0
+             frustrating = True                0 : 1      =     13.9 : 1.0
+                 surgery = True                0 : 1      =     13.9 : 1.0
+          noundiessunday = True                1 : 0      =     13.5 : 1.0
+                    argh = True                0 : 1      =     13.3 : 1.0
+                  bummer = True                0 : 1      =     12.7 : 1.0
+                   blows = True                0 : 1      =     12.4 : 1.0
+                   ughhh = True                0 : 1      =     12.2 : 1.0
+         congratulations = True                1 : 0      =     11.9 : 1.0
+                     sux = True                0 : 1      =     11.7 : 1.0
+                downside = True                0 : 1      =     11.4 : 1.0
+              depressing = True                0 : 1      =     11.4 : 1.0
+                    leak = True                0 : 1      =     11.4 : 1.0
+               emotional = True                0 : 1      =     11.4 : 1.0
+                      /3 = True                0 : 1      =     11.4 : 1.0
+                  cramps = True                0 : 1      =     11.4 : 1.0
+                    poor = True                0 : 1      =     11.2 : 1.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.12-Define-a-function-to-estimate-the-sentiment-of-a-tweet">
+<a class="anchor" href="#1.12-Define-a-function-to-estimate-the-sentiment-of-a-tweet" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.12 Define a function to estimate the sentiment of a tweet<a class="anchor-link" href="#1.12-Define-a-function-to-estimate-the-sentiment-of-a-tweet"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">estimate_sentiment</span><span class="p">(</span><span class="n">tweet</span><span class="p">):</span>
+    <span class="sd">"""Estimate the sentiment of a tweet.</span>
+<span class="sd">    This function estimates the sentiment of a tweet.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tweet : str</span>
+<span class="sd">        The text of a tweet.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        A value that indicates the sentiment of the tweet: </span>
+<span class="sd">        1 for positive, and</span>
+<span class="sd">        0 for negative</span>
+<span class="sd">    """</span>
+    <span class="k">return</span><span class="p">(</span> <span class="n">classifier</span><span class="o">.</span><span class="n">classify</span><span class="p">(</span><span class="n">sentiment_features</span><span class="p">(</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">tweet</span><span class="p">)))</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.13-Hand-test-classifier">
+<a class="anchor" href="#1.13-Hand-test-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.13 Hand-test classifier<a class="anchor-link" href="#1.13-Hand-test-classifier"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">estimate_sentiment</span><span class="p">(</span><span class="s1">'I feel fine today!'</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">estimate_sentiment</span><span class="p">(</span><span class="s1">'I feel horrible today!'</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">estimate_sentiment</span><span class="p">(</span><span class="s1">'This is good news.'</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">estimate_sentiment</span><span class="p">(</span><span class="s1">'This was a mistake'</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">estimate_sentiment</span><span class="p">(</span><span class="s1">'He had to do it'</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span> <span class="n">estimate_sentiment</span><span class="p">(</span><span class="s1">'Not fair to Syria'</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1
+0
+1
+0
+1
+0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.14-Save-classifier">
+<a class="anchor" href="#1.14-Save-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.14 Save classifier<a class="anchor-link" href="#1.14-Save-classifier"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""commented out to protect</span>
+<span class="sd">f = open('tweepy_naivebayes.pkl', 'wb')</span>
+<span class="sd">pickle.dump(classifier, f)</span>
+<span class="sd">f.close()</span>
+<span class="sd">"""</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Part-2.-Capture-twitter-data-on-Trump-Syria-Strike">
+<a class="anchor" href="#Part-2.-Capture-twitter-data-on-Trump-Syria-Strike" aria-hidden="true"><span class="octicon octicon-link"></span></a>Part 2. Capture twitter data on Trump Syria Strike<a class="anchor-link" href="#Part-2.-Capture-twitter-data-on-Trump-Syria-Strike"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tweepy</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_name</span> <span class="o">=</span> <span class="s1">'trump_syria_strike15.txt'</span>
+<span class="n">track_string</span> <span class="o">=</span> <span class="s1">'trump syria strike'</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">WritingTxtStreamListener</span><span class="p">(</span><span class="n">tweepy</span><span class="o">.</span><span class="n">StreamListener</span><span class="p">):</span>
+    <span class="sd">"""Sets up and captures a stream of tweets.    </span>
+<span class="sd">    This class sets up and captures a stream of tweets from the Twitter Streaming API.    </span>
+<span class="sd">    """</span>
+    <span class="n">__count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1">#captures the json of a tweet</span>
+    <span class="k">def</span> <span class="nf">on_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">data</span> <span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">+</span><span class="s1">': '</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__count</span><span class="p">)</span> <span class="p">)</span>
+            <span class="k">return</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'ERROR: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="c1">#disconnect the stream if we receive an error message indicating we are overloading Twitter</span>
+    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status_code</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'ERROR: status_code = '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">status_code</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">status_code</span> <span class="o">==</span> <span class="mi">420</span><span class="p">:</span>
+            <span class="c1">#returning False in on_data disconnects the stream</span>
+            <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">con_key</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="n">con_secret</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="n">acc_token</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="n">acc_secret</span> <span class="o">=</span> <span class="s1">''</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">auth</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">OAuthHandler</span><span class="p">(</span><span class="n">consumer_key</span><span class="o">=</span><span class="n">con_key</span><span class="p">,</span> <span class="n">consumer_secret</span><span class="o">=</span><span class="n">con_secret</span><span class="p">)</span>
+<span class="n">auth</span><span class="o">.</span><span class="n">set_access_token</span><span class="p">(</span><span class="n">acc_token</span><span class="p">,</span> <span class="n">acc_secret</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">API</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="n">wait_on_rate_limit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">wait_on_rate_limit_notify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">retry_count</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">retry_delay</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">retry_errors</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>         
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_stream_listener</span> <span class="o">=</span> <span class="n">WritingTxtStreamListener</span><span class="p">()</span>
+<span class="n">my_stream</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span><span class="n">auth</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">listener</span><span class="o">=</span><span class="n">my_stream_listener</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_stream</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">track</span><span class="o">=</span><span class="p">[</span><span class="n">track_string</span><span class="p">],</span> <span class="n">languages</span><span class="o">=</span><span class="p">[</span><span class="s1">'en'</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_stream</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="3.-Analyze-twitter-data-on-Trump-Syria-Strike">
+<a class="anchor" href="#3.-Analyze-twitter-data-on-Trump-Syria-Strike" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Analyze twitter data on Trump Syria Strike<a class="anchor-link" href="#3.-Analyze-twitter-data-on-Trump-Syria-Strike"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.1-Load-the-json-study-data">
+<a class="anchor" href="#3.1-Load-the-json-study-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Load the json study data<a class="anchor-link" href="#3.1-Load-the-json-study-data"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tweets_data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">tweets_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'trump_syria_strike15.txt'</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tweets_file</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tweet_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">tweets_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tweet_json</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">continue</span>
+<span class="n">tweets_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span> <span class="s1">'Number of tweets: '</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tweets_data</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of tweets:  5000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tweets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">tweets</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">'text'</span><span class="p">],</span> <span class="n">tweets_data</span><span class="p">))</span>
+<span class="n">tweets</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>RT @WilliamAder: Most daughters would be happy...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>RT @TheEconomist: Listen: We discuss what Dona...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>RT @davebernstein: Translation:\n\nIntent of S...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>RT @JoeMyGod: Ann Coulter Denounces Trump Over...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>RT @ddale8: Can you even imagine if a Hillary ...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="k">def</span> <span class="nf">suppress_newlines</span><span class="p">(</span><span class="n">tweet</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\n'</span><span class="p">,</span> <span class="s1">' '</span><span class="p">,</span> <span class="n">tweet</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+<span class="n">tweets</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tweets</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">suppress_newlines</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.2-Load-the-sentiment-classifier">
+<a class="anchor" href="#3.2-Load-the-sentiment-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Load the sentiment classifier<a class="anchor-link" href="#3.2-Load-the-sentiment-classifier"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'tweepy_naivebayes.pkl'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.3-Load-the-word-features-(from-word_features)">
+<a class="anchor" href="#3.3-Load-the-word-features-(from-word_features)" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.3 Load the word features (from word_features)<a class="anchor-link" href="#3.3-Load-the-word-features-(from-word_features)"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'word_features.pkl'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span>
+<span class="n">word_features</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.4-Estimate-the-sentiment-for-each-tweet-in-the-data-on-Trump-Syria-Strike">
+<a class="anchor" href="#3.4-Estimate-the-sentiment-for-each-tweet-in-the-data-on-Trump-Syria-Strike" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.4 Estimate the sentiment for each tweet in the data on Trump Syria Strike<a class="anchor-link" href="#3.4-Estimate-the-sentiment-for-each-tweet-in-the-data-on-Trump-Syria-Strike"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#from tqdm import tqdm, tqdm_pandas</span>
+<span class="c1">#tqdm_pandas(tqdm())</span>
+
+<span class="n">tweets</span><span class="p">[</span><span class="s1">'est_sentiment'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="c1">#tweets['est_sentiment'] = tweets['text'].progress_apply(estimate_sentiment)</span>
+<span class="n">tweets</span><span class="p">[</span><span class="s1">'est_sentiment'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tweets</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">estimate_sentiment</span><span class="p">)</span>
+<span class="n">tweets</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>est_sentiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>RT @WilliamAder: Most daughters would be happy...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>RT @TheEconomist: Listen: We discuss what Dona...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>RT @davebernstein: Translation:  Intent of Syr...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>RT @JoeMyGod: Ann Coulter Denounces Trump Over...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>RT @ddale8: Can you even imagine if a Hillary ...</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.5-Save-analysis-in-updated-dataframe">
+<a class="anchor" href="#3.5-Save-analysis-in-updated-dataframe" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.5 Save analysis in updated dataframe<a class="anchor-link" href="#3.5-Save-analysis-in-updated-dataframe"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tweets</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'trump_syria_strike15.csv'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'|'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="4.-Statistical-proportion-test">
+<a class="anchor" href="#4.-Statistical-proportion-test" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Statistical proportion test<a class="anchor-link" href="#4.-Statistical-proportion-test"> </a>
+</h1>
+<h3 id="(R-Language)">
+<a class="anchor" href="#(R-Language)" aria-hidden="true"><span class="octicon octicon-link"></span></a>(R Language)<a class="anchor-link" href="#(R-Language)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1">## Load sentiment data on Trump Syria Strike</span>
+<span class="n">df</span> <span class="o">&lt;-</span> <span class="nf">read.csv</span><span class="p">(</span><span class="s">"trump_syria_strike15.csv"</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">"|"</span><span class="p">,</span> <span class="n">stringsAsFactors</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1">## Count the tweets with positive sentiment, disregard a handful of rows that have NAs</span>
+<span class="n">total.evals</span> <span class="o">&lt;-</span> <span class="nf">sum</span><span class="p">(</span><span class="nf">complete.cases</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="n">total.evals</span>
+<span class="n">total.approvals</span> <span class="o">&lt;-</span> <span class="nf">sum</span><span class="p">(</span><span class="n">df</span><span class="p">[,</span><span class="s">'est_sentiment'</span><span class="p">],</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">total.approvals</span>
+<span class="n">fraction.approvals</span> <span class="o">&lt;-</span> <span class="n">total.approvals</span><span class="o">/</span><span class="n">total.evals</span>
+<span class="n">fraction.approvals</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1">## Perform a hypothesis test of proportions</span>
+
+<span class="c1">### Setup hypotheses</span>
+
+<span class="n">The</span> <span class="n">hypotheses</span> <span class="n">will</span> <span class="n">be</span><span class="o">:</span>
+
+    <span class="n">H0</span><span class="o">:</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p0</span>
+    <span class="n">H1</span><span class="o">:</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">p0</span>
+
+<span class="n">where</span> 
+
+<span class="n">p</span> <span class="n">is</span> <span class="n">the</span> <span class="n">true</span> <span class="n">proportion</span> <span class="n">of</span> <span class="n">the</span> <span class="n">American</span> <span class="n">public</span> <span class="n">that</span> <span class="o">*</span><span class="n">approves</span><span class="o">*</span> <span class="n">the</span> <span class="n">strike</span><span class="p">,</span> <span class="n">and</span> <span class="n">p0</span> <span class="o">=</span> <span class="m">0.46</span><span class="n">.</span> 
+
+<span class="n">The</span> <span class="o">*</span><span class="n">null</span><span class="o">*</span> <span class="n">hypothesis</span><span class="p">,</span> <span class="n">therefore</span><span class="p">,</span> <span class="n">states</span> <span class="n">that</span> <span class="n">the</span> <span class="n">proportion</span> <span class="n">of</span> <span class="n">the</span> <span class="n">public</span> <span class="n">that</span> <span class="o">*</span><span class="n">approves</span><span class="o">*</span> <span class="n">the</span> <span class="nf">strike </span><span class="p">(</span><span class="n">associated</span> <span class="n">with</span> <span class="o">*</span><span class="n">positive</span><span class="o">*</span> <span class="n">sentiment</span> <span class="n">tweets</span><span class="p">),</span> <span class="n">is</span> <span class="n">the</span> <span class="o">*</span><span class="n">same</span><span class="o">*</span> <span class="n">as</span> <span class="n">the</span> <span class="n">proportion</span> <span class="n">of</span> <span class="n">popular</span> <span class="nf">votes </span><span class="p">(</span><span class="m">46</span><span class="o">%) during the presidential election. </span>
+
+<span class="o">The *alternative* hypothesis, states that the proportion of the public that approves the strike is *different* from the proportion of popular votes. The type of hypothesis test will be a *one-sample test for a proportion*. The test will be *two-sided*.</span>
+
+<span class="o">### Perform hypothesis test</span>
+
+<span class="o">prop.test(total.approvals, n = total.evals, p = 0.46, alternative = 'two.sided')</span>
+
+<span class="o">### Conclusion</span>
+
+<span class="o">The p-value is much smaller than 0.05. At the 0.05 significance level, we *reject* the null hypothesis. There is enough evidence to claim that the proportion of the American public that *approves* the missile strike is *different* from 46%</span><span class="n">.</span> <span class="n">The</span> <span class="n">proportion</span> <span class="n">that</span> <span class="n">approves</span> <span class="n">the</span> <span class="n">strike</span> <span class="n">is</span> <span class="m">58</span>%<span class="n">.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/api/nlp/python/nltk/r/2017/04/15/SentimentAnalysis.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
