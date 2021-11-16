@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Using Visualization to Make an Effective Case for Using a Machine Translation Tool | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Using Visualization to Make an Effective Case for Using a Machine Translation Tool" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Sound visualization principles (Tufte) are applied in this project" />
+<meta property="og:description" content="Sound visualization principles (Tufte) are applied in this project" />
+<link rel="canonical" href="https://learnableloop.com/translation_industry/visualization/python/seaborn/2019/02/12/VisualizationProject.html" />
+<meta property="og:url" content="https://learnableloop.com/translation_industry/visualization/python/seaborn/2019/02/12/VisualizationProject.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/vis_fig9.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-12T00:00:00-06:00" />
+<script type="application/ld+json">
+{"description":"Sound visualization principles (Tufte) are applied in this project","url":"https://learnableloop.com/translation_industry/visualization/python/seaborn/2019/02/12/VisualizationProject.html","@type":"BlogPosting","headline":"Using Visualization to Make an Effective Case for Using a Machine Translation Tool","dateModified":"2019-02-12T00:00:00-06:00","datePublished":"2019-02-12T00:00:00-06:00","image":"https://learnableloop.com/images/vis_fig9.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/translation_industry/visualization/python/seaborn/2019/02/12/VisualizationProject.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Using Visualization to Make an Effective Case for Using a Machine Translation Tool</h1><p class="page-description">Sound visualization principles (Tufte) are applied in this project</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-02-12T00:00:00-06:00" itemprop="datePublished">
+        Feb 12, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Translation_Industry">Translation_Industry</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Visualization">Visualization</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#seaborn">seaborn</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Background">Background </a></li>
+<li class="toc-entry toc-h2"><a href="#Visualization-story">Visualization story </a></li>
+<li class="toc-entry toc-h2"><a href="#Dataset">Dataset </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Source">Source </a></li>
+<li class="toc-entry toc-h3"><a href="#Row-Subset">Row Subset </a></li>
+<li class="toc-entry toc-h3"><a href="#Column-Subset">Column Subset </a></li>
+<li class="toc-entry toc-h3"><a href="#Other-preprocessing">Other preprocessing </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Final-sub-selection-of-columns-for-my-visualization-story">Final sub-selection of columns for my visualization story </a></li>
+<li class="toc-entry toc-h2"><a href="#A-note-on-pre-translation-type">A note on pre-translation type </a></li>
+<li class="toc-entry toc-h2"><a href="#Tools">Tools </a></li>
+<li class="toc-entry toc-h2"><a href="#Principles-used-to-design-the-visualizations">Principles used to design the visualizations </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Layering-and-separation">Layering and separation </a></li>
+<li class="toc-entry toc-h3"><a href="#Reduce-chart-junk-and-erase-non-data-ink">Reduce chart junk and erase non-data-ink </a></li>
+<li class="toc-entry toc-h3"><a href="#Color">Color </a></li>
+<li class="toc-entry toc-h3"><a href="#Other-best-practices">Other best practices </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Iterations">Iterations </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Iteration-1:-Bubble-chart-scatter-plot">Iteration 1: Bubble chart scatter plot </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Pros">Pros </a></li>
+<li class="toc-entry toc-h4"><a href="#Cons">Cons </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Iteration-2:-Two-kernel-density-plots">Iteration 2: Two kernel density plots </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Pros">Pros </a></li>
+<li class="toc-entry toc-h4"><a href="#Cons">Cons </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Iteration-3:-Two-scatter-plots">Iteration 3: Two scatter plots </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Pros">Pros </a></li>
+<li class="toc-entry toc-h4"><a href="#Cons">Cons </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Iteration-4:-Two-scatter-plots-with-a-fourth-variable">Iteration 4: Two scatter plots with a fourth variable </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Pros">Pros </a></li>
+<li class="toc-entry toc-h4"><a href="#Cons">Cons </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Iteration-5:-Two-scatter-plots-with-a-fourth-variable-and-better-coloration">Iteration 5: Two scatter plots with a fourth variable and better coloration </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Pros">Pros </a></li>
+<li class="toc-entry toc-h4"><a href="#Cons">Cons </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#REFERENCES">REFERENCES </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2019-02-12-VisualizationProject.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Background">
+<a class="anchor" href="#Background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background<a class="anchor-link" href="#Background"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I am assisting a non-profit with a translation system that they use to translate documents into dozens of languages. The system presents a translator with a single sentence pair at a time. The top sentence is the source English sentence while the bottom sentence is a machine produced pre-translated sentence in the target language.  See Figure 1.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig1.png" alt="Figure 1  A single sentence pair is presented to the translator" title="Figure 1  A single sentence pair is presented to the translator"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This approach saves a lot of eye-wandering to keep finding the correct place in the text as a translator needs to jump back-and-forth between the original and translated text. It also focuses the translator’s attention on a single sentence at a time. Even so, a translator can simply hit the ‘+’ button to widen the context to as many sentences as needed.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The system breaks down a huge task into many small conquerable pieces (translation is a daunting task in general). By breaking the task down into sentence-sized pieces, it becomes less intimidating for a translator.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Having a pre-translated sentence saves a lot on typing and thinking time as all words/phrases are often present. The translator's main effort goes into rearranging words/phrases and adding/removing a word here and there. If the translator prefers to translate in the traditional way, he/she can simply click/tap the ‘Clear’ button and translate the sentence from scratch.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The system also allows for multiple translators to proofread a document and 'cast their votes' or make additional changes. In the end, the system knows which rendition of a sentence has the top number of votes and automatically includes the top-voted edit (which will be highlighted) in the output document. See Figure 2.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig2.png" alt="Figure 2  The system includes the edit with the most votes in the final document" title="Figure 2  The system includes the edit with the most votes in the final document"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If a translation engine for a specific language has not been trained yet, a translator can still get all the other benefits of the system by simply translating the presented English sentence from scratch, in other words without the benefit of a pre-translated sentence. In such cases the second sentence presented is just another copy of the English source sentence (which the translator clears and translates from scratch).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Pre-translations are generated by a neural machine translation algorithm. When a sufficient parallel corpus is available for a specific language an associated engine is created. The system also captures metrics on the performance of translators.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Visualization-story">
+<a class="anchor" href="#Visualization-story" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualization story<a class="anchor-link" href="#Visualization-story"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I am sometimes met with skepticism about the value of having a pre-translation presented to a translator. The argument is that translators are then required to first read the pre-translated sentence, wasting time and energy in the process. It will take less effort to just allow translators to translate each sentence from scratch. Word artists as they are, they would prefer this creative freedom anyway.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This sounds like a good argument. However, as outlined above, I maintain that providing a pre-translation has many benefits. From my point of view, providing a pre-translated sentence is the <em>key feature</em> of the system. It is therefore important for me to have convincing evidence for the value provided by this functionality. In short, my main idea is to <em>convince</em> the administrators at the non-profit that pre-translations add value to the efficiency of the translation process in general, and the performance of translators in particular. This situation defines the <em>contextual awareness</em> of my visualization story.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <em>independent</em> variable in the story is the <em>BLEU score</em> of a document. It is a measure of the quality of a machine-translated document (as evaluated against a human-translated version). The human-translated version that will be used to determine the BLEU score of each pre-translation, is simply the finalized document delivered by a translator. BLEU scores range from 0 to 100, which represents a perfect translation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first <em>dependent</em> variable is the average number of <em>seconds needed to translate a sentence</em>, for each completed document. The other dependent variable is the <em>percentage of sentences that needed to be changed</em> during the translation of a document. These two variables function as performance metrics for the efficiency of the translation process. Understandably, this value varies widely due to a translator’s quality of work, level of dedication, brilliance, etc. Even so, my story will reveal that there is a gradual decline of mean time required per sentence as the BLEU score increases. It will also show that there is a progressive decline of percentage of sentences changed with increasing BLEU score.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The underlying rationale is therefore: The higher the BLEU score of a pre-translation, the less time a translator will spend on a sentence and the lower the percentage of changed sentences will be, for each document. I need to provide evidence of the correlation between providing a pre-translation (and the progressive increase in its quality, expressed as a BLEU score) and increased translator performance, expressed in the form of the dependent variables. This is supported by Tufte’s “Second principle for the analysis and presentation of data: Show causality, mechanism, explanation, systematic structure.” (Beautiful Evidence, E. R. Tufte, 2006).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The increase in the efficiency of the translation process in general, and translator performance in particular, leads to better productivity and reduced cost. Having pre-translations is therefore a valuable feature. My visualization story will be (in Berinato’s terms) <em>data-driven</em> and <em>declarative</em> (Good Charts - The HBR Guide to Making Smarter, More Persuasive Data Visualizations, Berinato, 2016).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dataset">
+<a class="anchor" href="#Dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset<a class="anchor-link" href="#Dataset"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dataset consists of 1935 records, each having 38 data fields. See Figure 3.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig3.png" alt="Figure 3  Summary of the dataset" title="Figure 3  Summary of the dataset"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Source">
+<a class="anchor" href="#Source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Source<a class="anchor-link" href="#Source"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dataset belongs to the non-profit project known as “The Open Door” project. This is part of a larger missionary outreach initiative orchestrated by the client, a church in Canada. I am the custodian of the dataset and have permission to share it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Row-Subset">
+<a class="anchor" href="#Row-Subset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Row Subset<a class="anchor-link" href="#Row-Subset"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The subset of records that feature in my visualization story is a set of 60 records. Each of these records represent a translated document. This subset is called <strong>VisualizationProject.csv</strong>. From this subset, I had to throw out all records for which I did not have a BLEU score available. This left me with 48 records.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Column-Subset">
+<a class="anchor" href="#Column-Subset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Column Subset<a class="anchor-link" href="#Column-Subset"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>From the 38 columns in the data set I selected a subset of 11 features to use in my visualization story. See Figure 4.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig4.png" alt="Figure 4  Summary of the subset of columns used" title="Figure 4  Summary of the subset of columns used"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Other-preprocessing">
+<a class="anchor" href="#Other-preprocessing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other preprocessing<a class="anchor-link" href="#Other-preprocessing"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I sorted the dataset by the BLEU column. After this, I partitioned the 11 variables into categorical and continuous variables:</p>
+<ul>
+<li>Categorical:<ul>
+<li>Descriptor, TE, Language, TotSent, ITS, Translator, todxx, todver</li>
+</ul>
+</li>
+<li>Continuous:<ul>
+<li>BLEU, secPerSen, percTopEdits</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Final-sub-selection-of-columns-for-my-visualization-story">
+<a class="anchor" href="#Final-sub-selection-of-columns-for-my-visualization-story" aria-hidden="true"><span class="octicon octicon-link"></span></a>Final sub-selection of columns for my visualization story<a class="anchor-link" href="#Final-sub-selection-of-columns-for-my-visualization-story"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After I finalized my visualization story, only the following columns remained:</p>
+<ul>
+<li>BLEU (called <em>quality of the pre-translation</em> in the charts). This is the independent variable.</li>
+<li>secPerSen (called <em>seconds/sentence</em> in the charts). This is the first dependent variable.</li>
+<li>percTopEdits (called <em>% sentences changed</em> in the charts). <em>% sentences changed</em> is presented as (1 – percTopEdits) to increase understanding. This is the second dependent variable.</li>
+<li>Translator (called <em>pre-translation type</em> in the charts). There are three pre-translation types:<ul>
+<li>No pre-translation</li>
+<li>Machine pre-translation</li>
+<li>Human pre-translation</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="A-note-on-pre-translation-type">
+<a class="anchor" href="#A-note-on-pre-translation-type" aria-hidden="true"><span class="octicon octicon-link"></span></a>A note on pre-translation type<a class="anchor-link" href="#A-note-on-pre-translation-type"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To tell my visualization story, I need sufficient context. I need to be able to answer the question “Compared to what?” This is in line with Tufte’s “First principle for the analysis and presentation of data: Show comparisons, contrasts, differences.” (E. R. Tufte, Beautiful Evidence, 2006). In effect, I need to put a “frame” of reference around the data that showcase the correlation between the quality of the machine pre-translations and the dependent variables. On the low side, I found a handy reference: I assigned a BLEU score of zero to all documents who did not have any pre-translation. It is fair to assign a zero score for such documents because the BLEU algorithm would not find any similarities between the original English document and the final translated document. In other words, the BLEU algorithm would have come up with a value of zero or a value close to zero.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On the high side of the quality of pre-translations I was fortunate again to have some documents that had pre-translations that were provided by <em>humans</em> (rather than machines). It so happened that a handful of documents had to be finalized by another proofreading. For these, the initial (human) translation was presented as if it were a machine pre-translation. Understandably, these pre-translations were of higher quality as they were deemed as final translations by the humans who translated them in the first place.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tools">
+<a class="anchor" href="#Tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tools<a class="anchor-link" href="#Tools"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I used python and a Jupyter notebook (called <strong>VisualizationProject.ipynb</strong>) to prepare the visualizations. In addition, I used the following python libraries:</p>
+<ul>
+<li>Fast.ai</li>
+<li>Matplotlib</li>
+<li>Seaborn</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dataset ingested by the Jupyter notebook is called <strong>VisualizationProject.csv</strong>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The notebook containing the complete development of the visualizations may be accessed here:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://nbviewer.jupyter.org/github/kobus78/VisualizationProject/blob/master/VisualizationProject.ipynb">VisualizationProject.ipynb</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Principles-used-to-design-the-visualizations">
+<a class="anchor" href="#Principles-used-to-design-the-visualizations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Principles used to design the visualizations<a class="anchor-link" href="#Principles-used-to-design-the-visualizations"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I made use of some general principles throughout the design of the visualizations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Layering-and-separation">
+<a class="anchor" href="#Layering-and-separation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Layering and separation<a class="anchor-link" href="#Layering-and-separation"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Tufte makes the point:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>“Among the most powerful devices for reducing noise and enriching the content of displays is the technique of layering and separation, visually stratifying various aspects of the data.” And again: “What matters — inevitably, unrelentingly — is the proper relationship among information layers.” (E. R. Tufte, Envisioning Information, 1990, p. 53).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Valuing this advice, I ensured that the trend lines are on a higher or more prominent visual layer by making them more saturated and more intense. Sometimes I used color as well. The datapoints were made less saturated and intense, in effect placing them on the neutral “bottom” visual layer. The structural elements of the charts (axes, axes labels, and tick labels) were also demoted to the neutral layer.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Reduce-chart-junk-and-erase-non-data-ink">
+<a class="anchor" href="#Reduce-chart-junk-and-erase-non-data-ink" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reduce chart junk and erase non-data-ink<a class="anchor-link" href="#Reduce-chart-junk-and-erase-non-data-ink"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I tried to reduce chart junk and maximize data-ink ratio as much as possible by:</p>
+<ul>
+<li>Removing all grid lines (the visualization story is not about the accurate location of values but rather about the trends).</li>
+<li>Removing all tick marks, for the same reason.</li>
+<li>Keeping x and y axes only on one side of the chart and using a neutral color (grey). There is no traditional frame around the chart.</li>
+<li>Not stating axes labels in the heading/sub-heading.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Color">
+<a class="anchor" href="#Color" aria-hidden="true"><span class="octicon octicon-link"></span></a>Color<a class="anchor-link" href="#Color"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>I used color sparingly. “Minimize the number of colors you use.” (Berinato)</li>
+<li>I generally used grey for the datapoints and structure elements, with a white background (Third rule of color in Tufte, Envisioning Information, 1990, p. 90).</li>
+<li>Where I do use color for datapoints (iterations 4, 5), I applied the fourth rule from Tufte, Envisioning Information, 1990, p. 90: “All colors of the main theme should be scattered like islands in the background color.”</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Other-best-practices">
+<a class="anchor" href="#Other-best-practices" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other best practices<a class="anchor-link" href="#Other-best-practices"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Simplicity. As Tufte puts it: “Graphical elegance is often found in simplicity of design and complexity of data.” (E. R. Tufte, The Visual Display of Quantitative Information, 2001, p. 177).</li>
+<li>Integrity guidelines (number representation proportional to numerical quantities, clear labeling, no design variation, dimensions on graphic should not exceed dimensions in data, graphics do not quote data out of context).</li>
+<li>Berinato’s four parts of a chart: Title, subtitle, visual field, source line.</li>
+<li>Multiple variables. I used at least three variables throughout. “Graphical excellence is nearly always multivariate.” (E. R. Tufte, The Visual Display of Quantitative Information, 2001, p. 51).</li>
+<li>“The Friendly Data Graphic” (E. R. Tufte, The Visual Display of Quantitative Information, 2001, p. 183).<ul>
+<li>Words are spelled out (rather than abbreviations). I wanted to have the x-axis label “BLEU score” but decided instead that “Quality of pre-translation” would suffice and be more understandable.</li>
+<li>Words run from left to right (rather than vertically). I have all y-axis labels in horizontal format.</li>
+<li>Labels are placed on the graphic itself (rather than a legend). I have no legends.</li>
+<li>Cater for color-blindness. All graphics have support for color-blindness.</li>
+<li>Type is upper-and-lower case (rather than all capitals).</li>
+</ul>
+</li>
+<li>“The principles for the analysis and presentation of data” (E. R. Tufte, Beautiful Evidence, 2006, p. 122).<ul>
+<li>Show comparisons, contrasts, differences. In my final iteration, I show how <em>seconds/sentence</em> and <em>% sentences changed</em> varies with the quality of the pre-translation, compared among the cases <em>No pre-translation</em>, <em>Machine pre-translation</em>, and <em>Human pre-translation</em>.</li>
+<li>Causality, Mechanism, Structure, Explanation. The trend lines (obtained by linear regression) in my visualizations clearly explain the mechanism and structure to achieve better translator performance: Increase the quality of the pre-translation. Increased translator performance is <em>caused</em> by improving the quality of the pre-translation. They answer the question posed in the title: “Does it help to give translators a pre-translation?” The answer is clearly, “Yes, it does.”</li>
+<li>Show multivariate data. All the visualizations show multivariate data.</li>
+<li>Completely integrate words, numbers, images, diagrams. My graphics show labels next to the markers within the diagrams.</li>
+<li>Thoroughly describe the evidence. This document fulfills this requirement. I also included my name and the date on each visualization.</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Iterations">
+<a class="anchor" href="#Iterations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Iterations<a class="anchor-link" href="#Iterations"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I had to go through five iterations before arriving at my final visualization.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Iteration-1:-Bubble-chart-scatter-plot">
+<a class="anchor" href="#Iteration-1:-Bubble-chart-scatter-plot" aria-hidden="true"><span class="octicon octicon-link"></span></a>Iteration 1: Bubble chart scatter plot<a class="anchor-link" href="#Iteration-1:-Bubble-chart-scatter-plot"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>According to Lane Harrison (and others) a scatter chart is the most effective chart type to show correlation (Good Charts - The HBR Guide to Making Smarter, More Persuasive Data Visualizations, Berinato, 2016). Please see Figure 5.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig5.png" alt="Figure 5  Bubble chart scatter plot" title="Figure 5  Bubble chart scatter plot"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Pros">
+<a class="anchor" href="#Pros" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros<a class="anchor-link" href="#Pros"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Easy to understand, low clutter.</li>
+<li>Shows clear trend (intense green trend line color over neutral markers, green may also suggest “goodness” to some viewers which is part of the message). Exclude linear regression line’s parameters for the sake of simplicity.</li>
+<li>Multivariate (3 variables).</li>
+<li>Markers are, what Tufte calls, <em>multifunctioning</em> graphical elements (E. R. Tufte, The Visual Display of Quantitative Information, 2001, p. 139). Each marker indicates 3 quantities.</li>
+<li>Low opacity allows good representation of the density of data points.</li>
+<li>Darker marker <em>edges</em> make it easy to detect smaller markers (bottom right).</li>
+<li>Color palette allows for easy rendition on the printed page.
+Color palette is sensitive to color blindness (red/green not used together).</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Cons">
+<a class="anchor" href="#Cons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons<a class="anchor-link" href="#Cons"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>% sentences changed is a 1-D quantity, but it is expressed by a 2-D circle area which is not ideal. In addition, the visual response to increases in circle size is not linear (Steven’s law).</li>
+<li>Large variation in marker size may allow the small markers (bottom right) to go unnoticed.</li>
+<li>Although simpler, this visualization does not use all the variables.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Iteration-2:-Two-kernel-density-plots">
+<a class="anchor" href="#Iteration-2:-Two-kernel-density-plots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Iteration 2: Two kernel density plots<a class="anchor-link" href="#Iteration-2:-Two-kernel-density-plots"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 6 shows a chart consisting of two kernel density plots.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig6.png" alt="Figure 6  Two kernel density plots!" title="Figure 6  Two kernel density plots"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>As pointed out by Berinato, the use of two y-axes on the same chart is not a good practice. Instead, I made separate charts – one for each dependent variable.</li>
+<li>I placed the charts below each other, rather than next to each other. This aligns with the principle that it is usually better to have the x-axis longer than the y-axis. (This is pointed out by Tufte when he compares it to what was called the golden rule during the middle-ages.) Berinato also makes a point of this and even suggests that it could be considered unethical to compress the x-axis too much to enhance a specific story.</li>
+<li>I decided to append the %-sign after each y-axis tick label to discourage a possible tendency to want to equate/compare the two vertical axes.</li>
+<li>I chose to not use blue as it may suggest the conventional “deepness” at the highest density points. Using red might have suggested “hotness” at these points, maybe not appropriate for my purpose either. Green looks pleasing and may suggest “goodness” to some viewers which is part of the message – the goodness of the falling trend.</li>
+<li>I made both charts the same color to minimize the number of colors used and to reduce cognitive burden.</li>
+<li>I restricted the number of density levels to 15 to reduce moiré vibration along the higher contour lines.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Pros">
+<a class="anchor" href="#Pros" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros<a class="anchor-link" href="#Pros"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Shows clear trends. Exclude linear regression line’s parameters for the sake of simplicity.</li>
+<li>Might be more informative to technical viewers.</li>
+<li>Multivariate (3 variables).</li>
+<li>Color palette is sensitive to color blindness (red/green not used together).</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Cons">
+<a class="anchor" href="#Cons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons<a class="anchor-link" href="#Cons"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Harder to understand for the average viewer due to the statistical principle of density of a distribution.</li>
+<li>Subtitle might not make sense to many readers.</li>
+<li>This kind of chart is ideal for larger datasets (my dataset is relatively small with 48 observations).</li>
+<li>Does not use all the variables.</li>
+<li>Not enough visual separation between trend lines and the data representation, especially at the highest density points.</li>
+<li>Some moiré vibration remains at the higher contour lines.</li>
+<li>Black color of trend lines converges with black coloration of highest density points introducing unnecessary weight (I could have used red but that would have introduced a color-blindness situation).</li>
+<li>Chart can benefit from what Tufte calls “subtraction of weight.”</li>
+<li>Edge fluting occurs between adjacent contours which is somewhat distracting.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Iteration-3:-Two-scatter-plots">
+<a class="anchor" href="#Iteration-3:-Two-scatter-plots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Iteration 3: Two scatter plots<a class="anchor-link" href="#Iteration-3:-Two-scatter-plots"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 7 shows a chart consisting of two scatter plots.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig7.png" alt="Figure 7  Two scatter plots" title="Figure 7  Two scatter plots"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>I picked the scatter plots over the density plots as a result of their relative advantages. Most viewers will find the scatter plots easier to understand.</li>
+<li>I again used two charts rather than two y-axes on the same chart for the reasons pointed out above.</li>
+<li>Again, I appended the %-sign after each y-axis tick label to discourage a possible tendency to want to equate/compare the two vertical axes.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Pros">
+<a class="anchor" href="#Pros" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros<a class="anchor-link" href="#Pros"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Easy to understand scatter plots.</li>
+<li>Shows clear trends (intense green trend line color over neutral markers, green may also suggest “goodness” to some viewers which is part of the message). Exclude linear regression line’s parameters for the sake of simplicity.</li>
+<li>Multivariate (3 variables).</li>
+<li>Low opacity allows good representation of the density of data points.</li>
+<li>Color palette allows for easy rendition on the printed page.</li>
+<li>Color palette is sensitive to color blindness (red/green not used together).</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Cons">
+<a class="anchor" href="#Cons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons<a class="anchor-link" href="#Cons"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Although simpler, does not use all the variables.</li>
+<li>Overlapping markers’ darker color competes with trend lines.</li>
+<li>Maybe marker size is too large?</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Iteration-4:-Two-scatter-plots-with-a-fourth-variable">
+<a class="anchor" href="#Iteration-4:-Two-scatter-plots-with-a-fourth-variable" aria-hidden="true"><span class="octicon octicon-link"></span></a>Iteration 4: Two scatter plots with a fourth variable<a class="anchor-link" href="#Iteration-4:-Two-scatter-plots-with-a-fourth-variable"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 8 shows a chart consisting of two scatter plots and a fourth variable.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig8.png" alt="Figure 8  Two scatter plots with a fourth variable" title="Figure 8  Two scatter plots with a fourth variable"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Introduce 4th variable (pre-translation type) by coloration of markers. This means I will use the <em>gestalt law of similarity</em> to group translations by means of the similarity of their associated pre-translations. Using more variables is encouraged by Tufte’s “Third principle for the analysis and presentation of data: Show multivariate data.” (Beautiful Evidence, E. R. Tufte, 2006).</li>
+<li>Place comments/data labels close to markers instead of using a legend. This is suggested by Tufte’s “Fourth principle for the analysis and presentation of data: Completely integrate words, numbers, images, diagrams. (Beautiful Evidence, E. R. Tufte, 2006).</li>
+<li>Make opacity even lower to reduce the distracting effect of overlapping markers.</li>
+<li>Make marker size slightly smaller to reduce overlapping. Marker sizes cannot be too small, else color differences become harder to detect.</li>
+<li>Change color of trend line from green to black (green and red should not be used together for color-blindness problems).</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Pros">
+<a class="anchor" href="#Pros" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros<a class="anchor-link" href="#Pros"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Easy to understand scatter plots.</li>
+<li>Shows clear trends (intense trend line color over lighter markers; further decrease in opacity). Exclude linear regression line’s parameters for the sake of simplicity.</li>
+<li>Multivariate (now 4 variables) – one more variable, i.e. using all the relevant variables.</li>
+<li>Low opacity allows good representation of the density of data points.</li>
+<li>Color palette is sensitive to color blindness (red/green not used together).</li>
+<li>Provides good context, answers the question “Compared to what?”.</li>
+<li>Data labels close to markers (no legend). I considered spreading the labels over both graphics suggesting that they apply everywhere allowing me to only present them once. After trying this it seemed that it may cause confusion, so I added the three pre-translation type labels in <em>each</em> scatter plot.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Cons">
+<a class="anchor" href="#Cons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons<a class="anchor-link" href="#Cons"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>The use of colors maybe somewhat confusing, even though I have lowered the opacity. The varying overlaps between transparent markers lead to many shades of color. As Berinato says: “The more color differences they see, the more they have to work to figure out what the distinctions represent.”</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Iteration-5:-Two-scatter-plots-with-a-fourth-variable-and-better-coloration">
+<a class="anchor" href="#Iteration-5:-Two-scatter-plots-with-a-fourth-variable-and-better-coloration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Iteration 5: Two scatter plots with a fourth variable and better coloration<a class="anchor-link" href="#Iteration-5:-Two-scatter-plots-with-a-fourth-variable-and-better-coloration"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 9 shows a chart consisting of two scatter plots, a fourth variable and better coloration of the pre-translation types.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/vis_fig9.png" alt="Figure 9  Two scatter plots with a fourth variable and better coloration" title="Figure 9  Two scatter plots with a fourth variable and better coloration"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Make marker colors fully opaque. Now we don’t get the many shades due to overlapping of transparent markers, reducing the confusion.</li>
+<li>Make marker size even smaller to compensate for the increase in color intensity in order to maintain a proper weight balance between the trend line and the markers. Marker sizes cannot be too small, else color differences become harder to detect.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Pros">
+<a class="anchor" href="#Pros" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros<a class="anchor-link" href="#Pros"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Easy to understand scatter plots.</li>
+<li>Shows clear trends (intense trend line color over lighter, less saturated markers and their labels). Exclude linear regression line’s parameters for the sake of simplicity.</li>
+<li>Multivariate (4 variables), using all the relevant variables.</li>
+<li>Color palette is sensitive to color blindness (red/green not used together).</li>
+<li>Provides good context, answers question “Compared to what?”</li>
+<li>Data labels close to markers (no legend).</li>
+<li>Good balance between trend lines and markers.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Cons">
+<a class="anchor" href="#Cons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons<a class="anchor-link" href="#Cons"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Density of data points is indicated less effectively. For example, it is not possible to show that all the <em>no pre-translation</em> markers overlap (top left of bottom chart). Even so, this is my final choice for the visualization story.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="REFERENCES">
+<a class="anchor" href="#REFERENCES" aria-hidden="true"><span class="octicon octicon-link"></span></a>REFERENCES<a class="anchor-link" href="#REFERENCES"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Berinato, S. (2016). Good Charts - The HBR Guide to Making Smarter, More Persuasive Data Visualizations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Tufte, E. R. (1990). Envisioning Information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Tufte, E. R. (2001). The Visual Display of Quantitative Information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Tufte, E. R. (2006). Beautiful Evidence.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/translation_industry/visualization/python/seaborn/2019/02/12/VisualizationProject.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
