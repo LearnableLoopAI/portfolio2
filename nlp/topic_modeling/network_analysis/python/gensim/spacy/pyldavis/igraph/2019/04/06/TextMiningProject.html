@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>NLP: Topic Modeling using LSI, LDA, and HDP | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="NLP: Topic Modeling using LSI, LDA, and HDP" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Using packages: gensim (for topic modeling), spacy (for text pre-processing), pyLDAvis (for visualization of LDA topic model), and python-igraph (for network analysis)" />
+<meta property="og:description" content="Using packages: gensim (for topic modeling), spacy (for text pre-processing), pyLDAvis (for visualization of LDA topic model), and python-igraph (for network analysis)" />
+<link rel="canonical" href="https://learnableloop.com/nlp/topic_modeling/network_analysis/python/gensim/spacy/pyldavis/igraph/2019/04/06/TextMiningProject.html" />
+<meta property="og:url" content="https://learnableloop.com/nlp/topic_modeling/network_analysis/python/gensim/spacy/pyldavis/igraph/2019/04/06/TextMiningProject.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/txt_fig6.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-06T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"Using packages: gensim (for topic modeling), spacy (for text pre-processing), pyLDAvis (for visualization of LDA topic model), and python-igraph (for network analysis)","url":"https://learnableloop.com/nlp/topic_modeling/network_analysis/python/gensim/spacy/pyldavis/igraph/2019/04/06/TextMiningProject.html","@type":"BlogPosting","headline":"NLP: Topic Modeling using LSI, LDA, and HDP","dateModified":"2019-04-06T00:00:00-05:00","datePublished":"2019-04-06T00:00:00-05:00","image":"https://learnableloop.com/images/txt_fig6.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/nlp/topic_modeling/network_analysis/python/gensim/spacy/pyldavis/igraph/2019/04/06/TextMiningProject.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">NLP: Topic Modeling using LSI, LDA, and HDP</h1><p class="page-description">Using packages: gensim (for topic modeling), spacy (for text pre-processing), pyLDAvis (for visualization of LDA topic model), and python-igraph (for network analysis)</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-04-06T00:00:00-05:00" itemprop="datePublished">
+        Apr 6, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      12 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#NLP">NLP</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Topic_Modeling">Topic_Modeling</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Network_Analysis">Network_Analysis</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#gensim">gensim</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#spacy">spacy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#pyLDAvis">pyLDAvis</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#igraph">igraph</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Purpose">Purpose </a></li>
+<li class="toc-entry toc-h2"><a href="#Dataset-and-Variables">Dataset and Variables </a></li>
+<li class="toc-entry toc-h2"><a href="#Problem-Description-/-Objective">Problem Description / Objective </a></li>
+<li class="toc-entry toc-h2"><a href="#Methodology">Methodology </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Tooling">Tooling </a></li>
+<li class="toc-entry toc-h3"><a href="#Pre-processing">Pre-processing </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Part-1">Part 1 </a></li>
+<li class="toc-entry toc-h4"><a href="#Part-2">Part 2 </a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#English-language-model">English language model </a></li>
+<li class="toc-entry toc-h5"><a href="#Stopwords">Stopwords </a></li>
+<li class="toc-entry toc-h5"><a href="#Load-dataset">Load dataset </a></li>
+<li class="toc-entry toc-h5"><a href="#Clean-dataset">Clean dataset </a></li>
+<li class="toc-entry toc-h5"><a href="#Bigrams">Bigrams </a></li>
+<li class="toc-entry toc-h5"><a href="#Dictionary">Dictionary </a></li>
+<li class="toc-entry toc-h5"><a href="#Document-Term-Matrix">Document-Term-Matrix </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Topic-Modeling">Topic Modeling </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Findings-and-Discussion">Findings and Discussion </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Latent-Semantic-Indexing-Model-(13-topics-across-corpus)">Latent Semantic Indexing Model (13 topics across corpus) </a></li>
+<li class="toc-entry toc-h3"><a href="#Latent-Dirichlet-Allocation-Model-(14-topics-across-corpus)">Latent Dirichlet Allocation Model (14 topics across corpus) </a></li>
+<li class="toc-entry toc-h3"><a href="#Hierarchical-Dirichlet-Process-Model-(20-topics-across-corpus)">Hierarchical Dirichlet Process Model (20 topics across corpus) </a></li>
+<li class="toc-entry toc-h3"><a href="#Visualization-of-Latent-Dirichlet-Allocation-Model">Visualization of Latent Dirichlet Allocation Model </a></li>
+<li class="toc-entry toc-h3"><a href="#Comparison-of-the-3-models-using-Topic-Coherence">Comparison of the 3 models using Topic Coherence </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Network-Analysis-of-the-LSI-Topic-Model">Network Analysis of the LSI Topic Model </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusion-and-Further-Work">Conclusion and Further Work </a></li>
+<li class="toc-entry toc-h2"><a href="#References/Bibliography">References/Bibliography </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2019-04-06-TextMiningProject.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Purpose">
+<a class="anchor" href="#Purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose<a class="anchor-link" href="#Purpose"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The purpose of this pilot project is to investigate the usefulness of <em>topic modeling</em> on a large sermon set. This set forms the basis of outreach initiatives for a Canadian non-profit. Topic modeling can be used to organize this substantial body of text. A second application is as a basis for a more intelligent form of searching.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dataset-and-Variables">
+<a class="anchor" href="#Dataset-and-Variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset and Variables<a class="anchor-link" href="#Dataset-and-Variables"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The complete dataset consists of about 1200 sermons which have been preached by Reverend William Branham over a time period from 1947 to 1965. Since then, all of these have been transcribed and is available in text format (see <a href="http://www.messagehub.info/en/messages.do?show_en=true">http://www.messagehub.info/en/messages.do?show_en=true</a>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>From this dataset, I selected a sample of 13 sermons. This was not meant to be a representative sample. It is simply a small subset that I could lay my hands on easily and that I could familiarize myself with. I deliberately started small as this is a proof-of-concept pilot project.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each sermon comes in its own text file with each line containing a single sentence. This was my source data and I had to take it in this form. A <em>descriptor</em> identifies each sentence. An example of a descriptor is 2.1.c. Separated by periods the <em>descriptor</em> consists of:</p>
+<ul>
+<li>Running sub-block number</li>
+<li>Sentence number</li>
+<li>Sentence type</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The sentence <em>type</em> may be one of:</p>
+<ul>
+<li>h (heading)</li>
+<li>n (normal)</li>
+<li>c (conversation)</li>
+<li>p (first line of poetry/song/hymn)</li>
+<li>q (non-first line of poetry/song/hymn)</li>
+<li>s (scripture)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This format is not suitable for topic analysis. Consequently, I discarded the descriptors and merged all sentences in a sermon into a single line of text. All these lines were further merged into a single .csv file called <strong>all_titles.csv</strong>. So, each sermon comes from this file as a single text line. This allows for the potential contribution of <em>n-grams</em> more efficiently. This means the all_titles.csv file consists of 13 lines. The file contains 223,843 words which means each sermon contains an average of 17,219 words.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Problem-Description-/-Objective">
+<a class="anchor" href="#Problem-Description-/-Objective" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem Description / Objective<a class="anchor-link" href="#Problem-Description-/-Objective"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As noted above, the complete sermon set consists of about 1200 sermons. This is a substantial body of text to search through for specific areas of interest. The human searcher can scan the titles of course, but this is laborious and far from ideal. The central principle of <em>LDA topic analysis</em> is that a document (sermon in this case) consists of a <em>distribution of topics</em>. At the lower level, each topic consists of a <em>distribution of words</em>. This is an ideal situation for my purpose. It is common for a minister to dwell on a variety of topics during a sermon. If everything works out as I envision, each sermon could be “tagged” with its top 5 topics, for example.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If this approach works well, these higher probability topics could become the basis for categorizing and locating material. Another area of expansion could be to investigate the “evolution” of a topic over time (1947 to 1965). This is known as dynamic topic modeling.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Methodology">
+<a class="anchor" href="#Methodology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methodology<a class="anchor-link" href="#Methodology"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I will first describe the tooling environment. Next, the pre-processing will be covered. Lastly, the topic modeling will be described.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Tooling">
+<a class="anchor" href="#Tooling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tooling<a class="anchor-link" href="#Tooling"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I used the python language for writing the analysis code. An initial python script was prototyped for the merging of the sermon files into the final .csv file. Later, this python script was moved over to a IPython notebook called <strong>TextMiningProject-pre.ipynb</strong>. The remainder of the analysis was performed in two more notebooks called <strong>TextMiningProject.ipynb</strong> and <strong>TextMiningProject-graph.ipynb</strong>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The three notebooks can be accessed here:</p>
+<p><a href="https://nbviewer.jupyter.org/github/kobus78/TextMiningProject/blob/master/TextMiningProject-pre.ipynb" title="TextMiningProject-pre.ipynb">TextMiningProject-pre.ipynb</a></p>
+<p><a href="https://nbviewer.jupyter.org/github/kobus78/TextMiningProject/blob/master/TextMiningProject.ipynb" title="TextMiningProject.ipynb">TextMiningProject.ipynb</a></p>
+<p><a href="https://nbviewer.jupyter.org/github/kobus78/TextMiningProject/blob/master/TextMiningProject-graph.ipynb" title="TextMiningProject-graph.ipynb">TextMiningProject-graph.ipynb</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The following python packages were used:</p>
+<ul>
+<li>matplotlib</li>
+<li>gensim (for topic modeling)</li>
+<li>numpy</li>
+<li>spacy (for text pre-processing)</li>
+<li>pyLDAvis (for visualization of LDA topic model)</li>
+<li>pandas</li>
+<li>python-igraph (for network analysis)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The pre-processing notebook executed on a local “mac-mini” computer. The topic modeling and graph modeling notebooks executed on an Ubuntu 16.01 virtual machine on a remote server. I tried to have these notebooks combined but was unsuccessful. I could not get all the topic modeling packages to execute locally. My apologies for having two notebooks for the main analysis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Pre-processing">
+<a class="anchor" href="#Pre-processing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pre-processing<a class="anchor-link" href="#Pre-processing"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As Lev Konstantinovskiy said, "NLP is 80% preprocessing." (<a href="https://www.linkedin.com/in/levkonst/?originalSubdomain=uk">https://www.linkedin.com/in/levkonst/?originalSubdomain=uk</a>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Part-1">
+<a class="anchor" href="#Part-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Part 1<a class="anchor-link" href="#Part-1"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first part of pre-processing is about transforming the source files (one per sermon) into a merged .csv file. This is taken care of in the notebook <strong>TextMiningProject-pre.ipynb</strong>. Because I used only 13 sermon files, I did not think it worth the effort to batch process the files. I merely filled in one file name at a time in the notebook (variable MAIN). That input file was then ingested from the <em>input</em> folder, processed into a single string/line, and output to the <em>output</em> folder as a “-top” file (“top” is for topic analysis). Here is a list of the input files:</p>
+
+<pre><code>Mac-mini:input kobus$ ls
+1965-0919_Thirst_ENG_15-1102-B123E1R-x.txt
+1965-1031y_Leadership_ENG_17-0901-B123E1R-x.txt
+1965-1121_WhatHouseWillYouBuildMe_ENG_15-1102-B123E1R-x.txt
+1965-1125_TheInvisibleUnionOfTheBrideOfChrist_ENG_17-0502-B123E1R-x.txt
+1965-1127b_TryingToDoGodAServiceWithoutItBeingGodsWill_ENG_15-1002-B123-x.txt
+1965-1127z_IHaveHeardButNowISee_ENG_14-1102-B123E1R-x.txt
+1965-1128x_GodsOnlyProvidedPlaceOfWorship_ENG_14-1101-t.txt
+1965-1128z_OnTheWingsOfASnowWhiteDove_ENG_17-0501-B123-x.txt
+1965-1204_TheRapture_ENG_16-1102-B123-x.txt
+1965-1205_ThingsThatAreToBe_ENG_17-0203-B123E1R-x.txt
+1965-1206_ModernEventsAreMadeClearByProphecy_ENG_14-0901-B123-x.txt
+1965-1207_Leadership_ENG_15-0402-B123E1R-x.txt
+1965-1212_Communion_ENG_12-1201-B123E1R-x.txt</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These are the output files:</p>
+
+<pre><code>Mac-mini:output kobus$ ls
+1965-0919_Thirst_ENG_15-1102-B123E1R-x-top.txt
+1965-1031y_Leadership_ENG_17-0901-B123E1R-x-top.txt
+1965-1121_WhatHouseWillYouBuildMe_ENG_15-1102-B123E1R-x-top.txt
+1965-1125_TheInvisibleUnionOfTheBrideOfChrist_ENG_17-0502-B123E1R-x-top.txt
+1965-1127b_TryingToDoGodAServiceWithoutItBeingGodsWill_ENG_15-1002-B123-x-top.txt
+1965-1127z_IHaveHeardButNowISee_ENG_14-1102-B123E1R-x-top.txt
+1965-1128x_GodsOnlyProvidedPlaceOfWorship_ENG_14-1101-t-top.txt
+1965-1128z_OnTheWingsOfASnowWhiteDove_ENG_17-0501-B123-x-top.txt
+1965-1204_TheRapture_ENG_16-1102-B123-x-top.txt
+1965-1205_ThingsThatAreToBe_ENG_17-0203-B123E1R-x-top.txt
+1965-1206_ModernEventsAreMadeClearByProphecy_ENG_14-0901-B123-x-top.txt
+1965-1207_Leadership_ENG_15-0402-B123E1R-x-top.txt
+1965-1212_Communion_ENG_12-1201-B123E1R-x-top.txt
+all_titles.csv</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With the “-top” files ready in the output folder, the next step was to merge them together with the following command:</p>
+
+<pre><code>cat `ls *.txt` &gt; all_titles.csv</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, the all_titles.csv was copied to the Ubuntu virtual machine with:</p>
+
+<pre><code>scp output/all_titles.csv proj@192.168.1.208:~/TextMiningProject/</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Part-2">
+<a class="anchor" href="#Part-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Part 2<a class="anchor-link" href="#Part-2"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The second part of the pre-processing was executed from the notebook <strong>TextMiningProject.ipynb</strong>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="English-language-model">
+<a class="anchor" href="#English-language-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>English language model<a class="anchor-link" href="#English-language-model"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first step was to load the <em>spacy</em> package’s English language model. The language model includes a set of common <em>stopwords</em>. I had to tweak the default set due to a bug in the package. This allows for variations in capitalization of the default stopwords.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Stopwords">
+<a class="anchor" href="#Stopwords" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stopwords<a class="anchor-link" href="#Stopwords"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next was the addition of my own stopwords, discovered by a process of trial-and-error. When multiple topics ended up having the same high-probability words, I sometimes added these to the stopwords. These words do not contribute to the individuality of topics and might be considered as noise. I added the following stopwords:</p>
+
+<pre><code>my_stop_words = 
+['said','Said','saying','Saying','thing','things','Thing','Things','man','day','church','Church','people','People','time', 'way','ways','Way','Ways','place','places','Place','Places','hand','age','ages','world','worlds','tonight','Tonight',
+'day','days','Day','Days','brother','brothers','Brother','Brothers','sister','sisters','Sister','Sisters',
+'woman','women','year','years','chapter','chapters','verse','verses','today','Today','mammy','Mammy','hand','Hand',
+'prophet','prophets','Prophet','Prophets','life','Life','heart','hearts','message']</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Load-dataset">
+<a class="anchor" href="#Load-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Load dataset<a class="anchor-link" href="#Load-dataset"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dataset was loaded next. It consists of 13 text lines. Each sermon is in the form of a single line of text.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Clean-dataset">
+<a class="anchor" href="#Clean-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Clean dataset<a class="anchor-link" href="#Clean-dataset"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To clean the dataset the following steps were taken:</p>
+<ul>
+<li>remove stopwords</li>
+<li>keep alphanumeric tokens</li>
+<li>remove punctuation tokens</li>
+<li>remove numbers</li>
+<li>keep tokens with more than 2 characters</li>
+<li>keep tokens that are nouns</li>
+<li>keep lemmas of remaining tokens</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The cleaning took about 2 minutes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Bigrams">
+<a class="anchor" href="#Bigrams" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bigrams<a class="anchor-link" href="#Bigrams"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I initially thought that the use of bigrams, even trigrams and higher n-grams might be beneficial. As it turned out, I rarely noticed a bigram high-probability word coming up in a topic. I decided to drop the use of bigrams. As it is, I settled on using nouns only in the end.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Dictionary">
+<a class="anchor" href="#Dictionary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dictionary<a class="anchor-link" href="#Dictionary"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A dictionary was created next from the cleaned corpus. It consists of 2486 unique tokens.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Document-Term-Matrix">
+<a class="anchor" href="#Document-Term-Matrix" aria-hidden="true"><span class="octicon octicon-link"></span></a>Document-Term-Matrix<a class="anchor-link" href="#Document-Term-Matrix"> </a>
+</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The dictionary was used to form a <em>document-term-matrix</em> (DTM) to hold the word vectors for a <em>bag-of-words</em> representation. I used a sparse representation consisting of a list of lists. The outer list contains the complete corpus. Each inner list contains the matrix entries for a document (sermon in this case) consisting of multiple tuples. The first entry in each tuple is the ID of the token in the dictionary. The second entry is the count of this token in the document represented by the specific inner list.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This brings us to the end of the pre-processing. Next, I will discuss the topic modeling.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Topic-Modeling">
+<a class="anchor" href="#Topic-Modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Topic Modeling<a class="anchor-link" href="#Topic-Modeling"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Three topic models were evaluated:</p>
+<ul>
+<li>Latent Semantic Indexing (LSI) Model</li>
+<li>Latent Dirichlet Allocation (LDA) Model</li>
+<li>Hierarchical Dirichlet Process (HDP) Model</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finding a set of topics was an intensely interactive process. The practical reason for this is that these techniques are based on unsupervised learning principles and it is usually up to the analyst to decide on how to cluster or group the data – in this case into groups of topics and groups of words. Each grouping comes in the form of a discrete probability distribution, also called topic proportions and word proportions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fortunately, the Hierarchical Dirichlet Process Model provides a suggestion of the optimal number of topics. I used this value (which was 20 topics) as the initial value for the other two models for the number of topics. In the end, I ended up with 13 topics for the LSI model, 14 topics for the LDA model, and 20 topics for the HDP model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The LSI model is an older algorithm and the LDA model was developed for fix some issues with it (Blei 2012).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Findings-and-Discussion">
+<a class="anchor" href="#Findings-and-Discussion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Findings and Discussion<a class="anchor-link" href="#Findings-and-Discussion"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here are the titles of the sermons again to help with the placement of topics. They have been color-coded to show the association with topics (I have some familiarity with some of the sermons).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_top1.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main theme/topic of the 1965-0919_Thirst sermon came out clearly in each of the models (<strong>highlighted in yellow</strong>). It is about how a wounded <em>dear</em> that has been chased by the <em>dogs</em>, <em>thirsts</em> for water and has a strong <em>desire</em> to reach it, else it will surely die. The spiritual application is for the human <em>soul</em> to reach out for the <em>water</em> of life and be <em>enlightened</em> by the <em>Word</em> of life. I have italicized the high-probability tokens identified by the models.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main topic of the 1965-1212_Communion sermon was also identified accurately (<strong>highlighted in light green</strong>). The high-probability tokens were: <em>communion</em>, <em>ordinance</em>, <em>water</em>, <em>order</em>, <em>bread</em>, <em>blood</em>, <em>supper</em>, <em>lamb</em>, <em>sacrifice</em>, <em>body</em>, <em>sin</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The theme of the 1965-1031y_Leadership sermon is how a child grows up by being submitted to a series of leadership roles that shapes his/her life (<strong>highlighted in purple</strong>).  The <em>child</em> will progressively hear the <em>leadership voices</em> of <em>mother</em>, its <em>teacher</em>, <em>nature</em>, father (who happens to be a <em>business</em> man), and eventually God’s voice in the form of <em>revelation</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The 1965-1127b_TryingToDoGodAServiceWithoutItBeingGodsWill sermon (<strong>highlighted in cyan</strong>) relates how <em>king</em> David had <em>faith</em> and <em>inspiration</em> to recover the <em>ark</em> of the covenant from the Philistines. This gave rise to a great <em>revival</em> among the Israelites. In the end, it turns out that he made the wrong <em>choice</em>. It is compared with making the wrong <em>choice</em> by trying to do God a service without it being His will. This often happens by relying on the <em>denominational</em> church system and providing service by means of it for salvation, instead of relying on God himself.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The 1965-1128z_OnTheWingsOfASnowWhiteDove sermon tells the story of Noah (<strong>highlighted in grey</strong>). A <em>dove</em> was released by Noah after the flood in order to find land; it came back carrying a freshly plucked olive leaf, a <em>sign</em> of life and <em>love</em> after the long <em>night</em> of the <em>water</em> of the Flood. This <em>sign</em> of love was given to Noah on the <em>wings</em> of a <em>snow</em>-white dove.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Latent-Semantic-Indexing-Model-(13-topics-across-corpus)">
+<a class="anchor" href="#Latent-Semantic-Indexing-Model-(13-topics-across-corpus)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Latent Semantic Indexing Model (13 topics across corpus)<a class="anchor-link" href="#Latent-Semantic-Indexing-Model-(13-topics-across-corpus)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_top2.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Latent-Dirichlet-Allocation-Model-(14-topics-across-corpus)">
+<a class="anchor" href="#Latent-Dirichlet-Allocation-Model-(14-topics-across-corpus)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Latent Dirichlet Allocation Model (14 topics across corpus)<a class="anchor-link" href="#Latent-Dirichlet-Allocation-Model-(14-topics-across-corpus)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_top3.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Hierarchical-Dirichlet-Process-Model-(20-topics-across-corpus)">
+<a class="anchor" href="#Hierarchical-Dirichlet-Process-Model-(20-topics-across-corpus)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hierarchical Dirichlet Process Model (20 topics across corpus)<a class="anchor-link" href="#Hierarchical-Dirichlet-Process-Model-(20-topics-across-corpus)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_top4.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Visualization-of-Latent-Dirichlet-Allocation-Model">
+<a class="anchor" href="#Visualization-of-Latent-Dirichlet-Allocation-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualization of Latent Dirichlet Allocation Model<a class="anchor-link" href="#Visualization-of-Latent-Dirichlet-Allocation-Model"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 1 shows a visualization of the findings of the Latent Dirichlet Allocation Model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig1.png" alt="Figure 1  Visualization of the LDA Model" title="Figure 1  Visualization of the LDA Model"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Visualization was performed using the python pyLDAvis package, <a href="https://pypi.org/project/pyLDAvis/1.0.0/">https://pypi.org/project/pyLDAvis/1.0.0/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main topic associated with <em>1965-1212_Communion</em> is highlighted in red. Note that the topic numbers in the visualization are different from those where the models are printed out (I have noticed this on the web too). There are some overlaps among topics (which require further work). There is one strongest topic in the north-west and a number of tiny topics towards the east.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main topic associated with <em>1965-1207_Leadership</em> and <em>1965-1031y_Leadership</em> is shown in Figure 2.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig2.png" alt="Figure 2  Main topic associated with Leadership" title="Figure 2  Main topic associated with Leadership"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main topic associated with <em>1965-0919_Thirst</em> is shown in Figure 3.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig3.png" alt="Figure 3  Main topic associated with Thirst" title="Figure 3  Main topic associated with Thirst"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main topic associated with Noah’s dove (<em>1965-1128z_OnTheWingsOfASnowWhiteDove</em>) is shown in Figure 4.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig4.png" alt="Figure 4  Main topic associated with Noah's dove" title="Figure 4  Main topic associated with Noah's dove"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Comparison-of-the-3-models-using-Topic-Coherence">
+<a class="anchor" href="#Comparison-of-the-3-models-using-Topic-Coherence" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparison of the 3 models using Topic Coherence<a class="anchor-link" href="#Comparison-of-the-3-models-using-Topic-Coherence"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I used the technique of topic coherence to draw a comparison between the three models. This technique only works when comparing models based on the same dataset. As is evident from Figure 5, the LDA (Latent Dirichlet Allocation) model fared the best. After it came the HDP (Hierarchical Dirichlet Process) and then the LSI (Latent Semantic Indexing) model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig5.png" alt="Figure 5  Comparison of the 3 models using Topic Coherence" title="Figure 5  Comparison of the 3 models using Topic Coherence"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Network-Analysis-of-the-LSI-Topic-Model">
+<a class="anchor" href="#Network-Analysis-of-the-LSI-Topic-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Network Analysis of the LSI Topic Model<a class="anchor-link" href="#Network-Analysis-of-the-LSI-Topic-Model"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I have visualized the topic model of the LDA model above. For the visualization of a network model I will use the LSI topic model. Although this is the weakest model, it was easiest to construct its incidence matrix because it has the fewest number of topics (13). For the connection of each of the topics the top 10 words were used from the topic model. The incidence matrix is in the file <strong>IncidenceMatrixLSI.csv</strong>. The network analysis of the LSI topic model is in the file <strong>TextMiningProject-graph.ipynb</strong>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After reading in the incidence matrix, the NaN’s are replaced with zeros and the data is prepared for consumption by the python-igraph package. A bipartite graph is created with 88 vertices and 142 edges. Names are provided for the vertices from the row and column names of the incidence matrix.  Figure 6 shows the bipartite graph of the LSI topic model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig6.png" alt="Figure 6  Bipartite graph of the LSI topic model" title="Figure 6  Bipartite graph of the LSI topic model"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The red vertices represent the <em>topics</em> and the blue vertices the <em>words</em>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, the bipartite graph was projected into a graph for topics and a graph for words. Figure 7 shows the <strong>topic</strong> graph for the LSI topic model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig7.png" alt="Figure 7  Topic graph for the LSI topic model" title="Figure 7  Topic graph for the LSI topic model"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 8 shows the <strong>word</strong> graph for the LSI topic model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/txt_fig8.png" alt="Figure 8  Word graph for the LSI topic model" title="Figure 8  Word graph for the LSI topic model"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion-and-Further-Work">
+<a class="anchor" href="#Conclusion-and-Further-Work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion and Further Work<a class="anchor-link" href="#Conclusion-and-Further-Work"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Overall, I am impressed by the possibilities of topic modeling. Although the models I derived were not adequate enough for my purposes, I think it might not require too much more work to make them usable. I would like to pursue this idea further and apply it in the areas of semantic search, tagging of each sermon with its highest-probability topics, and tracking of topics over time by means of dynamic topic models (Blei 2012).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="References/Bibliography">
+<a class="anchor" href="#References/Bibliography" aria-hidden="true"><span class="octicon octicon-link"></span></a>References/Bibliography<a class="anchor-link" href="#References/Bibliography"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Cloverdale Bible Way: 
+<a href="https://bibleway.org/">https://bibleway.org/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Message Hub:
+<a href="http://www.messagehub.info/en/messages.do?show_en=true">http://www.messagehub.info/en/messages.do?show_en=true</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lev Konstantinovskiy:
+<a href="https://www.linkedin.com/in/levkonst/?originalSubdomain=uk">https://www.linkedin.com/in/levkonst/?originalSubdomain=uk</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Blei, D.M. Probabilistic Topic Models, 2012.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>pyLDAvis python package:
+<a href="https://pypi.org/project/pyLDAvis/1.0.0/">https://pypi.org/project/pyLDAvis/1.0.0/</a></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/nlp/topic_modeling/network_analysis/python/gensim/spacy/pyldavis/igraph/2019/04/06/TextMiningProject.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
