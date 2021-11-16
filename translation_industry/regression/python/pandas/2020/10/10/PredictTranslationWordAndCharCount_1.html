@@ -1,0 +1,3272 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Translation Word/Char Count Prediction (Part 1) | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Translation Word/Char Count Prediction (Part 1)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Prediction of translated Word or Char Count is used as a Quality or Validation Check" />
+<meta property="og:description" content="Prediction of translated Word or Char Count is used as a Quality or Validation Check" />
+<link rel="canonical" href="https://learnableloop.com/translation_industry/regression/python/pandas/2020/10/10/PredictTranslationWordAndCharCount_1.html" />
+<meta property="og:url" content="https://learnableloop.com/translation_industry/regression/python/pandas/2020/10/10/PredictTranslationWordAndCharCount_1.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/PredictTranslationWordAndCharCount_1.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-10-10T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"Prediction of translated Word or Char Count is used as a Quality or Validation Check","url":"https://learnableloop.com/translation_industry/regression/python/pandas/2020/10/10/PredictTranslationWordAndCharCount_1.html","@type":"BlogPosting","headline":"Translation Word/Char Count Prediction (Part 1)","dateModified":"2020-10-10T00:00:00-05:00","datePublished":"2020-10-10T00:00:00-05:00","image":"https://learnableloop.com/images/PredictTranslationWordAndCharCount_1.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/translation_industry/regression/python/pandas/2020/10/10/PredictTranslationWordAndCharCount_1.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Translation Word/Char Count Prediction (Part 1)</h1><p class="page-description">Prediction of translated Word or Char Count is used as a Quality or Validation Check</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-10-10T00:00:00-05:00" itemprop="datePublished">
+        Oct 10, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      13 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Translation_Industry">Translation_Industry</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Regression">Regression</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Python">Python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#pandas">pandas</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Purpose">Purpose </a></li>
+<li class="toc-entry toc-h2"><a href="#Dataset-and-Variables">Dataset and Variables </a></li>
+<li class="toc-entry toc-h1"><a href="#Setup-the-Environment">Setup the Environment </a></li>
+<li class="toc-entry toc-h1"><a href="#Get-train/valid-data">Get train/valid data </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Ingest-all-E-contributions">Ingest all E-contributions </a></li>
+<li class="toc-entry toc-h2"><a href="#Ingest-all-V-contributions">Ingest all V-contributions </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Save-prepared-data-to-file">Save prepared data to file </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-10-10-PredictTranslationWordAndCharCount_1.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Purpose">
+<a class="anchor" href="#Purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose<a class="anchor-link" href="#Purpose"> </a>
+</h2>
+<p>Machine translation is used increasingly to lighten the load of human translators. The critical component here is the <em>translation engine</em> which is a model that takes a sequence of source words and outputs another sequence of translated words. To train such a model many thousands of sentence pairs need to be aligned for training examples.</p>
+<p>There is a relationship between the number of words (and the number of characters) in the source language and the target language. If this relationship can be established and captured in yet another model, such a model can be helpful in at least two ways:</p>
+<ul>
+<li>For training: Validate the alignment of two sentences (in a training example) by comparing their <em>word size</em> and/or <em>character size</em>
+</li>
+<li>For inference: Validate the <em>word size</em> and/or <em>character size</em> of a translated/proofread sentence</li>
+</ul>
+<p>The purpose of this project is to discover such a model for a variety of languages and to evaluate its use in the above roles.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dataset-and-Variables">
+<a class="anchor" href="#Dataset-and-Variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset and Variables<a class="anchor-link" href="#Dataset-and-Variables"> </a>
+</h2>
+<p>The dataset comes in the form of <em>contributions</em>, each captured in one of 167289 rows or data-points. Each contribution is a sentence that could be in the source language (always English) or a translation of the source sentence. There could be many variations/versions of a translated sentence, including the version provided by the translation engine initially. Human proofreaders then provide their own corrections in the form of other versions.</p>
+<p>There are 4 kinds of contributions:</p>
+<ul>
+<li>E: English contributions</li>
+<li>T: Translate contributions - provided by the translation engine</li>
+<li>C: Create contributions - corrections provided by human proofreaders/translators</li>
+<li>V: Vote contributions - whenever a human proofreader/translator indicates agreement with a contribution provided by the translation engine, it is recorded in the form of a vote contribution</li>
+</ul>
+<p>The features of the dataset are:</p>
+<ul>
+<li>m_descriptor: Unique identifier of a document</li>
+<li>t_lan: Language of the translation (English is also considered a translation)</li>
+<li>t_senc: Number of sentences in a document</li>
+<li>t_version: Version of a translation</li>
+<li>s_typ: Type of the sentence</li>
+<li>s_rsen: Number of a sentence within a document</li>
+<li>e_id: Database primary key of a contribution's content</li>
+<li>e_top: Content of the contribution that got the most votes</li>
+<li>be_id: N/A</li>
+<li>be_top: N/A</li>
+<li>c_id: Database primary key of a contribution</li>
+<li>c_created_at: Creation time of a contribution</li>
+<li>c_kind: Kind of a contribution</li>
+<li>c_eis: N/A</li>
+<li>c_base: N/A</li>
+<li>a_role: N/A</li>
+<li>u_name: N/A</li>
+<li>e_content: Text content of a contribution</li>
+<li>chars: Number of characters in a contribution</li>
+<li>words: Number of words in a contribution</li>
+</ul>
+<p>In this notebook we will only prepare the dataset. Exploratory data analysis as well as modeling will occur in followup notebooks.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Setup-the-Environment">
+<a class="anchor" href="#Setup-the-Environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup the Environment<a class="anchor-link" href="#Setup-the-Environment"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>python --version
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Python 3.7.10
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">base_dir</span><span class="p">);</span> <span class="c1">#PATH</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Get-train/valid-data">
+<a class="anchor" href="#Get-train/valid-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get train/valid data<a class="anchor-link" href="#Get-train/valid-data"> </a>
+</h1>
+<p>Next we will ingest all the data we need. Note that the content (e_content) for each contribution is not displayed as it often makes the presentation unwieldy.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Ingest-all-E-contributions">
+<a class="anchor" href="#Ingest-all-E-contributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ingest all E-contributions<a class="anchor-link" href="#Ingest-all-E-contributions"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">PATH</span><span class="si">}</span><span class="s2">/contributions/*E-contributions.csv"</span><span class="p">)</span>
+<span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">all_files</span><span class="p">:</span>
+    <span class="n">dft</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'~'</span><span class="p">)</span>
+    <span class="n">li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dft</span><span class="p">)</span>
+<span class="n">df_E</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_E</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_senc</th>
+      <th>t_version</th>
+      <th>s_typ</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_id</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_eis</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>1870</td>
+      <td>18-0101-E1R</td>
+      <td>n</td>
+      <td>1</td>
+      <td>174684</td>
+      <td>Z</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>224461</td>
+      <td>2018-03-29 23:10:24.573038</td>
+      <td>E</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>EP</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>1870</td>
+      <td>18-0101-E1R</td>
+      <td>n</td>
+      <td>2</td>
+      <td>174685</td>
+      <td>Z</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>224462</td>
+      <td>2018-03-29 23:10:24.595501</td>
+      <td>E</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>EP</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>1870</td>
+      <td>18-0101-E1R</td>
+      <td>n</td>
+      <td>3</td>
+      <td>174686</td>
+      <td>Z</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>224463</td>
+      <td>2018-03-29 23:10:24.628362</td>
+      <td>E</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>EP</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>1870</td>
+      <td>18-0101-E1R</td>
+      <td>n</td>
+      <td>4</td>
+      <td>174687</td>
+      <td>Z</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>224464</td>
+      <td>2018-03-29 23:10:24.650119</td>
+      <td>E</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>EP</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>1870</td>
+      <td>18-0101-E1R</td>
+      <td>n</td>
+      <td>5</td>
+      <td>174688</td>
+      <td>Z</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>224465</td>
+      <td>2018-03-29 23:10:24.670806</td>
+      <td>E</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>EP</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_E</span> <span class="o">=</span> <span class="n">df_E</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'e_id'</span><span class="p">,</span><span class="s1">'t_senc'</span><span class="p">,</span><span class="s1">'s_typ'</span><span class="p">,</span><span class="s1">'e_top'</span><span class="p">,</span><span class="s1">'be_id'</span><span class="p">,</span><span class="s1">'be_top'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">,</span><span class="s1">'c_kind'</span><span class="p">,</span><span class="s1">'c_eis'</span><span class="p">,</span><span class="s1">'c_base'</span><span class="p">,</span><span class="s1">'a_role'</span><span class="p">,</span><span class="s1">'u_name'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#each record now unique</span>
+<span class="n">df_E</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>1</td>
+      <td>224461</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>2</td>
+      <td>224462</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>3</td>
+      <td>224463</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>4</td>
+      <td>224464</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>5</td>
+      <td>224465</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#handle NaNs in e_content</span>
+<span class="n">e_content_nans</span> <span class="o">=</span> <span class="n">df_E</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+<span class="n">df_E</span><span class="p">[</span><span class="n">e_content_nans</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>e_content</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>33415</th>
+      <td>1956-0805</td>
+      <td>ENG</td>
+      <td>15-0402-b</td>
+      <td>1176</td>
+      <td>454335</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>43018</th>
+      <td>1957-0419</td>
+      <td>ENG</td>
+      <td>15-0401-b</td>
+      <td>505</td>
+      <td>13306</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#replace e_content NaNs with empty strings</span>
+<span class="n">df_E</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">e_content_nans</span><span class="p">,</span> <span class="s1">'e_content'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="c1"># df_E.loc[e_content_nans, ['e_content']]</span>
+<span class="c1"># OR</span>
+<span class="n">df_E</span><span class="p">[</span><span class="n">df_E</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]</span><span class="o">==</span><span class="s1">''</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>e_content</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>33415</th>
+      <td>1956-0805</td>
+      <td>ENG</td>
+      <td>15-0402-b</td>
+      <td>1176</td>
+      <td>454335</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>43018</th>
+      <td>1957-0419</td>
+      <td>ENG</td>
+      <td>15-0401-b</td>
+      <td>505</td>
+      <td>13306</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#add chars column</span>
+<span class="n">df_E</span><span class="p">[</span><span class="s1">'chars'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df_E</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]]</span>
+<span class="c1"># df_E['chars'] = [len(e) if type(e)==str else 1 for e in df_E['e_content']]</span>
+<span class="n">df_E</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'c_id'</span><span class="p">,</span><span class="s1">'chars'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>chars</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>1</td>
+      <td>224461</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>2</td>
+      <td>224462</td>
+      <td>225</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>3</td>
+      <td>224463</td>
+      <td>109</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>4</td>
+      <td>224464</td>
+      <td>49</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>5</td>
+      <td>224465</td>
+      <td>163</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>6</td>
+      <td>224466</td>
+      <td>96</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># df_E.loc[e_content_nans, ['e_content','chars']]</span>
+<span class="c1"># OR</span>
+<span class="n">df_E</span><span class="p">[</span><span class="n">df_E</span><span class="p">[</span><span class="s1">'chars'</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>e_content</th>
+      <th>chars</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>33415</th>
+      <td>1956-0805</td>
+      <td>ENG</td>
+      <td>15-0402-b</td>
+      <td>1176</td>
+      <td>454335</td>
+      <td></td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>43018</th>
+      <td>1957-0419</td>
+      <td>ENG</td>
+      <td>15-0401-b</td>
+      <td>505</td>
+      <td>13306</td>
+      <td></td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#add words column</span>
+<span class="c1">#https://www.geeksforgeeks.org/python-program-to-count-words-in-a-sentence/</span>
+<span class="n">df_E</span><span class="p">[</span><span class="s1">'words'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\w+'</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df_E</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]]</span>
+<span class="n">df_E</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'c_id'</span><span class="p">,</span><span class="s1">'chars'</span><span class="p">,</span><span class="s1">'words'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>chars</th>
+      <th>words</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>1</td>
+      <td>224461</td>
+      <td>21</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>2</td>
+      <td>224462</td>
+      <td>225</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>3</td>
+      <td>224463</td>
+      <td>109</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>4</td>
+      <td>224464</td>
+      <td>49</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>5</td>
+      <td>224465</td>
+      <td>163</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101-E1R</td>
+      <td>6</td>
+      <td>224466</td>
+      <td>96</td>
+      <td>17</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#remove BER part of version from t_version so that we can use this column to join the English contributions with their matching translated contributions</span>
+<span class="n">df_E</span><span class="p">[</span><span class="s1">'t_version'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'-'</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df_E</span><span class="p">[</span><span class="s1">'t_version'</span><span class="p">]]</span>
+<span class="n">df_E</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'c_id'</span><span class="p">,</span><span class="s1">'chars'</span><span class="p">,</span><span class="s1">'words'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>chars</th>
+      <th>words</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101</td>
+      <td>1</td>
+      <td>224461</td>
+      <td>21</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101</td>
+      <td>2</td>
+      <td>224462</td>
+      <td>225</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101</td>
+      <td>3</td>
+      <td>224463</td>
+      <td>109</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101</td>
+      <td>4</td>
+      <td>224464</td>
+      <td>49</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101</td>
+      <td>5</td>
+      <td>224465</td>
+      <td>163</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1965-0418x</td>
+      <td>ENG</td>
+      <td>18-0101</td>
+      <td>6</td>
+      <td>224466</td>
+      <td>96</td>
+      <td>17</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Ingest-all-V-contributions">
+<a class="anchor" href="#Ingest-all-V-contributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ingest all V-contributions<a class="anchor-link" href="#Ingest-all-V-contributions"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">PATH</span><span class="si">}</span><span class="s2">/contributions/*V-contributions.csv"</span><span class="p">)</span>
+<span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">all_files</span><span class="p">:</span>
+    <span class="n">dft</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'~'</span><span class="p">)</span>
+    <span class="n">li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dft</span><span class="p">)</span>
+<span class="n">df_V</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_senc</th>
+      <th>t_version</th>
+      <th>s_typ</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_id</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_eis</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>181444.0</td>
+      <td>M</td>
+      <td>844713</td>
+      <td>2020-01-15 02:13:34.847562</td>
+      <td>V</td>
+      <td>11</td>
+      <td>a</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>181444.0</td>
+      <td>M</td>
+      <td>256723</td>
+      <td>2018-04-23 11:04:31.787641</td>
+      <td>V</td>
+      <td>28</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>2</td>
+      <td>339948</td>
+      <td>T</td>
+      <td>200635.0</td>
+      <td>N</td>
+      <td>468379</td>
+      <td>2019-01-30 22:21:29.62162</td>
+      <td>V</td>
+      <td>0</td>
+      <td>c</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>2</td>
+      <td>200635</td>
+      <td>N</td>
+      <td>181445.0</td>
+      <td>N</td>
+      <td>256725</td>
+      <td>2018-04-23 11:23:43.781013</td>
+      <td>V</td>
+      <td>0</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>3</td>
+      <td>200637</td>
+      <td>M</td>
+      <td>200636.0</td>
+      <td>N</td>
+      <td>256727</td>
+      <td>2018-04-23 11:26:37.965897</td>
+      <td>V</td>
+      <td>0</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_V</span> <span class="o">=</span> <span class="n">df_V</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'t_senc'</span><span class="p">,</span><span class="s1">'s_typ'</span><span class="p">,</span><span class="s1">'be_id'</span><span class="p">,</span><span class="s1">'c_eis'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>M</td>
+      <td>844713</td>
+      <td>2020-01-15 02:13:34.847562</td>
+      <td>V</td>
+      <td>a</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>M</td>
+      <td>256723</td>
+      <td>2018-04-23 11:04:31.787641</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>2</td>
+      <td>339948</td>
+      <td>T</td>
+      <td>N</td>
+      <td>468379</td>
+      <td>2019-01-30 22:21:29.62162</td>
+      <td>V</td>
+      <td>c</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>2</td>
+      <td>200635</td>
+      <td>N</td>
+      <td>N</td>
+      <td>256725</td>
+      <td>2018-04-23 11:23:43.781013</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>3</td>
+      <td>200637</td>
+      <td>M</td>
+      <td>N</td>
+      <td>256727</td>
+      <td>2018-04-23 11:26:37.965897</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#keep only top edits</span>
+<span class="c1"># df_V[df_V['e_top'].isin(['M','T'])] #Majority &amp; Tie</span>
+<span class="n">df_V</span> <span class="o">=</span> <span class="n">df_V</span><span class="p">[</span><span class="n">df_V</span><span class="p">[</span><span class="s1">'e_top'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">'M'</span><span class="p">,</span><span class="s1">'T'</span><span class="p">])]</span> <span class="c1">#Majority &amp; Tie</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>M</td>
+      <td>844713</td>
+      <td>2020-01-15 02:13:34.847562</td>
+      <td>V</td>
+      <td>a</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>M</td>
+      <td>256723</td>
+      <td>2018-04-23 11:04:31.787641</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>2</td>
+      <td>339948</td>
+      <td>T</td>
+      <td>N</td>
+      <td>468379</td>
+      <td>2019-01-30 22:21:29.62162</td>
+      <td>V</td>
+      <td>c</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>3</td>
+      <td>200637</td>
+      <td>M</td>
+      <td>N</td>
+      <td>256727</td>
+      <td>2018-04-23 11:26:37.965897</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>18-0101-B123E1R</td>
+      <td>3</td>
+      <td>200637</td>
+      <td>M</td>
+      <td>M</td>
+      <td>468380</td>
+      <td>2019-01-30 22:21:51.780404</td>
+      <td>V</td>
+      <td>t</td>
+      <td>CE</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tmp</span> <span class="o">=</span> <span class="n">df_V</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">'m_descriptor'</span><span class="p">,</span> <span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_V</span> <span class="o">=</span> <span class="n">df_V</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'m_descriptor'</span><span class="p">,</span> <span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">'e_top'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">,</span> <span class="s1">'be_top'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">,</span> <span class="s1">'c_created_at'</span><span class="p">:[</span><span class="s1">'last'</span><span class="p">,</span><span class="s1">'count'</span><span class="p">],</span> <span class="s1">'c_kind'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">,</span> <span class="s1">'c_base'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">,</span> <span class="s1">'a_role'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">,</span> <span class="s1">'u_name'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">,</span> <span class="s1">'e_content'</span><span class="p">:</span><span class="s1">'last'</span><span class="p">})</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th colspan="2" halign="left">c_created_at</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>last</th>
+      <th>last</th>
+      <th>last</th>
+      <th>count</th>
+      <th>last</th>
+      <th>last</th>
+      <th>last</th>
+    </tr>
+    <tr>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="5" valign="top">1948-0304</th>
+      <th rowspan="5" valign="top">GER</th>
+      <th rowspan="5" valign="top">15-0902-B123</th>
+      <th>1</th>
+      <td>M</td>
+      <td>NaN</td>
+      <td>2019-07-30 13:44:14.904495</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:34.151158</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:45.966924</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:53.096079</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:45:56.611909</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <th>...</th>
+      <th>...</th>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th rowspan="5" valign="top">CAB-06</th>
+      <th rowspan="5" valign="top">AFR</th>
+      <th rowspan="5" valign="top">18-1101-B123</th>
+      <th>831</th>
+      <td>T</td>
+      <td>N</td>
+      <td>2020-05-25 02:43:59.956802</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>832</th>
+      <td>M</td>
+      <td>M</td>
+      <td>2020-05-25 02:44:26.239919</td>
+      <td>2</td>
+      <td>V</td>
+      <td>t</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>833</th>
+      <td>M</td>
+      <td>M</td>
+      <td>2020-05-25 02:44:38.590448</td>
+      <td>2</td>
+      <td>V</td>
+      <td>t</td>
+      <td>CE</td>
+    </tr>
+    <tr>
+      <th>834</th>
+      <td>M</td>
+      <td>N</td>
+      <td>2020-02-02 00:24:14.79957</td>
+      <td>2</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>835</th>
+      <td>M</td>
+      <td>N</td>
+      <td>2020-02-02 00:24:42.429672</td>
+      <td>2</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+  </tbody>
+</table>
+<p>248389 rows × 7 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># use T-contributions.csv to verify that all sentences have votes (i.e. no red ones left)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">PATH</span><span class="si">}</span><span class="s2">/contributions/*T-contributions.csv"</span><span class="p">)</span>
+<span class="n">li</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">all_files</span><span class="p">:</span>
+    <span class="n">dft</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'~'</span><span class="p">)</span>
+    <span class="n">li</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dft</span><span class="p">)</span>
+<span class="n">df_T</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">li</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_T</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_senc</th>
+      <th>t_version</th>
+      <th>s_typ</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_id</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_eis</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>1</td>
+      <td>181444</td>
+      <td>M</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>231225</td>
+      <td>2018-03-30 13:05:50.489319</td>
+      <td>T</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>MT</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>2</td>
+      <td>181445</td>
+      <td>N</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>231226</td>
+      <td>2018-03-30 13:05:50.524888</td>
+      <td>T</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>MT</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>3</td>
+      <td>181446</td>
+      <td>N</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>231227</td>
+      <td>2018-03-30 13:05:50.56683</td>
+      <td>T</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>MT</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>4</td>
+      <td>181447</td>
+      <td>N</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>231228</td>
+      <td>2018-03-30 13:05:50.601543</td>
+      <td>T</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>MT</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1965-0418x</td>
+      <td>AFR</td>
+      <td>1870</td>
+      <td>18-0101-B123E1R</td>
+      <td>n</td>
+      <td>5</td>
+      <td>181448</td>
+      <td>N</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>231229</td>
+      <td>2018-03-30 13:05:50.635029</td>
+      <td>T</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>MT</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_V</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">df_T</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"df_V has different length from df_T: Maybe there are sentences without any votes (red ones)!. This means there are contributions such that df_T['e_top']=='Z'"</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#IF PREVIOUS ASSERTION FAILS: See if there are: if so, go vote for them and run this notebook again. This is unusual because each translation's CE should have voted (i.e. signed off on) for ALL sentences!!!</span>
+<span class="n">df_T</span><span class="p">[</span><span class="n">df_T</span><span class="p">[</span><span class="s1">'e_top'</span><span class="p">]</span><span class="o">==</span><span class="s1">'Z'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_senc</th>
+      <th>t_version</th>
+      <th>s_typ</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_id</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_eis</th>
+      <th>c_base</th>
+      <th>a_role</th>
+      <th>u_name</th>
+      <th>e_content</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_T</span><span class="p">[</span><span class="o">~</span><span class="n">df_T</span><span class="p">[</span><span class="s1">'e_top'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">'M'</span><span class="p">,</span><span class="s1">'T'</span><span class="p">,</span><span class="s1">'Z'</span><span class="p">,</span><span class="s1">'N'</span><span class="p">])]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_senc</th>
+      <th>t_version</th>
+      <th>s_typ</th>
+      <th>s_rsen</th>
+      <th>e_id</th>
+      <th>e_top</th>
+      <th>be_id</th>
+      <th>be_top</th>
+      <th>c_id</th>
+      <th>c_created_at</th>
+      <th>c_kind</th>
+      <th>c_eis</th>
+      <th>c_base</th>
+      <th>a_role</th>
+      <th>u_name</th>
+      <th>e_content</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_V</span> <span class="o">=</span> <span class="n">df_V</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th colspan="2" halign="left">c_created_at</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>last</th>
+      <th>last</th>
+      <th>last</th>
+      <th>count</th>
+      <th>last</th>
+      <th>last</th>
+      <th>last</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>1</td>
+      <td>M</td>
+      <td>NaN</td>
+      <td>2019-07-30 13:44:14.904495</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>2</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:34.151158</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>3</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:45.966924</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>4</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:53.096079</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>5</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:45:56.611909</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_V</span><span class="o">.</span><span class="n">columns</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>MultiIndex([('m_descriptor',      ''),
+            (       't_lan',      ''),
+            (   't_version',      ''),
+            (      's_rsen',      ''),
+            (       'e_top',  'last'),
+            (      'be_top',  'last'),
+            ('c_created_at',  'last'),
+            ('c_created_at', 'count'),
+            (      'c_kind',  'last'),
+            (      'c_base',  'last'),
+            (      'a_role',  'last'),
+            (      'u_name',  'last'),
+            (   'e_content',  'last')],
+           )</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#rename columns</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'e_top'</span><span class="p">,</span><span class="s1">'be_top'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">,</span><span class="s1">'count'</span><span class="p">,</span><span class="s1">'c_kind'</span><span class="p">,</span><span class="s1">'c_base'</span><span class="p">,</span><span class="s1">'a_role'</span><span class="p">,</span><span class="s1">'u_name'</span><span class="p">,</span><span class="s1">'e_content'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#handle NaNs in e_content</span>
+<span class="n">e_content_nans</span> <span class="o">=</span> <span class="n">df_V</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#replace e_content NaNs with empty strings</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">e_content_nans</span><span class="p">,</span> <span class="s1">'e_content'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#add chars column</span>
+<span class="n">df_V</span><span class="p">[</span><span class="s1">'chars'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df_V</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]]</span> <span class="c1">#TypeError: object of type 'float' has no len()</span>
+<span class="c1"># df_V['chars'] = [len(e) if type(e)==str else 1 for e in df_V['e_content']]</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'e_top'</span><span class="p">,</span><span class="s1">'be_top'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">,</span><span class="s1">'count'</span><span class="p">,</span><span class="s1">'c_kind'</span><span class="p">,</span><span class="s1">'c_base'</span><span class="p">,</span><span class="s1">'a_role'</span><span class="p">,</span><span class="s1">'chars'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th>c_created_at</th>
+      <th>count</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+      <th>chars</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>1</td>
+      <td>M</td>
+      <td>NaN</td>
+      <td>2019-07-30 13:44:14.904495</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>112</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>2</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:34.151158</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>3</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:45.966924</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>41</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>4</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:53.096079</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>5</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:45:56.611909</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>106</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>6</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:46:34.354399</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>36</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#add words column</span>
+<span class="c1">#https://www.geeksforgeeks.org/python-program-to-count-words-in-a-sentence/</span>
+<span class="n">df_V</span><span class="p">[</span><span class="s1">'words'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\w+'</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df_V</span><span class="p">[</span><span class="s1">'e_content'</span><span class="p">]]</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'e_top'</span><span class="p">,</span><span class="s1">'be_top'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">,</span><span class="s1">'count'</span><span class="p">,</span><span class="s1">'c_kind'</span><span class="p">,</span><span class="s1">'c_base'</span><span class="p">,</span><span class="s1">'a_role'</span><span class="p">,</span><span class="s1">'chars'</span><span class="p">,</span><span class="s1">'words'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th>c_created_at</th>
+      <th>count</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+      <th>chars</th>
+      <th>words</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>1</td>
+      <td>M</td>
+      <td>NaN</td>
+      <td>2019-07-30 13:44:14.904495</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>112</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>2</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:34.151158</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>28</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>3</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:45.966924</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>41</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>4</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:53.096079</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>18</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>5</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:45:56.611909</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>106</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902-B123</td>
+      <td>6</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:46:34.354399</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>36</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#remove BER part from t_version; allows for joining to English contributions</span>
+<span class="n">df_V</span><span class="p">[</span><span class="s1">'t_version'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'-'</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">df_V</span><span class="p">[</span><span class="s1">'t_version'</span><span class="p">]]</span>
+<span class="n">df_V</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'e_top'</span><span class="p">,</span><span class="s1">'be_top'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">,</span><span class="s1">'count'</span><span class="p">,</span><span class="s1">'c_kind'</span><span class="p">,</span><span class="s1">'c_base'</span><span class="p">,</span><span class="s1">'a_role'</span><span class="p">,</span><span class="s1">'chars'</span><span class="p">,</span><span class="s1">'words'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th>c_created_at</th>
+      <th>count</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+      <th>chars</th>
+      <th>words</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902</td>
+      <td>1</td>
+      <td>M</td>
+      <td>NaN</td>
+      <td>2019-07-30 13:44:14.904495</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>112</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902</td>
+      <td>2</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:34.151158</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>28</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902</td>
+      <td>3</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:45.966924</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>41</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902</td>
+      <td>4</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:53.096079</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>18</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902</td>
+      <td>5</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:45:56.611909</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>106</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1948-0304</td>
+      <td>GER</td>
+      <td>15-0902</td>
+      <td>6</td>
+      <td>M</td>
+      <td>N</td>
+      <td>2019-07-30 13:46:34.354399</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>36</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://">link text</a># Merge E and V contributions</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_joind_EV</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_E</span><span class="p">,</span> <span class="n">df_V</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'m_descriptor'</span><span class="p">,</span> <span class="s1">'t_version'</span><span class="p">,</span> <span class="s1">'s_rsen'</span><span class="p">],</span> <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">'_E'</span><span class="p">,</span> <span class="s1">'_V'</span><span class="p">),</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_joind_EV</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,[</span><span class="s1">'m_descriptor'</span><span class="p">,</span><span class="s1">'t_lan_E'</span><span class="p">,</span><span class="s1">'t_version'</span><span class="p">,</span><span class="s1">'s_rsen'</span><span class="p">,</span><span class="s1">'c_id'</span><span class="p">,</span><span class="s1">'chars_E'</span><span class="p">,</span><span class="s1">'words_E'</span><span class="p">,</span><span class="s1">'t_lan_V'</span><span class="p">,</span><span class="s1">'e_top'</span><span class="p">,</span><span class="s1">'be_top'</span><span class="p">,</span><span class="s1">'c_created_at'</span><span class="p">,</span><span class="s1">'count'</span><span class="p">,</span><span class="s1">'c_kind'</span><span class="p">,</span><span class="s1">'c_base'</span><span class="p">,</span><span class="s1">'a_role'</span><span class="p">,</span><span class="s1">'chars_V'</span><span class="p">,</span><span class="s1">'words_V'</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>m_descriptor</th>
+      <th>t_lan_E</th>
+      <th>t_version</th>
+      <th>s_rsen</th>
+      <th>c_id</th>
+      <th>chars_E</th>
+      <th>words_E</th>
+      <th>t_lan_V</th>
+      <th>e_top</th>
+      <th>be_top</th>
+      <th>c_created_at</th>
+      <th>count</th>
+      <th>c_kind</th>
+      <th>c_base</th>
+      <th>a_role</th>
+      <th>chars_V</th>
+      <th>words_V</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1948-0304</td>
+      <td>ENG</td>
+      <td>15-0902</td>
+      <td>1</td>
+      <td>660286</td>
+      <td>98</td>
+      <td>21</td>
+      <td>GER</td>
+      <td>M</td>
+      <td>NaN</td>
+      <td>2019-07-30 13:44:14.904495</td>
+      <td>1</td>
+      <td>V</td>
+      <td>c</td>
+      <td>TE</td>
+      <td>112</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1948-0304</td>
+      <td>ENG</td>
+      <td>15-0902</td>
+      <td>1</td>
+      <td>660286</td>
+      <td>98</td>
+      <td>21</td>
+      <td>POR</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2020-05-25 18:11:14.358631</td>
+      <td>2</td>
+      <td>V</td>
+      <td>t</td>
+      <td>QE</td>
+      <td>104</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1948-0304</td>
+      <td>ENG</td>
+      <td>15-0902</td>
+      <td>2</td>
+      <td>660287</td>
+      <td>27</td>
+      <td>6</td>
+      <td>GER</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:34.151158</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>28</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1948-0304</td>
+      <td>ENG</td>
+      <td>15-0902</td>
+      <td>2</td>
+      <td>660287</td>
+      <td>27</td>
+      <td>6</td>
+      <td>POR</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2020-05-25 18:11:30.820954</td>
+      <td>3</td>
+      <td>V</td>
+      <td>a</td>
+      <td>QE</td>
+      <td>25</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1948-0304</td>
+      <td>ENG</td>
+      <td>15-0902</td>
+      <td>3</td>
+      <td>660288</td>
+      <td>36</td>
+      <td>7</td>
+      <td>GER</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2019-07-30 13:44:45.966924</td>
+      <td>1</td>
+      <td>V</td>
+      <td>a</td>
+      <td>TE</td>
+      <td>41</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>1948-0304</td>
+      <td>ENG</td>
+      <td>15-0902</td>
+      <td>3</td>
+      <td>660288</td>
+      <td>36</td>
+      <td>7</td>
+      <td>POR</td>
+      <td>M</td>
+      <td>M</td>
+      <td>2020-05-25 18:11:42.224382</td>
+      <td>2</td>
+      <td>V</td>
+      <td>t</td>
+      <td>QE</td>
+      <td>32</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Save-prepared-data-to-file">
+<a class="anchor" href="#Save-prepared-data-to-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Save prepared data to file<a class="anchor-link" href="#Save-prepared-data-to-file"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_joind_EV</span><span class="o">.</span><span class="n">to_csv</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">PATH</span><span class="si">}</span><span class="s1">/PredictTranslationWordAndCharCount/PredictTranslationWordAndCharCount_1-output.csv'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'~'</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/translation_industry/regression/python/pandas/2020/10/10/PredictTranslationWordAndCharCount_1.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
