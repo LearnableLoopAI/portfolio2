@@ -200,8 +200,8 @@ window.onload = wrap_img;
 <li>Insured asset allocation</li>
 <li>Dynamic asset allocation</li>
 </ul>
-<p>We will focus on the last of these strategies: Dynamic asset allocation. With this approach the combination of assets are adjusted at regular intervals to capitalize on the strengthening and weakening of the economy and rise and fall of markets. This strategy depends on the decisions of a portfolio manager. In this project, however, we will attempt to replace the portfolio manager with an <em>AI agent</em>. The agent will be trained on past market behavior by means of <em>Multi-Armed Bandits</em>. This is a technique encountered in the reindorcement learning paradigm.</p>
-<p>Instead of adjusting the composition of the portfolio at regular intervals, we will take a <em>all-or-nothing</em> approach. This means a <em>single</em> asset will be selected at each interval. All the funds will be invested in the selected asset. We will revisit this selection on a monthly basis. The reason we impose this constraint on the management of the portfolio is to evaluate the usefullness of the <em>multi-armed bandit</em> technique. This algorithm mandates that only a <em>single</em> "lever" can be activated at each decision point.</p>
+<p>We will focus on the last of these strategies: Dynamic asset allocation. With this approach the combination of assets are adjusted at regular intervals to capitalize on the strengthening and weakening of the economy and rise and fall of markets. This strategy depends on the decisions of a portfolio manager. In this project, however, we will attempt to replace the portfolio manager with an <em>AI agent</em>. The agent will be trained on past market behavior by means of <em>Multi-Armed Bandits</em>. This is a technique encountered in the reinforcement learning paradigm.</p>
+<p>Instead of adjusting the composition of the portfolio at regular intervals, we will take an <em>all-or-nothing</em> approach. This means a <em>single</em> asset will be selected at each interval. All the funds will be invested in the selected asset. We will revisit this selection on a monthly basis. The reason we impose this constraint on the management of the portfolio is to evaluate the usefulness of the <em>multi-armed bandit</em> technique. This algorithm mandates that only a <em>single</em> "lever" can be activated at each decision point.</p>
 <p>For this Proof-Of-Concept (POC) project we will make things as simple as possible. The portfolio will consist of 5 mutual funds. For simplicity, trading costs will not be taken into account for now.</p>
 <p>The following funds are used for the portfolio:</p>
 <ul>
@@ -3193,7 +3193,7 @@ memory usage: 9.6 KB
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Being armed with historical data, it will be interesting to discover the range of performance possibilities. For example, say we deliberately invest each month in the worst performing asset. What would the end result be? Simimarly, if we invest repreatedly in the best performing asset each month, what would the return be?</p>
+<p>Being armed with historical data, it will be interesting to discover the range of performance possibilities. For example, say we deliberately invest each month in the worst performing asset. What would the end result be? Similarly, if we invest repreatedly in the best performing asset each month, what would the return be?</p>
 
 </div>
 </div>
@@ -3532,7 +3532,7 @@ memory usage: 9.6 KB
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Multi-armed bandits (MABs) are named after slot machines in casinos (a.k.a., one-armed bandits). The term <em>bandits</em> is often used and could refer to single-arms as well as multi-armed bandits. When an arms is pulled, a probabilistically determined cash payout is (sometimes) produced for a reward. Often a MAB implementation has multiple, say N, "arms". Each arm represent one of N possible actions an agent can take at a given time step. In the case of our present problem N=4, i.e. an action for each of the events where all funds are invested in one of the 5 assets.</p>
+<p>Multi-armed bandits (MABs) are named after slot machines in casinos (a.k.a., one-armed bandits). The term <em>bandits</em> is often used and could refer to single-arms as well as multi-armed bandits. When an arm is pulled, a probabilistically determined cash payout is (sometimes) produced for a reward. Often a MAB implementation has multiple, say N, "arms". Each arm represent one of N possible actions an agent can take at a given time step. In the case of our present problem N=4, i.e. an action for each of the events where all funds are invested in one of the 5 assets.</p>
 <p>In their simplest form, bandits have the following two restrictions in relation to general reinforcement learning:</p>
 <ul>
 <li>The state spaces of MABs are stationary or evolves slowly. Bandits do not attempt to learn the best actions for more than one state.</li>
@@ -3574,7 +3574,7 @@ memory usage: 9.6 KB
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Instead of having the MAB algorithm maximize <em>rewards</em> things can also be arranged such that the <em>regret</em> is modeled. Regret is the difference between the actual reward and the best possible reward (i.e. choosing the best decision at each step).</p>
 <p>The MAB cannot predict rewards accurately. Of course, the reason for using a MAB is to try to maximize the average reward. If the MAB had perfect insight it would always choose the arm with the highest average reward so that the eventual cumulative reward would be maximized. It is necessary for a MAB to strike a balance between <em>exploitation</em> and <em>exploration</em>.</p>
-<p>For our problem at hand in this POC the <em>context</em> is represented by the investment market conditions. In this POC we use the monthly <em>inflation</em> and the monthly <em>PPI</em> to represent these conditions (in the final results the use of PPI has been dropped). The "arm" that is pulled by the agent defines into which asset all the funds are moved for the current month. The <em>reward</em> is determined by the subsequent performance of the selected asset. The <em>regret</em> is the difference between the reward and the subsequent performance of the best-performing asset for the current month.</p>
+<p>For our problem at hand in this POC the <em>context</em> is represented by the investment market conditions. In this POC we use the monthly <em>inflation</em> and the monthly <em>PPI</em> to represent these conditions (in the final results the use of PPI has been dropped). The "arm" that is pulled by the agent determines the asset into which all the funds are moved for the current month. The <em>reward</em> is determined by the subsequent performance of the selected asset. The <em>regret</em> is the difference between the reward and the subsequent performance of the best-performing asset for the current month.</p>
 
 </div>
 </div>
@@ -3586,13 +3586,13 @@ memory usage: 9.6 KB
 <a class="anchor" href="#Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model<a class="anchor-link" href="#Model"> </a>
 </h3>
 <p>Investment decisions are sequential by nature. To model the situation requires the setup of a <strong>digital twin</strong> for the investor's portfolio. This model of the portfolio is called an <strong>environment</strong>. The environment contains <strong>states</strong> and <strong>actions</strong> are applied to the environment by the <strong>agent</strong>.</p>
-<p>We will choose the following <strong>states</strong> (measured monthly in our case) for the environment (note that the state is called the <strong>context</strong> when MABs are involved):</p>
+<p>We will choose the following <em>state vector</em> (measured monthly in our case) for the environment (note that the state is called the <strong>context</strong> when MABs are involved):</p>
 $$ \Large
 \begin{aligned}
 s_1 &amp;= \text{Value of inflation this month} \\
 s_2 &amp;= \text{Value of PPI this month}
 \end{aligned}
-$$<p>The following <strong>actions</strong> (applied monthly in our case) will be setup:</p>
+$$<p>The following <em>action vector</em> (applied monthly in our case) will be setup:</p>
 $$ \Large
 \begin{aligned}
 a_1 &amp;= \text{Funds to be invested in FBCVX this cycle} \\
@@ -3877,7 +3877,7 @@ Requirement already satisfied: future in /usr/local/lib/python3.7/dist-packages 
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It is also handy to use this environment in a type of <em>monte carlo simulation</em>. This establishes a baseline for what the rewards would if purely random actions are selected.</p>
+<p>It is also handy to use this environment in a type of <em>monte carlo simulation</em>. This establishes a baseline for what the rewards would be if purely random actions are selected.</p>
 
 </div>
 </div>
