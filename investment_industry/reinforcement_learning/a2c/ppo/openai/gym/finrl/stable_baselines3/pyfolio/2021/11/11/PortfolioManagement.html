@@ -182,6 +182,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h4"><a href="#3.4.3-Inspect-cumulative-return">3.4.3 Inspect cumulative return </a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h3"><a href="#Disclaimer">Disclaimer </a></li>
 </ul>
 </li>
 </ul><body>
@@ -207,7 +208,7 @@ window.onload = wrap_img;
 <li>Cash and cash equivalents</li>
 </ul>
 <p>Other classification systems may sub-classify each of these categories into subclasses, for example stocks into US and International stocks, or into small-cap, medium-cap, and large-cap stocks, etc.</p>
-<p>Another aspect of asset allocation is concerns the underlying <em>strategy</em>. Some strategies are:</p>
+<p>Another aspect of asset allocation concerns the underlying <em>strategy</em>. Some strategies are:</p>
 <ul>
 <li>Tactical asset allocation</li>
 <li>Strategic asset allocation</li>
@@ -230,9 +231,9 @@ window.onload = wrap_img;
 <h2 id="2.-Solution-Proposal">
 <a class="anchor" href="#2.-Solution-Proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Solution Proposal<a class="anchor-link" href="#2.-Solution-Proposal"> </a>
 </h2>
-<p>Investment decisions are sequential by nature. Furthermore, an optimal decision in the present may turn out not to be optimal over the longer term. Then there are the complexities of the investment landscape like varying market conditions, political disruptive event, and other economic uncertainties. The ideal tool for this kind of problem is <strong>Reinforcement Learning</strong>.</p>
-<p>The solution requires the setup of a <strong>digital twin</strong> for the investor's portfolio. In RL parlance this model of the portfolio is called an <strong>environment</strong>. The environment contains <strong>states</strong> which are modified by applying <strong>actions</strong> to it.</p>
-<p>We will choose the following <strong>states</strong> (measured daily in our case) for the environment:</p>
+<p>Investment decisions are sequential by nature. Furthermore, an optimal decision in the present may turn out not to be optimal over the longer term. Then there are the complexities of the investment landscape like varying market conditions, political disruptive events, and other economic uncertainties. The ideal tool for this kind of problem is <strong>Reinforcement Learning</strong>.</p>
+<p>The solution requires the setup of a <strong>digital twin</strong> for the investor's portfolio. In RL terms this model of the portfolio is called an <strong>environment</strong>. The environment contains <strong>states</strong> which are modified by applying <strong>actions</strong> to it.</p>
+<p>We will choose the following <em>state vector</em> (measured daily in our case) for the environment:</p>
 $$ \Large
 \begin{aligned}
 s_1 &amp;= \text{Value of AAPL holdings} \\
@@ -242,7 +243,7 @@ s_3 &amp;= \text{Value of AXP holdings} \\
 s_{29} &amp;= \text{Value of WBA holdings} \\
 s_{30} &amp;= \text{Value of WMT holdings}
 \end{aligned}
-$$<p>The following <strong>actions</strong> (applied daily in our case) will be setup to influence the environment/portfolio:</p>
+$$<p>The following <em>action vector</em> (applied daily in our case) will be setup to influence the environment/portfolio:</p>
 $$ \Large
 \begin{aligned}
 a_1 &amp;= \text{Fraction to be invested in AAPL this cycle} \\
@@ -5943,6 +5944,17 @@ if (outputEl) {{
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Disclaimer">
+<a class="anchor" href="#Disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer<a class="anchor-link" href="#Disclaimer"> </a>
+</h3>
+<p>This content is only meant for research purposes and is not meant to be used in any form of trading. Past performance is no guarantee of future results. If you suffer losses from making use of this content, directly or indirectly, you are the sole person responsible for the losses. The author will not be held responsible in any way.</p>
+
+</div>
+</div>
+</div>
 </div>
 
 
@@ -5978,7 +5990,7 @@ if (outputEl) {{
       </div>
     </div>
 
-    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" target="_blank" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
 </div>
 
   </div>
