@@ -182,6 +182,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h4"><a href="#3.4.3-Inspect-cumulative-return">3.4.3 Inspect cumulative return </a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h3"><a href="#Disclaimer">Disclaimer </a></li>
 </ul>
 </li>
 </ul><body>
@@ -287,9 +288,9 @@ window.onload = wrap_img;
 <h2 id="2.-Solution-Proposal">
 <a class="anchor" href="#2.-Solution-Proposal" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Solution Proposal<a class="anchor-link" href="#2.-Solution-Proposal"> </a>
 </h2>
-<p>Investment decisions are sequential by nature. Furthermore, an optimal decision in the present may turn out not to be optimal over the longer term. Then there are the complexities of the investment landscape like varying market conditions, political disruptive event, and other economic uncertainties. The ideal tool for this kind of problem is <strong>Reinforcement Learning</strong>.</p>
-<p>The solution requires the setup of a <strong>digital twin</strong> for the investor's portfolio. In RL parlance this model of the portfolio is called an <strong>environment</strong>. The environment contains <strong>states</strong> which are modified by applying <strong>actions</strong> to it.</p>
-<p>We will choose the following <strong>states</strong> (measured daily in our case) for the environment:</p>
+<p>Investment decisions are sequential by nature. Furthermore, an optimal decision in the present may turn out not to be optimal over the longer term. Then there are the complexities of the investment landscape like varying market conditions, political disruptive events, and other economic uncertainties. The ideal tool for this kind of problem is <strong>Reinforcement Learning</strong>.</p>
+<p>The solution requires the setup of a <strong>digital twin</strong> for the investor's portfolio. In RL terms this model of the portfolio is called an <strong>environment</strong>. The environment contains <strong>states</strong> which are modified by applying <strong>actions</strong> to it.</p>
+<p>We will choose the following <em>state vector</em> (measured daily in our case) for the environment:</p>
 $$ \Large
 \begin{aligned}
 s_1 &amp;= \text{Value of FBCVX holdings} \\
@@ -299,7 +300,7 @@ s_3 &amp;= \text{Value of FDGFX holdings} \\
 s_8 &amp;= \text{Value of FCPGX holdings} \\
 s_9 &amp;= \text{Value of FIFNX holdings}
 \end{aligned}
-$$<p>The following <strong>actions</strong> (applied daily in our case) will be setup to influence the environment/portfolio:</p>
+$$<p>The following <em>action vector</em> (applied daily in our case) will be setup to influence the environment/portfolio:</p>
 $$ \Large
 \begin{aligned}
 a_1 &amp;= \text{Fraction to be invested in FBCVX this cycle} \\
@@ -5783,6 +5784,17 @@ if (outputEl) {{
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Disclaimer">
+<a class="anchor" href="#Disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer<a class="anchor-link" href="#Disclaimer"> </a>
+</h3>
+<p>This content is only meant for research purposes and is not meant to be used in any form of trading. Past performance is no guarantee of future results. If you suffer losses from making use of this content, directly or indirectly, you are the sole person responsible for the losses. The author will not be held responsible in any way.</p>
+
+</div>
+</div>
+</div>
 </div>
 
 
