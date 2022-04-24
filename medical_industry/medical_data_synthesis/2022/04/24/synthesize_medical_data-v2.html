@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Synthesize Medical Data 2 | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Synthesize Medical Data 2" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Second attempt" />
+<meta property="og:description" content="Second attempt" />
+<link rel="canonical" href="https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/24/synthesize_medical_data-v2.html" />
+<meta property="og:url" content="https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/24/synthesize_medical_data-v2.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/SurvivalAnalysis_lifelines.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-24T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"Second attempt","url":"https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/24/synthesize_medical_data-v2.html","@type":"BlogPosting","headline":"Synthesize Medical Data 2","dateModified":"2022-04-24T00:00:00-05:00","datePublished":"2022-04-24T00:00:00-05:00","image":"https://learnableloop.com/images/SurvivalAnalysis_lifelines.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/24/synthesize_medical_data-v2.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Synthesize Medical Data 2</h1><p class="page-description">Second attempt</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-24T00:00:00-05:00" itemprop="datePublished">
+        Apr 24, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      18 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Medical_Industry">Medical_Industry</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Medical_Data_Synthesis">Medical_Data_Synthesis</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#1-DATA-SOURCES">1 DATA SOURCES </a></li>
+<li class="toc-entry toc-h2"><a href="#2-SYNTHESIZE-DATA">2 SYNTHESIZE DATA </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-04-24-synthesize_medical_data-v2.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a second attempt to synthesize the data. The product of this notebook represents the "true" data. This data should then be</p>
+<ul>
+<li>contaminated with noise, e.g. dropping/inserting a character here and there, using variants of names, etc </li>
+<li>split into different source datasets, for example, one for <em>patients</em>, one for <em>encounters</em>, one for <em>conditions</em>, and one for <em>medications</em>.</li>
+</ul>
+<p>Once this is done, the different datasets can be subjected to a data science pipeline to combine again and perform machine learning.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">faker</span>
+<span class="c1">#- faker.__version__</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'1.4.2'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'1.22.3'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1-DATA-SOURCES">
+<a class="anchor" href="#1-DATA-SOURCES" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 DATA SOURCES<a class="anchor-link" href="#1-DATA-SOURCES"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_con_med</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'condition_medication.csv'</span><span class="p">)</span>
+<span class="n">df_con_med</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>api_num</th>
+      <th>disease</th>
+      <th>drug</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>Alkylating Agent Cystitis</td>
+      <td>sodium bicarbonate</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>Alkylating Agent Cystitis</td>
+      <td>citric acid / sodium citrate</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>Abdominal Distension</td>
+      <td>bethanechol</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>Abdominal Distension</td>
+      <td>pamabrom</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>Abdominal Distension</td>
+      <td>bethanechol</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>14678</th>
+      <td>14677</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>lansoprazole</td>
+    </tr>
+    <tr>
+      <th>14679</th>
+      <td>14678</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>ranitidine</td>
+    </tr>
+    <tr>
+      <th>14680</th>
+      <td>14679</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>rabeprazole</td>
+    </tr>
+    <tr>
+      <th>14681</th>
+      <td>14680</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>cimetidine</td>
+    </tr>
+    <tr>
+      <th>14682</th>
+      <td>14681</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>esomeprazole</td>
+    </tr>
+  </tbody>
+</table>
+<p>14683 rows × 3 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2-SYNTHESIZE-DATA">
+<a class="anchor" href="#2-SYNTHESIZE-DATA" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 SYNTHESIZE DATA<a class="anchor-link" href="#2-SYNTHESIZE-DATA"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">make_patients</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="c1"># lists to randomly assign to workers</span>
+    <span class="n">practitioner_roles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'physician'</span><span class="p">,</span> <span class="s1">'physician assistant'</span><span class="p">,</span> <span class="s1">'registered nurse'</span><span class="p">,</span> <span class="s1">'advanced practice registered nurse'</span><span class="p">]</span>
+    <span class="n">encounter_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'first visit'</span><span class="p">,</span> <span class="s1">'checkup'</span><span class="p">,</span> <span class="s1">'refill'</span><span class="p">]</span>
+    <span class="n">fake_patients</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">prof</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">profile</span><span class="p">()</span>
+        <span class="n">prof_prac</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">profile</span><span class="p">()</span>
+        <span class="n">con_med_sample</span> <span class="o">=</span> <span class="n">df_con_med</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="n">fake_patients</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">'pat_ssn'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'ssn'</span><span class="p">],</span>
+            <span class="s1">'pat_name'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span>
+            <span class="s1">'pat_address'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'address'</span><span class="p">],</span> 
+            <span class="s1">'pat_username'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'username'</span><span class="p">],</span>
+            <span class="s1">'pat_sex'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'sex'</span><span class="p">],</span>
+            <span class="s1">'pat_birthdate'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'birthdate'</span><span class="p">],</span>
+            <span class="s1">'pat_blood_group'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'blood_group'</span><span class="p">],</span>
+            <span class="s1">'pat_email'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'mail'</span><span class="p">],</span>
+            <span class="s1">'pat_job'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'job'</span><span class="p">],</span>
+            <span class="s1">'pat_company'</span><span class="p">:</span><span class="n">prof</span><span class="p">[</span><span class="s1">'company'</span><span class="p">],</span>
+            <span class="s1">'enc_date'</span><span class="p">:</span><span class="n">fake</span><span class="o">.</span><span class="n">date_between</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s1">'-30y'</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">'today'</span><span class="p">),</span>
+            <span class="s1">'enc_practitioner_name'</span><span class="p">:</span><span class="n">prof_prac</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span>
+            <span class="s1">'enc_prac_role'</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">practitioner_roles</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">]),</span>
+            <span class="s1">'enc_type'</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">encounter_types</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">]),</span>
+            <span class="s1">'con_name'</span><span class="p">:</span><span class="n">con_med_sample</span><span class="p">[</span><span class="s1">'disease'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s1">'con_diag_date'</span><span class="p">:</span><span class="n">fake</span><span class="o">.</span><span class="n">date_between</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s1">'-30y'</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">'today'</span><span class="p">),</span> <span class="c1">#needs to become more realistic</span>
+            <span class="s1">'med_name'</span><span class="p">:</span><span class="n">con_med_sample</span><span class="p">[</span><span class="s1">'drug'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">fake_patients</span>
+
+<span class="n">patients_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">make_patients</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10000</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">patients_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(10000, 17)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">'display.max_rows'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">patients_df</span><span class="p">[:</span><span class="mi">100</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pat_ssn</th>
+      <th>pat_name</th>
+      <th>pat_address</th>
+      <th>pat_username</th>
+      <th>pat_sex</th>
+      <th>pat_birthdate</th>
+      <th>pat_blood_group</th>
+      <th>pat_email</th>
+      <th>pat_job</th>
+      <th>pat_company</th>
+      <th>enc_date</th>
+      <th>enc_practitioner_name</th>
+      <th>enc_prac_role</th>
+      <th>enc_type</th>
+      <th>con_name</th>
+      <th>con_diag_date</th>
+      <th>med_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>752-49-0206</td>
+      <td>Hannah Harvey</td>
+      <td>860 Smith Point Suite 687\nSouth Jeffrey, MN 1...</td>
+      <td>bradleyjames</td>
+      <td>F</td>
+      <td>1958-12-14</td>
+      <td>AB+</td>
+      <td>davisalan@gmail.com</td>
+      <td>Commercial art gallery manager</td>
+      <td>Hart Group</td>
+      <td>2015-04-22</td>
+      <td>Jose Valencia</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Constipation, Chronic</td>
+      <td>2001-11-22</td>
+      <td>lactulose</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>518-31-3638</td>
+      <td>Casey Barnes</td>
+      <td>389 Yvette Lock\nNorth Mariechester, OR 72680</td>
+      <td>fevans</td>
+      <td>F</td>
+      <td>1935-06-05</td>
+      <td>B+</td>
+      <td>meganmoses@hotmail.com</td>
+      <td>Youth worker</td>
+      <td>Warren-White</td>
+      <td>2003-02-18</td>
+      <td>Tony Rodriguez</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Testicular Cancer</td>
+      <td>2021-04-02</td>
+      <td>dactinomycin</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>718-30-9548</td>
+      <td>Shawn Lane</td>
+      <td>228 Duke Passage Apt. 102\nJosephfort, SD 10909</td>
+      <td>zsnyder</td>
+      <td>M</td>
+      <td>1995-08-23</td>
+      <td>AB+</td>
+      <td>kurtduke@hotmail.com</td>
+      <td>IT technical support officer</td>
+      <td>Jones Group</td>
+      <td>1997-03-13</td>
+      <td>Sandra Weaver</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>GERD</td>
+      <td>2003-10-07</td>
+      <td>ranitidine</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>427-69-0299</td>
+      <td>Kelly Cobb</td>
+      <td>35085 Hutchinson Avenue\nEast Michael, NY 76633</td>
+      <td>sarah66</td>
+      <td>F</td>
+      <td>1960-01-30</td>
+      <td>O-</td>
+      <td>christopher98@gmail.com</td>
+      <td>Merchant navy officer</td>
+      <td>English, Harper and Nielsen</td>
+      <td>1997-10-17</td>
+      <td>Brandon Jones</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Venography</td>
+      <td>1992-12-30</td>
+      <td>iodixanol</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>656-34-0036</td>
+      <td>Taylor Bennett</td>
+      <td>9021 Sierra Forges Suite 597\nLake Thomas, WV ...</td>
+      <td>mollyramirez</td>
+      <td>F</td>
+      <td>1970-12-16</td>
+      <td>AB+</td>
+      <td>sanchezanna@hotmail.com</td>
+      <td>Garment/textile technologist</td>
+      <td>Murphy and Sons</td>
+      <td>2014-02-13</td>
+      <td>Mark Garcia</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Bipolar Disorder</td>
+      <td>1998-02-12</td>
+      <td>topiramate</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>256-15-7607</td>
+      <td>Kayla Hoffman</td>
+      <td>4291 Patel Alley Suite 976\nOlsonfurt, TN 03067</td>
+      <td>silvacrystal</td>
+      <td>F</td>
+      <td>1934-09-15</td>
+      <td>B-</td>
+      <td>cwilliamson@yahoo.com</td>
+      <td>Lecturer, further education</td>
+      <td>Wallace-Martinez</td>
+      <td>1993-12-05</td>
+      <td>Douglas Simmons</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Multiple Myeloma</td>
+      <td>1996-02-04</td>
+      <td>melphalan</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>411-92-2086</td>
+      <td>Tracy Burch</td>
+      <td>7639 Greene Flats\nMatthewsside, GA 79654</td>
+      <td>barbaraclark</td>
+      <td>F</td>
+      <td>1914-07-10</td>
+      <td>O-</td>
+      <td>joerodriguez@gmail.com</td>
+      <td>Fashion designer</td>
+      <td>Myers, Cain and Beck</td>
+      <td>2014-05-02</td>
+      <td>Carrie Bauer</td>
+      <td>registered nurse</td>
+      <td>refill</td>
+      <td>Iron Deficiency Anemia</td>
+      <td>2015-04-05</td>
+      <td>iron polysaccharide</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>140-99-4662</td>
+      <td>John Sawyer</td>
+      <td>7596 Abigail Extensions\nDixonmouth, NM 45001</td>
+      <td>taylorrice</td>
+      <td>M</td>
+      <td>1957-09-18</td>
+      <td>B+</td>
+      <td>gregorygrant@yahoo.com</td>
+      <td>Horticultural consultant</td>
+      <td>Barnes, Quinn and Kennedy</td>
+      <td>2003-06-19</td>
+      <td>Jerry Peterson</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Osteoarthritis</td>
+      <td>2010-10-05</td>
+      <td>aspirin</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>338-28-0776</td>
+      <td>Terry Perez</td>
+      <td>2068 Williams Haven Apt. 748\nPort Christineto...</td>
+      <td>gloria03</td>
+      <td>M</td>
+      <td>1906-10-24</td>
+      <td>A-</td>
+      <td>laurie70@hotmail.com</td>
+      <td>Professor Emeritus</td>
+      <td>Walker, Walter and Blake</td>
+      <td>2019-10-21</td>
+      <td>Eric Hernandez</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Intraabdominal Infection</td>
+      <td>1993-10-07</td>
+      <td>cefotaxime</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>121-89-3506</td>
+      <td>Mr. James Jones</td>
+      <td>169 Brenda Landing\nNorth Patriciashire, GA 53769</td>
+      <td>johnryan</td>
+      <td>M</td>
+      <td>1956-06-06</td>
+      <td>A+</td>
+      <td>philip94@yahoo.com</td>
+      <td>Programme researcher, broadcasting/film/video</td>
+      <td>Edwards-West</td>
+      <td>2006-12-13</td>
+      <td>Sharon Allen</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Left Ventricular Dysfunction</td>
+      <td>2004-08-06</td>
+      <td>metoprolol</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>100-89-6324</td>
+      <td>Douglas Mcbride</td>
+      <td>059 Robert Springs Suite 557\nKimberg, WV 28790</td>
+      <td>brownjason</td>
+      <td>M</td>
+      <td>1977-01-26</td>
+      <td>A-</td>
+      <td>amanda58@yahoo.com</td>
+      <td>Dancer</td>
+      <td>Rangel, Nelson and Patterson</td>
+      <td>2012-05-24</td>
+      <td>Timothy Wilson</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Back Pain</td>
+      <td>2015-10-18</td>
+      <td>duloxetine</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>366-13-8355</td>
+      <td>David Aguilar</td>
+      <td>419 Susan Trail\nBryantberg, NJ 10216</td>
+      <td>ahobbs</td>
+      <td>M</td>
+      <td>1924-11-18</td>
+      <td>B-</td>
+      <td>robertofuller@gmail.com</td>
+      <td>Administrator, sports</td>
+      <td>Mccoy, Hardin and Dixon</td>
+      <td>2001-12-19</td>
+      <td>Erin Mills</td>
+      <td>physician assistant</td>
+      <td>first visit</td>
+      <td>Ulcerative Colitis, Maintenance</td>
+      <td>2010-01-02</td>
+      <td>olsalazine</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>674-91-1534</td>
+      <td>Tammy Dunlap</td>
+      <td>PSC 4788, Box 3617\nAPO AA 87324</td>
+      <td>crosskathryn</td>
+      <td>F</td>
+      <td>2012-10-21</td>
+      <td>O-</td>
+      <td>ffrazier@gmail.com</td>
+      <td>Ship broker</td>
+      <td>Wagner LLC</td>
+      <td>2019-10-06</td>
+      <td>Amanda Lopez</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Chronic Fatigue Syndrome</td>
+      <td>2020-09-19</td>
+      <td>modafinil</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>270-76-5270</td>
+      <td>Jaime Mcdonald</td>
+      <td>66180 Bryan Branch\nTorresville, OH 57330</td>
+      <td>qdouglas</td>
+      <td>F</td>
+      <td>1929-09-21</td>
+      <td>AB+</td>
+      <td>ryan01@gmail.com</td>
+      <td>Control and instrumentation engineer</td>
+      <td>Carpenter Group</td>
+      <td>2007-11-14</td>
+      <td>Miranda Donaldson</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Hepatitis C</td>
+      <td>2011-10-06</td>
+      <td>dasabuvir / ombitasvir / paritaprevir / ritonavir</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>106-60-7046</td>
+      <td>Kevin Roberts</td>
+      <td>664 Edward Burgs Apt. 712\nJamesberg, CT 64038</td>
+      <td>jenniferreeves</td>
+      <td>M</td>
+      <td>1985-06-15</td>
+      <td>O+</td>
+      <td>gregoryvalenzuela@gmail.com</td>
+      <td>Building services engineer</td>
+      <td>Jackson, Anderson and Chambers</td>
+      <td>1995-10-31</td>
+      <td>Caleb Carlson</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Hyperhidrosis</td>
+      <td>2004-10-03</td>
+      <td>gabapentin</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>499-46-9281</td>
+      <td>William Blair</td>
+      <td>92031 Justin Crest\nColleenmouth, IN 82297</td>
+      <td>julie84</td>
+      <td>M</td>
+      <td>2002-08-15</td>
+      <td>O+</td>
+      <td>betty58@hotmail.com</td>
+      <td>Special educational needs teacher</td>
+      <td>Irwin-Fry</td>
+      <td>1999-03-06</td>
+      <td>Richard Martinez</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Skin or Soft Tissue Infection</td>
+      <td>2004-12-13</td>
+      <td>amoxicillin / clavulanate</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>545-73-9490</td>
+      <td>Cassandra Gutierrez</td>
+      <td>4058 Alec Trace\nEast Alejandro, NE 99917</td>
+      <td>asimon</td>
+      <td>F</td>
+      <td>1958-05-16</td>
+      <td>A+</td>
+      <td>marynguyen@hotmail.com</td>
+      <td>Medical sales representative</td>
+      <td>Carter LLC</td>
+      <td>1995-04-12</td>
+      <td>Victoria Rodriguez</td>
+      <td>physician assistant</td>
+      <td>first visit</td>
+      <td>Head Lice</td>
+      <td>1997-12-11</td>
+      <td>piperonyl butoxide / pyrethrins</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>415-46-9517</td>
+      <td>Suzanne Maxwell</td>
+      <td>05395 Ross Cliff Suite 768\nSimpsonmouth, AL 7...</td>
+      <td>thomashall</td>
+      <td>F</td>
+      <td>1916-05-14</td>
+      <td>A-</td>
+      <td>brianmoore@yahoo.com</td>
+      <td>Chartered accountant</td>
+      <td>Wells PLC</td>
+      <td>2013-06-01</td>
+      <td>Robert Martin</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Gonococcal Infection, Uncomplicated</td>
+      <td>2009-12-04</td>
+      <td>tetracycline</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>453-19-9532</td>
+      <td>Don Harris</td>
+      <td>24773 Stephanie Locks\nGuzmanhaven, MN 15935</td>
+      <td>wongjennifer</td>
+      <td>M</td>
+      <td>1924-09-20</td>
+      <td>A-</td>
+      <td>gmoore@hotmail.com</td>
+      <td>Advice worker</td>
+      <td>Smith-Day</td>
+      <td>2008-05-29</td>
+      <td>Anthony Burnett</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Insomnia</td>
+      <td>1992-07-12</td>
+      <td>trazodone</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>088-33-9584</td>
+      <td>Michael Ingram</td>
+      <td>23069 Mcgee Mountains\nPort Matthewhaven, AL 2...</td>
+      <td>wattskrista</td>
+      <td>M</td>
+      <td>2017-04-22</td>
+      <td>O-</td>
+      <td>thomasgreen@hotmail.com</td>
+      <td>Clinical biochemist</td>
+      <td>Donovan-Lewis</td>
+      <td>2006-02-09</td>
+      <td>Melissa Blake MD</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Osteomalacia</td>
+      <td>1998-07-01</td>
+      <td>calcium lactate</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>627-75-7529</td>
+      <td>Terri Wilcox</td>
+      <td>18473 Adam Stream Suite 936\nJasonberg, NH 83932</td>
+      <td>theresa99</td>
+      <td>F</td>
+      <td>1955-01-16</td>
+      <td>AB-</td>
+      <td>jeremy55@hotmail.com</td>
+      <td>Architect</td>
+      <td>Alvarez-Hendrix</td>
+      <td>2009-07-03</td>
+      <td>Anthony Alvarez</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Status Epilepticus</td>
+      <td>2020-10-03</td>
+      <td>diazepam</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>598-88-2739</td>
+      <td>Scott Martin</td>
+      <td>433 Braun Lodge Suite 289\nPort Reginald, DC 3...</td>
+      <td>fischerkelly</td>
+      <td>M</td>
+      <td>1982-10-24</td>
+      <td>O+</td>
+      <td>billyfrancis@yahoo.com</td>
+      <td>Records manager</td>
+      <td>Gomez-Hall</td>
+      <td>2020-06-06</td>
+      <td>Evan Kennedy</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Hodgkin's Lymphoma</td>
+      <td>2004-04-15</td>
+      <td>nivolumab</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>633-68-1396</td>
+      <td>Cristina Richardson</td>
+      <td>88648 David Lodge\nHaydenhaven, VT 42865</td>
+      <td>traciwarner</td>
+      <td>F</td>
+      <td>1949-05-06</td>
+      <td>A-</td>
+      <td>daniel21@hotmail.com</td>
+      <td>Manufacturing engineer</td>
+      <td>Armstrong Inc</td>
+      <td>1993-12-01</td>
+      <td>Dr. Shawn Green</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Major Depressive Disorder</td>
+      <td>2019-02-18</td>
+      <td>trazodone</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>485-53-1577</td>
+      <td>Emily Owens</td>
+      <td>37248 Rogers Lock Apt. 818\nLauraborough, VA 9...</td>
+      <td>david85</td>
+      <td>F</td>
+      <td>1935-12-15</td>
+      <td>B+</td>
+      <td>nicholassimpson@yahoo.com</td>
+      <td>Advice worker</td>
+      <td>Robles, Vang and Nelson</td>
+      <td>1995-09-12</td>
+      <td>Larry Thompson</td>
+      <td>advanced practice registered nurse</td>
+      <td>refill</td>
+      <td>Neuroendocrine Carcinoma</td>
+      <td>2018-01-01</td>
+      <td>lanreotide</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>445-44-1259</td>
+      <td>Marissa Johnson</td>
+      <td>2495 Kelly Ports\nEast Sandra, DC 72426</td>
+      <td>martinduane</td>
+      <td>F</td>
+      <td>2001-12-14</td>
+      <td>A-</td>
+      <td>audrey21@yahoo.com</td>
+      <td>Paediatric nurse</td>
+      <td>Richardson Inc</td>
+      <td>2014-01-07</td>
+      <td>Scott Jenkins</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Cystic Fibrosis</td>
+      <td>2007-11-21</td>
+      <td>azithromycin</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>001-40-1685</td>
+      <td>Tyrone Leach</td>
+      <td>430 Wheeler Valleys\nNew Alantown, CT 72217</td>
+      <td>qsmith</td>
+      <td>M</td>
+      <td>1939-04-14</td>
+      <td>AB+</td>
+      <td>patelcurtis@yahoo.com</td>
+      <td>Equality and diversity officer</td>
+      <td>Hooper PLC</td>
+      <td>2000-04-01</td>
+      <td>Caitlyn Jones</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Pulmonary Hypertension</td>
+      <td>2020-02-05</td>
+      <td>epoprostenol</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>391-92-9332</td>
+      <td>Thomas Hamilton</td>
+      <td>58098 Benton Springs\nEast Joshuaberg, MD 72284</td>
+      <td>kbaker</td>
+      <td>M</td>
+      <td>1958-11-05</td>
+      <td>AB-</td>
+      <td>sheanicole@hotmail.com</td>
+      <td>Dance movement psychotherapist</td>
+      <td>Bauer-Hawkins</td>
+      <td>2002-07-09</td>
+      <td>Stephanie Hoover</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Sexual Dysfunction, SSRI Induced</td>
+      <td>2009-06-10</td>
+      <td>buspirone</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>286-95-0628</td>
+      <td>Andrew Gonzalez</td>
+      <td>6412 Thornton Crossing Apt. 287\nPort Dawn, IA...</td>
+      <td>evan43</td>
+      <td>M</td>
+      <td>1948-02-25</td>
+      <td>B-</td>
+      <td>whitejoshua@gmail.com</td>
+      <td>Quality manager</td>
+      <td>Alexander, Barr and Jackson</td>
+      <td>2020-07-21</td>
+      <td>Charles Anderson</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Psittacosis</td>
+      <td>2000-06-13</td>
+      <td>minocycline</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>086-16-9898</td>
+      <td>Dr. Benjamin Wheeler</td>
+      <td>1259 Hansen Ports\nNorth Tammy, ME 19781</td>
+      <td>johnsonthomas</td>
+      <td>M</td>
+      <td>1934-10-18</td>
+      <td>B-</td>
+      <td>michael51@yahoo.com</td>
+      <td>Medical technical officer</td>
+      <td>Dunn-Cohen</td>
+      <td>2006-10-12</td>
+      <td>Connie Moore</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Tonsillitis/Pharyngitis</td>
+      <td>2001-01-24</td>
+      <td>azithromycin</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>841-36-5694</td>
+      <td>Tara Watson</td>
+      <td>41534 Margaret Ferry Apt. 554\nWest Scott, WV ...</td>
+      <td>andrewrice</td>
+      <td>F</td>
+      <td>1949-12-31</td>
+      <td>AB-</td>
+      <td>bryan18@yahoo.com</td>
+      <td>Charity fundraiser</td>
+      <td>Moore-Gallegos</td>
+      <td>2019-09-01</td>
+      <td>Jacqueline Wilson</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Diabetic Kidney Disease (Diabetic Nephropathy)</td>
+      <td>2018-05-21</td>
+      <td>benazepril</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>355-12-0014</td>
+      <td>Jessica Ramirez</td>
+      <td>6310 Fox Manor\nNew Davidfort, TX 54481</td>
+      <td>gregorydavis</td>
+      <td>F</td>
+      <td>1921-03-29</td>
+      <td>O-</td>
+      <td>jonathan46@hotmail.com</td>
+      <td>Production assistant, radio</td>
+      <td>Parks Ltd</td>
+      <td>1993-04-15</td>
+      <td>Jennifer Miller</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Cholera</td>
+      <td>1996-06-21</td>
+      <td>minocycline</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>797-75-4689</td>
+      <td>Kelly Pitts</td>
+      <td>466 Erika Turnpike Apt. 721\nSouth Henry, KS 0...</td>
+      <td>vparker</td>
+      <td>F</td>
+      <td>2010-12-29</td>
+      <td>A-</td>
+      <td>michael34@hotmail.com</td>
+      <td>Psychologist, clinical</td>
+      <td>Smith, Johnson and Pugh</td>
+      <td>2003-09-26</td>
+      <td>Melissa Brown</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Paranoid Disorder</td>
+      <td>2010-08-27</td>
+      <td>risperidone</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>497-81-8637</td>
+      <td>Ronald Harris</td>
+      <td>36923 Simpson Point\nEast Jonathan, WY 53698</td>
+      <td>adamsstephen</td>
+      <td>M</td>
+      <td>1906-12-05</td>
+      <td>O+</td>
+      <td>williamsspencer@yahoo.com</td>
+      <td>Forest/woodland manager</td>
+      <td>Reynolds PLC</td>
+      <td>2022-03-31</td>
+      <td>Diana Moon</td>
+      <td>registered nurse</td>
+      <td>refill</td>
+      <td>Prostate Cancer</td>
+      <td>1999-05-18</td>
+      <td>docetaxel</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>029-03-5866</td>
+      <td>Jennifer Chandler</td>
+      <td>9788 Arnold Lodge\nSandrashire, NC 16682</td>
+      <td>mckenziejoseph</td>
+      <td>F</td>
+      <td>2022-01-08</td>
+      <td>O-</td>
+      <td>rachael51@gmail.com</td>
+      <td>Sports coach</td>
+      <td>Johnston Inc</td>
+      <td>1995-01-05</td>
+      <td>Jennifer Rios</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Renal Cell Carcinoma</td>
+      <td>1998-04-25</td>
+      <td>sunitinib</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>585-64-0463</td>
+      <td>Brandi Bowman</td>
+      <td>95085 Mendoza Drive\nWilliamsview, NC 80900</td>
+      <td>jared39</td>
+      <td>F</td>
+      <td>1955-09-13</td>
+      <td>B+</td>
+      <td>hunterking@hotmail.com</td>
+      <td>Fisheries officer</td>
+      <td>Smith-Kelley</td>
+      <td>1998-05-30</td>
+      <td>Sarah Bush</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Alcoholic Liver Damage</td>
+      <td>1997-04-06</td>
+      <td>propylthiouracil</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>249-92-1112</td>
+      <td>Rita Browning</td>
+      <td>756 Strickland Stream Suite 550\nEast Clayton,...</td>
+      <td>sharon48</td>
+      <td>F</td>
+      <td>2007-02-10</td>
+      <td>A+</td>
+      <td>dakota13@hotmail.com</td>
+      <td>Environmental manager</td>
+      <td>Williams-Allen</td>
+      <td>2012-11-17</td>
+      <td>Jesus Benton</td>
+      <td>registered nurse</td>
+      <td>first visit</td>
+      <td>Narcolepsy</td>
+      <td>1999-08-04</td>
+      <td>sodium oxybate</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>701-51-8947</td>
+      <td>Edgar Thompson</td>
+      <td>81120 Claire Bypass\nTrevorland, TN 73579</td>
+      <td>rodriguezlori</td>
+      <td>M</td>
+      <td>1970-01-22</td>
+      <td>AB+</td>
+      <td>raymondconley@gmail.com</td>
+      <td>Horticultural therapist</td>
+      <td>Johnson PLC</td>
+      <td>2007-12-20</td>
+      <td>David Fuentes</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Social Anxiety Disorder</td>
+      <td>2013-09-14</td>
+      <td>sertraline</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>124-34-6886</td>
+      <td>Stephanie Reed</td>
+      <td>71355 Garcia Road\nJenniferborough, MA 74396</td>
+      <td>terrybrenda</td>
+      <td>F</td>
+      <td>1923-05-13</td>
+      <td>AB+</td>
+      <td>desiree37@yahoo.com</td>
+      <td>Engineer, production</td>
+      <td>Gonzales-Williams</td>
+      <td>1996-05-14</td>
+      <td>Andrew Bennett</td>
+      <td>physician assistant</td>
+      <td>first visit</td>
+      <td>Celiac Disease</td>
+      <td>1997-10-21</td>
+      <td>infliximab</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>505-72-9055</td>
+      <td>April Hunter</td>
+      <td>374 Gillespie Ranch Apt. 595\nWest Debraland, ...</td>
+      <td>shelly49</td>
+      <td>F</td>
+      <td>1982-12-14</td>
+      <td>O-</td>
+      <td>jenniferlopez@hotmail.com</td>
+      <td>Journalist, newspaper</td>
+      <td>West, Cook and Ingram</td>
+      <td>2011-07-05</td>
+      <td>Lori Sanders</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Oophorectomy</td>
+      <td>1994-09-03</td>
+      <td>estradiol</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>060-27-1876</td>
+      <td>Ann Hull</td>
+      <td>88093 Watson Point Suite 418\nPort Alan, TX 22066</td>
+      <td>shawnowens</td>
+      <td>F</td>
+      <td>1915-06-25</td>
+      <td>AB+</td>
+      <td>bmayer@gmail.com</td>
+      <td>Wellsite geologist</td>
+      <td>White, Kelly and Powell</td>
+      <td>2010-04-29</td>
+      <td>Kevin Martin</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Endometrial Cancer</td>
+      <td>1995-01-26</td>
+      <td>anastrozole</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>426-05-5520</td>
+      <td>Sandra Walton</td>
+      <td>281 Anthony Vista Apt. 810\nSouth Robertburgh,...</td>
+      <td>rmiller</td>
+      <td>F</td>
+      <td>1907-05-07</td>
+      <td>B-</td>
+      <td>uwilliams@yahoo.com</td>
+      <td>Teaching laboratory technician</td>
+      <td>Bell, Foster and Turner</td>
+      <td>2020-05-02</td>
+      <td>Eric Jackson</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Temporomandibular Joint Disorder</td>
+      <td>2002-07-15</td>
+      <td>cyclobenzaprine</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>656-45-7598</td>
+      <td>Tyler Shepherd</td>
+      <td>498 Timothy Haven Apt. 505\nJenniferport, LA 0...</td>
+      <td>lgay</td>
+      <td>M</td>
+      <td>1985-09-07</td>
+      <td>AB-</td>
+      <td>johnward@hotmail.com</td>
+      <td>Engineer, civil (consulting)</td>
+      <td>Cameron and Sons</td>
+      <td>2016-01-06</td>
+      <td>Kerry Adams</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Acne</td>
+      <td>2006-07-03</td>
+      <td>spironolactone</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>335-46-9022</td>
+      <td>Michael Evans</td>
+      <td>2395 Leslie Landing Apt. 386\nOwensburgh, NV 0...</td>
+      <td>sanchezbryan</td>
+      <td>M</td>
+      <td>2014-04-18</td>
+      <td>O-</td>
+      <td>samanthawoods@gmail.com</td>
+      <td>Estate agent</td>
+      <td>Rhodes, Schmidt and Smith</td>
+      <td>2003-03-17</td>
+      <td>Mario Tanner</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Mitral Valve Prolapse</td>
+      <td>2018-05-16</td>
+      <td>nadolol</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>102-04-7736</td>
+      <td>Leonard Kramer</td>
+      <td>427 Heidi Well Apt. 657\nNorth Tonyabury, ME 9...</td>
+      <td>karenbutler</td>
+      <td>M</td>
+      <td>1972-09-14</td>
+      <td>AB-</td>
+      <td>ycrane@yahoo.com</td>
+      <td>Scientist, clinical (histocompatibility and im...</td>
+      <td>Clark, Townsend and Gonzalez</td>
+      <td>2003-08-11</td>
+      <td>Emily Williamson</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Migraine</td>
+      <td>2015-11-02</td>
+      <td>sumatriptan</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>816-27-4999</td>
+      <td>Jasmine Arnold</td>
+      <td>367 Lawrence Ports\nEdwardsburgh, DE 52272</td>
+      <td>dickersonsarah</td>
+      <td>F</td>
+      <td>1930-03-19</td>
+      <td>B-</td>
+      <td>marynichols@yahoo.com</td>
+      <td>Statistician</td>
+      <td>Rodriguez, Johnson and Fox</td>
+      <td>2002-10-27</td>
+      <td>Laura Garcia</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Tympanostomy Tube Placement Surgery</td>
+      <td>2007-07-06</td>
+      <td>ciprofloxacin</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>814-20-5644</td>
+      <td>Ashley Moon</td>
+      <td>0601 George Circle\nDebraberg, IN 25619</td>
+      <td>javier22</td>
+      <td>F</td>
+      <td>1998-09-04</td>
+      <td>AB-</td>
+      <td>edwardmelton@gmail.com</td>
+      <td>Animator</td>
+      <td>Velasquez, Yoder and Barnes</td>
+      <td>2018-11-04</td>
+      <td>Brittany Buchanan</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Multiple Myeloma</td>
+      <td>2019-09-24</td>
+      <td>dexamethasone</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>664-70-2545</td>
+      <td>Karen Christian</td>
+      <td>57322 Cheyenne Ways\nJamesmouth, FL 12378</td>
+      <td>john51</td>
+      <td>F</td>
+      <td>1949-11-27</td>
+      <td>B+</td>
+      <td>wcampos@yahoo.com</td>
+      <td>Librarian, public</td>
+      <td>Christensen Inc</td>
+      <td>2008-08-22</td>
+      <td>Kyle Johnston</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Angina</td>
+      <td>2019-06-09</td>
+      <td>metoprolol</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>243-42-5101</td>
+      <td>Anthony Craig</td>
+      <td>Unit 9681 Box 7865\nDPO AP 41455</td>
+      <td>mikebarber</td>
+      <td>M</td>
+      <td>1990-03-01</td>
+      <td>B-</td>
+      <td>evansashley@gmail.com</td>
+      <td>Engineer, electrical</td>
+      <td>Shaw, Warren and Sharp</td>
+      <td>1993-07-31</td>
+      <td>Anna Cruz</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Pertussis Prophylaxis</td>
+      <td>2007-04-05</td>
+      <td>diphtheria toxoid / haemophilus b conjugate (p...</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>501-92-4581</td>
+      <td>Courtney Hess</td>
+      <td>98529 Eric Mews\nNorth Steven, SD 38001</td>
+      <td>ramoskimberly</td>
+      <td>F</td>
+      <td>1952-10-04</td>
+      <td>A-</td>
+      <td>suzanne20@gmail.com</td>
+      <td>Television production assistant</td>
+      <td>Cortez-Juarez</td>
+      <td>2010-04-02</td>
+      <td>Julie Richmond</td>
+      <td>advanced practice registered nurse</td>
+      <td>checkup</td>
+      <td>Borderline Personality Disorder</td>
+      <td>2015-03-17</td>
+      <td>citalopram</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>200-86-1081</td>
+      <td>Katherine Ho MD</td>
+      <td>7225 Stanley Path\nWest Juliehaven, AL 83642</td>
+      <td>qwise</td>
+      <td>F</td>
+      <td>1916-03-27</td>
+      <td>B-</td>
+      <td>ewallace@hotmail.com</td>
+      <td>Network engineer</td>
+      <td>Landry Inc</td>
+      <td>2004-06-03</td>
+      <td>Rachel Juarez</td>
+      <td>advanced practice registered nurse</td>
+      <td>refill</td>
+      <td>Insulin Resistance Syndrome (Metabolic Syndrome)</td>
+      <td>2013-09-18</td>
+      <td>insulin regular</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>875-78-4186</td>
+      <td>Michael Edwards</td>
+      <td>274 Jerry Stream\nWest Paul, WA 14284</td>
+      <td>vaughndiana</td>
+      <td>M</td>
+      <td>2016-08-05</td>
+      <td>AB-</td>
+      <td>uhicks@gmail.com</td>
+      <td>Ambulance person</td>
+      <td>Smith Group</td>
+      <td>2018-02-06</td>
+      <td>Marilyn Stewart</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Postural Orthostatic Tachycardia Syndrome</td>
+      <td>1994-10-18</td>
+      <td>clonidine</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>586-26-0128</td>
+      <td>Melvin Mccoy</td>
+      <td>3657 Smith Ridge\nPort Kyle, LA 77602</td>
+      <td>perezzachary</td>
+      <td>M</td>
+      <td>1929-09-21</td>
+      <td>B-</td>
+      <td>martinezashley@hotmail.com</td>
+      <td>Travel agency manager</td>
+      <td>Woodard, Smith and Hardin</td>
+      <td>2017-10-08</td>
+      <td>Emily Hernandez</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Borderline Personality Disorder</td>
+      <td>2002-02-25</td>
+      <td>olanzapine</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>562-25-2869</td>
+      <td>Shane Diaz</td>
+      <td>73589 Johnson Corners\nWest James, MA 33917</td>
+      <td>andrew30</td>
+      <td>M</td>
+      <td>1968-11-09</td>
+      <td>AB-</td>
+      <td>jeremy38@yahoo.com</td>
+      <td>Biomedical engineer</td>
+      <td>Phillips-Morris</td>
+      <td>1998-12-24</td>
+      <td>Erin Hansen</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Candidemia</td>
+      <td>2015-06-13</td>
+      <td>amphotericin b liposomal</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>269-90-7509</td>
+      <td>Nathan Mullins</td>
+      <td>1567 William Harbors\nWilliamstown, NC 01190</td>
+      <td>baileyanthony</td>
+      <td>M</td>
+      <td>1935-06-20</td>
+      <td>B+</td>
+      <td>joanne63@hotmail.com</td>
+      <td>Dancer</td>
+      <td>Beck Group</td>
+      <td>1997-06-01</td>
+      <td>Susan Bush</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Chronic Myelogenous Leukemia</td>
+      <td>1997-02-11</td>
+      <td>fludarabine</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>199-84-4437</td>
+      <td>Vincent Carter</td>
+      <td>0641 Michael Estate Suite 207\nSouth Jamesmout...</td>
+      <td>franksilva</td>
+      <td>M</td>
+      <td>1949-02-25</td>
+      <td>A+</td>
+      <td>ccook@yahoo.com</td>
+      <td>Wellsite geologist</td>
+      <td>Myers-Mckenzie</td>
+      <td>1992-08-17</td>
+      <td>Anthony Jenkins</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Multiple Myeloma</td>
+      <td>1994-01-20</td>
+      <td>daratumumab</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td>628-96-3520</td>
+      <td>Troy Arnold</td>
+      <td>027 Renee Burg Suite 195\nSouth Sheila, MA 99171</td>
+      <td>shansen</td>
+      <td>M</td>
+      <td>1971-05-11</td>
+      <td>AB-</td>
+      <td>petersondwayne@gmail.com</td>
+      <td>IT consultant</td>
+      <td>House-Harper</td>
+      <td>2022-04-18</td>
+      <td>Desiree Curry</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Non-Hodgkin's Lymphoma</td>
+      <td>1999-01-31</td>
+      <td>fludarabine</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>191-26-5460</td>
+      <td>Christina Rivera</td>
+      <td>PSC 2714, Box 5425\nAPO AP 94368</td>
+      <td>sandra09</td>
+      <td>F</td>
+      <td>1977-04-27</td>
+      <td>A-</td>
+      <td>ttapia@yahoo.com</td>
+      <td>Primary school teacher</td>
+      <td>Morris-Smith</td>
+      <td>1994-05-31</td>
+      <td>Katherine Flores</td>
+      <td>advanced practice registered nurse</td>
+      <td>refill</td>
+      <td>Prostatitis</td>
+      <td>2012-10-01</td>
+      <td>sulfamethoxazole / trimethoprim</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>834-26-4008</td>
+      <td>Melanie Reed</td>
+      <td>29956 Smith Stream\nCandiceshire, ID 84147</td>
+      <td>smithjoseph</td>
+      <td>F</td>
+      <td>1943-09-09</td>
+      <td>A+</td>
+      <td>colleensanchez@yahoo.com</td>
+      <td>Teacher, special educational needs</td>
+      <td>Ferguson and Sons</td>
+      <td>2004-04-22</td>
+      <td>Joe Acosta</td>
+      <td>advanced practice registered nurse</td>
+      <td>first visit</td>
+      <td>Factor VII Deficiency</td>
+      <td>2000-07-28</td>
+      <td>factor ix complex</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>379-87-4107</td>
+      <td>Daniel Adams</td>
+      <td>55944 Lewis Creek Apt. 214\nCherrystad, NC 31988</td>
+      <td>burgessdaniel</td>
+      <td>M</td>
+      <td>1946-12-13</td>
+      <td>AB-</td>
+      <td>emilygarrett@hotmail.com</td>
+      <td>Theatre director</td>
+      <td>Hernandez-Green</td>
+      <td>2012-04-28</td>
+      <td>Drew Bradley</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Diaper Rash</td>
+      <td>2002-08-28</td>
+      <td>zinc oxide</td>
+    </tr>
+    <tr>
+      <th>59</th>
+      <td>715-93-0013</td>
+      <td>Megan Martinez</td>
+      <td>51662 Joshua Mission\nScottchester, RI 57452</td>
+      <td>mortonjoshua</td>
+      <td>F</td>
+      <td>1918-08-27</td>
+      <td>AB-</td>
+      <td>tcole@yahoo.com</td>
+      <td>Secretary, company</td>
+      <td>Jefferson Group</td>
+      <td>1999-04-18</td>
+      <td>Nicole Taylor</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Small Cell Lung Cancer</td>
+      <td>1999-05-07</td>
+      <td>topotecan</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>568-08-0563</td>
+      <td>Robin Holland</td>
+      <td>343 Judy Unions Suite 990\nAnthonyfurt, MD 46636</td>
+      <td>ryan29</td>
+      <td>F</td>
+      <td>2002-01-11</td>
+      <td>AB+</td>
+      <td>nballard@hotmail.com</td>
+      <td>Applications developer</td>
+      <td>Solomon Group</td>
+      <td>2000-02-24</td>
+      <td>Sarah Nichols</td>
+      <td>advanced practice registered nurse</td>
+      <td>refill</td>
+      <td>Borderline Personality Disorder</td>
+      <td>2004-08-23</td>
+      <td>l-methylfolate</td>
+    </tr>
+    <tr>
+      <th>61</th>
+      <td>336-90-2965</td>
+      <td>Patricia Padilla</td>
+      <td>7428 Schroeder Port\nReneeside, MI 30057</td>
+      <td>james15</td>
+      <td>F</td>
+      <td>2003-04-08</td>
+      <td>B-</td>
+      <td>jordanjessica@hotmail.com</td>
+      <td>Research scientist (life sciences)</td>
+      <td>Patel Ltd</td>
+      <td>2001-02-24</td>
+      <td>James Roberts Jr.</td>
+      <td>advanced practice registered nurse</td>
+      <td>refill</td>
+      <td>Insomnia</td>
+      <td>2017-09-15</td>
+      <td>flurazepam</td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>463-36-7267</td>
+      <td>Gregory Thompson</td>
+      <td>27085 Robert Vista\nLake Ginabury, CO 22533</td>
+      <td>james59</td>
+      <td>M</td>
+      <td>1987-02-16</td>
+      <td>A+</td>
+      <td>colleen74@yahoo.com</td>
+      <td>Theatre director</td>
+      <td>Mcmillan-Mason</td>
+      <td>2014-07-03</td>
+      <td>Andrew Meza</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Schizoaffective Disorder</td>
+      <td>2004-08-03</td>
+      <td>lurasidone</td>
+    </tr>
+    <tr>
+      <th>63</th>
+      <td>366-04-8986</td>
+      <td>Michael Coleman</td>
+      <td>6015 Robin Branch\nEast Sandra, WI 74897</td>
+      <td>christinedavis</td>
+      <td>M</td>
+      <td>1907-09-27</td>
+      <td>O-</td>
+      <td>lisa90@gmail.com</td>
+      <td>Maintenance engineer</td>
+      <td>Smith, Holmes and Garrett</td>
+      <td>2020-11-11</td>
+      <td>Kim Berg</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Coronary Artery Disease</td>
+      <td>2010-02-20</td>
+      <td>isoxsuprine</td>
+    </tr>
+    <tr>
+      <th>64</th>
+      <td>540-62-1408</td>
+      <td>Mary Young</td>
+      <td>65704 Kathleen Underpass\nNew Francisco, VT 92306</td>
+      <td>xali</td>
+      <td>F</td>
+      <td>1940-07-23</td>
+      <td>B+</td>
+      <td>nprice@yahoo.com</td>
+      <td>Counselling psychologist</td>
+      <td>Lloyd PLC</td>
+      <td>2009-07-27</td>
+      <td>Diane Delgado</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Back Pain</td>
+      <td>2020-12-11</td>
+      <td>ibuprofen</td>
+    </tr>
+    <tr>
+      <th>65</th>
+      <td>883-17-5839</td>
+      <td>Phillip Martinez</td>
+      <td>834 Smith Hill Suite 918\nPort Rickyburgh, VT ...</td>
+      <td>christopherhamilton</td>
+      <td>M</td>
+      <td>2010-04-30</td>
+      <td>AB+</td>
+      <td>robin74@gmail.com</td>
+      <td>Lecturer, higher education</td>
+      <td>Jones-Marks</td>
+      <td>2018-11-28</td>
+      <td>Adam Davis</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Parkinson's Disease</td>
+      <td>1995-07-31</td>
+      <td>ropinirole</td>
+    </tr>
+    <tr>
+      <th>66</th>
+      <td>568-02-4304</td>
+      <td>Shawn Gordon</td>
+      <td>47376 Charles Trace Suite 400\nPort Jodi, NY 5...</td>
+      <td>vargasbrooke</td>
+      <td>M</td>
+      <td>1948-03-26</td>
+      <td>A+</td>
+      <td>nperez@gmail.com</td>
+      <td>Insurance account manager</td>
+      <td>Murphy, Curry and Price</td>
+      <td>2011-08-08</td>
+      <td>Lisa Jackson</td>
+      <td>registered nurse</td>
+      <td>first visit</td>
+      <td>Schizophrenia</td>
+      <td>2011-03-31</td>
+      <td>ziprasidone</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>569-76-8750</td>
+      <td>Sharon Curry</td>
+      <td>1529 Karen Forks Apt. 239\nKingbury, NM 22799</td>
+      <td>robertbrown</td>
+      <td>F</td>
+      <td>1938-12-06</td>
+      <td>O+</td>
+      <td>randolphkari@hotmail.com</td>
+      <td>Teacher, English as a foreign language</td>
+      <td>Rodriguez and Sons</td>
+      <td>2003-10-29</td>
+      <td>Vanessa Benitez</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Parkinson's Disease</td>
+      <td>1995-07-26</td>
+      <td>ropinirole</td>
+    </tr>
+    <tr>
+      <th>68</th>
+      <td>562-14-0356</td>
+      <td>Michael Hill</td>
+      <td>552 Emily Village\nCurtishaven, CO 64513</td>
+      <td>sullivanjake</td>
+      <td>M</td>
+      <td>2010-10-16</td>
+      <td>A-</td>
+      <td>samantha89@yahoo.com</td>
+      <td>Lecturer, higher education</td>
+      <td>Dominguez-Davis</td>
+      <td>2009-01-28</td>
+      <td>Jennifer Mcdaniel</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Keratitis</td>
+      <td>2019-01-29</td>
+      <td>dexamethasone</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>738-01-1279</td>
+      <td>Jennifer Hartman</td>
+      <td>22990 Bryan Mountains\nLake Melissahaven, AK 0...</td>
+      <td>trandeanna</td>
+      <td>F</td>
+      <td>1964-08-09</td>
+      <td>O+</td>
+      <td>ashleyskinner@gmail.com</td>
+      <td>Orthoptist</td>
+      <td>Everett Ltd</td>
+      <td>2012-08-04</td>
+      <td>Kristen Morris</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>ADHD (Attention Deficit Hyperactivity Disorder)</td>
+      <td>2014-06-13</td>
+      <td>lisdexamfetamine</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>511-78-4374</td>
+      <td>Gabriela Velez</td>
+      <td>USS Jimenez\nFPO AA 29144</td>
+      <td>jennifer78</td>
+      <td>F</td>
+      <td>2019-10-17</td>
+      <td>O-</td>
+      <td>michael73@hotmail.com</td>
+      <td>Librarian, academic</td>
+      <td>Miller and Sons</td>
+      <td>2010-05-11</td>
+      <td>Brandi Evans</td>
+      <td>registered nurse</td>
+      <td>refill</td>
+      <td>Borderline Personality Disorder</td>
+      <td>1997-01-28</td>
+      <td>topiramate</td>
+    </tr>
+    <tr>
+      <th>71</th>
+      <td>232-07-7773</td>
+      <td>Kiara Murphy</td>
+      <td>406 Alvarez Harbors Suite 955\nEast Kevin, IA ...</td>
+      <td>jeffery97</td>
+      <td>F</td>
+      <td>1916-04-10</td>
+      <td>O-</td>
+      <td>lopezlauren@yahoo.com</td>
+      <td>Meteorologist</td>
+      <td>Castaneda, Ali and Carrillo</td>
+      <td>1995-04-23</td>
+      <td>Taylor Guerrero</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Premenstrual Dysphoric Disorder</td>
+      <td>2002-01-28</td>
+      <td>escitalopram</td>
+    </tr>
+    <tr>
+      <th>72</th>
+      <td>569-58-7950</td>
+      <td>Dana Shaw</td>
+      <td>3337 Alex Turnpike Suite 686\nBurnsborough, WV...</td>
+      <td>williamthompson</td>
+      <td>F</td>
+      <td>1943-08-06</td>
+      <td>A-</td>
+      <td>sclark@yahoo.com</td>
+      <td>Environmental education officer</td>
+      <td>Moses, Macdonald and Paul</td>
+      <td>1992-07-18</td>
+      <td>Robert Logan</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Steroid Responsive Inflammatory Conditions</td>
+      <td>2009-10-15</td>
+      <td>fluorometholone</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>805-03-4255</td>
+      <td>Joshua Mccarthy Jr.</td>
+      <td>26953 Allen Course\nSouth Wendyhaven, HI 87005</td>
+      <td>austincoleman</td>
+      <td>M</td>
+      <td>2002-11-25</td>
+      <td>AB+</td>
+      <td>alvaradoandrea@yahoo.com</td>
+      <td>Immunologist</td>
+      <td>Jones-Ramirez</td>
+      <td>2004-09-24</td>
+      <td>Christine Wiggins</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Anemia, Sickle Cell</td>
+      <td>1995-03-12</td>
+      <td>vitamin e</td>
+    </tr>
+    <tr>
+      <th>74</th>
+      <td>132-03-1063</td>
+      <td>Diana Williams</td>
+      <td>675 Charles Turnpike Apt. 056\nEast Angelamout...</td>
+      <td>nicole37</td>
+      <td>F</td>
+      <td>1945-03-10</td>
+      <td>A-</td>
+      <td>justin85@yahoo.com</td>
+      <td>Magazine features editor</td>
+      <td>Adkins-Kelley</td>
+      <td>2015-10-10</td>
+      <td>Earl Johnson</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Diffuse Large B-Cell Lymphoma</td>
+      <td>2001-09-14</td>
+      <td>axicabtagene ciloleucel</td>
+    </tr>
+    <tr>
+      <th>75</th>
+      <td>305-45-5412</td>
+      <td>Victor Andersen</td>
+      <td>465 Kennedy Drives Suite 896\nMartinezhaven, N...</td>
+      <td>catherinejohnson</td>
+      <td>M</td>
+      <td>1913-01-19</td>
+      <td>B-</td>
+      <td>brianjackson@yahoo.com</td>
+      <td>Technical author</td>
+      <td>Swanson, Crawford and Phillips</td>
+      <td>2019-04-20</td>
+      <td>Heather Kerr</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Mitral Valve Prolapse</td>
+      <td>2007-09-02</td>
+      <td>nadolol</td>
+    </tr>
+    <tr>
+      <th>76</th>
+      <td>627-12-1220</td>
+      <td>Jennifer Pena</td>
+      <td>054 Louis Landing Apt. 462\nNew Debraport, NV ...</td>
+      <td>dswanson</td>
+      <td>F</td>
+      <td>1992-12-19</td>
+      <td>AB-</td>
+      <td>patricia80@hotmail.com</td>
+      <td>Firefighter</td>
+      <td>Rodriguez-Dennis</td>
+      <td>2010-10-11</td>
+      <td>Anna Davis</td>
+      <td>physician assistant</td>
+      <td>first visit</td>
+      <td>Juvenile Rheumatoid Arthritis</td>
+      <td>1993-02-03</td>
+      <td>prednisone</td>
+    </tr>
+    <tr>
+      <th>77</th>
+      <td>458-36-9111</td>
+      <td>Kathleen Esparza</td>
+      <td>88548 Caldwell Shoals\nJeffreytown, VA 19841</td>
+      <td>deancooley</td>
+      <td>F</td>
+      <td>1956-10-26</td>
+      <td>A+</td>
+      <td>silvaadam@gmail.com</td>
+      <td>Teaching laboratory technician</td>
+      <td>Hall Inc</td>
+      <td>1994-10-30</td>
+      <td>William Garcia</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Atopic Dermatitis</td>
+      <td>1995-03-14</td>
+      <td>betamethasone</td>
+    </tr>
+    <tr>
+      <th>78</th>
+      <td>789-60-1755</td>
+      <td>Troy Garza</td>
+      <td>7190 Smith Fords\nWest Jeffrey, AL 82321</td>
+      <td>christopherhendricks</td>
+      <td>M</td>
+      <td>1978-06-09</td>
+      <td>O-</td>
+      <td>vrobinson@yahoo.com</td>
+      <td>Scientist, physiological</td>
+      <td>Carlson-Nichols</td>
+      <td>2018-07-11</td>
+      <td>Kent Henson</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Postural Orthostatic Tachycardia Syndrome</td>
+      <td>2015-10-13</td>
+      <td>methylphenidate</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>517-53-1793</td>
+      <td>Claudia Walker</td>
+      <td>41951 Kathleen Centers\nDavidborough, ME 91983</td>
+      <td>allisonsummers</td>
+      <td>F</td>
+      <td>2008-03-22</td>
+      <td>B-</td>
+      <td>wtaylor@yahoo.com</td>
+      <td>Operational investment banker</td>
+      <td>Washington-Lambert</td>
+      <td>2005-11-30</td>
+      <td>Shelby Monroe</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Hypertriglyceridemia</td>
+      <td>1997-08-13</td>
+      <td>rosuvastatin</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>739-64-7758</td>
+      <td>Tina Rose</td>
+      <td>844 Lawrence Hills\nNorth Courtney, DC 65963</td>
+      <td>harringtonbrian</td>
+      <td>F</td>
+      <td>2003-11-20</td>
+      <td>B-</td>
+      <td>jasonnewman@hotmail.com</td>
+      <td>Biomedical engineer</td>
+      <td>Hoover, Hernandez and Silva</td>
+      <td>2006-12-04</td>
+      <td>Ralph Rogers</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Systemic Lupus Erythematosus</td>
+      <td>2021-02-10</td>
+      <td>mycophenolate mofetil</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>384-03-5023</td>
+      <td>Stacey Abbott</td>
+      <td>PSC 8482, Box 7070\nAPO AP 15259</td>
+      <td>ehenry</td>
+      <td>F</td>
+      <td>1996-06-05</td>
+      <td>AB-</td>
+      <td>pwright@yahoo.com</td>
+      <td>Film/video editor</td>
+      <td>Cooper and Sons</td>
+      <td>2008-08-25</td>
+      <td>Tara Martinez</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Heart Attack (Myocardial Infarction)</td>
+      <td>2017-11-14</td>
+      <td>enoxaparin</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>543-93-8006</td>
+      <td>Brian Shaw</td>
+      <td>48517 Robin Ports Apt. 311\nSouth Katelyn, WA ...</td>
+      <td>kellerdavid</td>
+      <td>M</td>
+      <td>1945-02-12</td>
+      <td>B-</td>
+      <td>bryantjulian@yahoo.com</td>
+      <td>Programmer, multimedia</td>
+      <td>Benson Ltd</td>
+      <td>2020-03-04</td>
+      <td>Heather Watts</td>
+      <td>advanced practice registered nurse</td>
+      <td>refill</td>
+      <td>Left Ventricular Dysfunction</td>
+      <td>1995-01-06</td>
+      <td>benazepril</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>692-23-0795</td>
+      <td>Trevor Harper</td>
+      <td>18289 Alan Ridge Apt. 971\nNew Nancy, SD 70951</td>
+      <td>andersonjames</td>
+      <td>M</td>
+      <td>1942-03-29</td>
+      <td>O+</td>
+      <td>millsjessica@hotmail.com</td>
+      <td>Intelligence analyst</td>
+      <td>Aguilar PLC</td>
+      <td>2017-05-12</td>
+      <td>Bobby Wood</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Dry Skin (Xerosis)</td>
+      <td>2007-03-28</td>
+      <td>ammonium lactate</td>
+    </tr>
+    <tr>
+      <th>84</th>
+      <td>736-35-7570</td>
+      <td>Andrew Miller</td>
+      <td>09025 Steven Passage\nDanielmouth, FL 43810</td>
+      <td>djones</td>
+      <td>M</td>
+      <td>1994-06-06</td>
+      <td>AB-</td>
+      <td>christopher18@yahoo.com</td>
+      <td>Designer, industrial/product</td>
+      <td>King-Gomez</td>
+      <td>2001-12-08</td>
+      <td>Maria Hall</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Vitamin/Mineral Supplementation during Pregnan...</td>
+      <td>2021-08-11</td>
+      <td>ferrous fumarate</td>
+    </tr>
+    <tr>
+      <th>85</th>
+      <td>016-03-5765</td>
+      <td>Mr. Shawn Lopez</td>
+      <td>8788 Diana Plaza Apt. 760\nBriggsville, IL 96756</td>
+      <td>rbennett</td>
+      <td>M</td>
+      <td>2018-05-23</td>
+      <td>AB+</td>
+      <td>bcastillo@gmail.com</td>
+      <td>Engineer, technical sales</td>
+      <td>Lee Inc</td>
+      <td>2005-08-23</td>
+      <td>Katie Higgins</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Psoriasis</td>
+      <td>2004-12-24</td>
+      <td>acitretin</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>626-61-8767</td>
+      <td>Tara Rosales</td>
+      <td>337 Michaela Bridge\nLake Timothy, MD 81044</td>
+      <td>jacobkennedy</td>
+      <td>F</td>
+      <td>2001-07-09</td>
+      <td>B-</td>
+      <td>beckerbrian@gmail.com</td>
+      <td>Estate manager/land agent</td>
+      <td>Wheeler Group</td>
+      <td>2010-03-10</td>
+      <td>April Rios</td>
+      <td>physician assistant</td>
+      <td>refill</td>
+      <td>Thromboembolic Stroke Prophylaxis</td>
+      <td>2001-08-26</td>
+      <td>aspirin</td>
+    </tr>
+    <tr>
+      <th>87</th>
+      <td>278-45-0609</td>
+      <td>Kristine Choi</td>
+      <td>173 Kimberly Point Apt. 223\nJosephhaven, MD 7...</td>
+      <td>marc09</td>
+      <td>F</td>
+      <td>1910-05-05</td>
+      <td>B+</td>
+      <td>michaelhuynh@gmail.com</td>
+      <td>Plant breeder/geneticist</td>
+      <td>Lee-Vargas</td>
+      <td>1992-09-01</td>
+      <td>David White</td>
+      <td>physician</td>
+      <td>checkup</td>
+      <td>Upper Respiratory Tract Infection</td>
+      <td>2004-06-15</td>
+      <td>amoxicillin / clavulanate</td>
+    </tr>
+    <tr>
+      <th>88</th>
+      <td>542-83-3099</td>
+      <td>James Perry</td>
+      <td>242 Cox Valleys Apt. 209\nWest Lauren, KS 83349</td>
+      <td>leahrodriguez</td>
+      <td>M</td>
+      <td>1946-11-09</td>
+      <td>O+</td>
+      <td>ccaldwell@yahoo.com</td>
+      <td>Legal executive</td>
+      <td>Wells, Bailey and Jenkins</td>
+      <td>2013-02-09</td>
+      <td>Sean Sexton</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Asthma</td>
+      <td>2018-01-02</td>
+      <td>methylprednisolone</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>595-99-7277</td>
+      <td>Jennifer Rodriguez</td>
+      <td>9183 Baker Orchard Apt. 279\nEast Jonathanburg...</td>
+      <td>howelljamie</td>
+      <td>F</td>
+      <td>2012-12-13</td>
+      <td>A+</td>
+      <td>kristine71@yahoo.com</td>
+      <td>IT trainer</td>
+      <td>Carson-Wilson</td>
+      <td>2018-08-24</td>
+      <td>Melissa Perez</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Paranoid Disorder</td>
+      <td>2015-01-20</td>
+      <td>ziprasidone</td>
+    </tr>
+    <tr>
+      <th>90</th>
+      <td>284-20-0953</td>
+      <td>Christine Jones</td>
+      <td>2295 Amber Springs\nNew Jessica, DE 48740</td>
+      <td>rrandall</td>
+      <td>F</td>
+      <td>1918-09-17</td>
+      <td>O-</td>
+      <td>jessica73@hotmail.com</td>
+      <td>Technical brewer</td>
+      <td>Berg-Mcdonald</td>
+      <td>2008-05-08</td>
+      <td>Shawn Hill</td>
+      <td>physician assistant</td>
+      <td>first visit</td>
+      <td>Septicemia</td>
+      <td>2010-03-31</td>
+      <td>ceftriaxone</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>013-85-7912</td>
+      <td>Stephen Fuller</td>
+      <td>773 Washington Stream Suite 983\nMurphyburgh, ...</td>
+      <td>hward</td>
+      <td>M</td>
+      <td>1970-08-30</td>
+      <td>A+</td>
+      <td>jmoore@gmail.com</td>
+      <td>English as a second language teacher</td>
+      <td>Larson, Sloan and Mitchell</td>
+      <td>2018-05-15</td>
+      <td>Larry Rice</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Obesity</td>
+      <td>2014-04-21</td>
+      <td>lorcaserin</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>027-29-4171</td>
+      <td>Daniel Hughes</td>
+      <td>34163 David Groves Suite 353\nNew Deborahbury,...</td>
+      <td>villegasbilly</td>
+      <td>M</td>
+      <td>1984-10-08</td>
+      <td>B+</td>
+      <td>jacob10@gmail.com</td>
+      <td>Sales promotion account executive</td>
+      <td>Franco-Macias</td>
+      <td>1992-04-29</td>
+      <td>Donna Mitchell</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Pulmonary Edema</td>
+      <td>2006-12-24</td>
+      <td>bumetanide</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td>597-72-8828</td>
+      <td>Ryan Francis MD</td>
+      <td>27553 Flores Land Suite 575\nNew Samuelland, U...</td>
+      <td>gregory77</td>
+      <td>M</td>
+      <td>1937-08-10</td>
+      <td>B+</td>
+      <td>kristophermeyer@yahoo.com</td>
+      <td>Programme researcher, broadcasting/film/video</td>
+      <td>Pruitt-Gonzalez</td>
+      <td>2019-04-14</td>
+      <td>Dakota Allen</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Epilepsy</td>
+      <td>2004-04-27</td>
+      <td>lamotrigine</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>301-23-5534</td>
+      <td>Mary Cline</td>
+      <td>975 Jeremy Ranch Apt. 448\nJohnshire, MD 34963</td>
+      <td>david01</td>
+      <td>F</td>
+      <td>1971-04-19</td>
+      <td>AB-</td>
+      <td>pbrady@gmail.com</td>
+      <td>Advertising art director</td>
+      <td>Mosley, Anderson and Navarro</td>
+      <td>1994-07-23</td>
+      <td>Sarah Esparza</td>
+      <td>registered nurse</td>
+      <td>checkup</td>
+      <td>Facial Wrinkles</td>
+      <td>1993-08-01</td>
+      <td>tazarotene</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>590-27-9982</td>
+      <td>Holly Hines</td>
+      <td>58811 Sullivan Well\nElizabethport, MD 48626</td>
+      <td>egonzales</td>
+      <td>F</td>
+      <td>1912-01-21</td>
+      <td>B+</td>
+      <td>htyler@hotmail.com</td>
+      <td>Chief Technology Officer</td>
+      <td>Terrell Inc</td>
+      <td>2006-05-11</td>
+      <td>Colleen Morales</td>
+      <td>physician</td>
+      <td>refill</td>
+      <td>Head Lice</td>
+      <td>1992-08-09</td>
+      <td>ivermectin</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>144-51-1570</td>
+      <td>Lauren Adams</td>
+      <td>423 Barbara Walk Apt. 300\nGaryside, MI 43883</td>
+      <td>idavis</td>
+      <td>F</td>
+      <td>2003-08-27</td>
+      <td>AB+</td>
+      <td>ujohnston@hotmail.com</td>
+      <td>Sub</td>
+      <td>Simmons Inc</td>
+      <td>2012-10-28</td>
+      <td>Krista Brown</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Lemierre's Syndrome</td>
+      <td>2005-08-05</td>
+      <td>chloramphenicol</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>419-87-5835</td>
+      <td>William Miller</td>
+      <td>9297 Jill Row\nTabithaberg, OK 62016</td>
+      <td>tarafuentes</td>
+      <td>M</td>
+      <td>1930-02-12</td>
+      <td>A+</td>
+      <td>reedpatty@hotmail.com</td>
+      <td>Clinical research associate</td>
+      <td>Mcdaniel-Ramsey</td>
+      <td>2004-01-31</td>
+      <td>Tammy Johnson</td>
+      <td>physician assistant</td>
+      <td>checkup</td>
+      <td>Somatoform Pain Disorder</td>
+      <td>2017-12-30</td>
+      <td>milnacipran</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>767-37-5412</td>
+      <td>Tanner Fisher</td>
+      <td>564 Townsend Circle\nMartinezchester, AK 53264</td>
+      <td>catherine94</td>
+      <td>M</td>
+      <td>1916-11-24</td>
+      <td>O-</td>
+      <td>miranda90@gmail.com</td>
+      <td>Multimedia programmer</td>
+      <td>Watson, Edwards and Ramirez</td>
+      <td>1993-06-17</td>
+      <td>Brandon Gutierrez</td>
+      <td>physician assistant</td>
+      <td>first visit</td>
+      <td>Urinary Tract Infection</td>
+      <td>2021-12-02</td>
+      <td>doxycycline</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>449-80-8621</td>
+      <td>Robert Martinez</td>
+      <td>851 Kennedy Pike Apt. 431\nNorth Cynthia, OR 6...</td>
+      <td>marygolden</td>
+      <td>M</td>
+      <td>1994-04-02</td>
+      <td>AB-</td>
+      <td>michaelwilson@yahoo.com</td>
+      <td>Youth worker</td>
+      <td>Reyes-Gillespie</td>
+      <td>2006-03-23</td>
+      <td>Heather Adams</td>
+      <td>physician</td>
+      <td>first visit</td>
+      <td>Left Ventricular Dysfunction</td>
+      <td>2011-06-23</td>
+      <td>perindopril</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/medical_industry/medical_data_synthesis/2022/04/24/synthesize_medical_data-v2.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" target="_blank" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
