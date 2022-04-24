@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Synthesize Medical Data | Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Synthesize Medical Data" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="First attempt" />
+<meta property="og:description" content="First attempt" />
+<link rel="canonical" href="https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/23/synthesize_medical_data.html" />
+<meta property="og:url" content="https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/23/synthesize_medical_data.html" />
+<meta property="og:site_name" content="Kobus Esterhuysen — MS(Data Science), MBA, MSEE, BSc, DipData" />
+<meta property="og:image" content="https://learnableloop.com/images/SurvivalAnalysis_lifelines.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-23T00:00:00-05:00" />
+<script type="application/ld+json">
+{"description":"First attempt","url":"https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/23/synthesize_medical_data.html","@type":"BlogPosting","headline":"Synthesize Medical Data","dateModified":"2022-04-23T00:00:00-05:00","datePublished":"2022-04-23T00:00:00-05:00","image":"https://learnableloop.com/images/SurvivalAnalysis_lifelines.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://learnableloop.com/medical_industry/medical_data_synthesis/2022/04/23/synthesize_medical_data.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://learnableloop.com/feed.xml" title="Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7YVR807GNV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7YVR807GNV');
+</script>
+
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Kobus Esterhuysen --- MS(Data Science), MBA, MSEE, BSc, DipData</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Synthesize Medical Data</h1><p class="page-description">First attempt</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-23T00:00:00-05:00" itemprop="datePublished">
+        Apr 23, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Medical_Industry">Medical_Industry</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#Medical_Data_Synthesis">Medical_Data_Synthesis</a>
+        
+      
+      </p>
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#1-DATA-SOURCES">1 DATA SOURCES </a></li>
+<li class="toc-entry toc-h2"><a href="#2-SYNTHESIZE-DATA">2 SYNTHESIZE DATA </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-04-23-synthesize_medical_data.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a first attempt to synthesize the data. The product of this notebook represents the "true" data. This data should then be</p>
+<ul>
+<li>contaminated with noise, e.g. dropping/inserting a character here and there, using variants of names, etc </li>
+<li>split into different source datasets, for example, one for <em>patients</em>, one for <em>encounters</em>, one for <em>conditions</em>, and one for <em>medications</em>.</li>
+</ul>
+<p>Once this is done, the different datasets can be subjected to a data science pipeline to combine again and perform machine learning.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'1.4.2'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1-DATA-SOURCES">
+<a class="anchor" href="#1-DATA-SOURCES" aria-hidden="true"><span class="octicon octicon-link"></span></a>1 DATA SOURCES<a class="anchor-link" href="#1-DATA-SOURCES"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">LAST_NAMES</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">#for starters - need proper list</span>
+    <span class="s1">'Abrahams'</span><span class="p">,</span> <span class="s1">'Bladwin'</span><span class="p">,</span> <span class="s1">'Smith'</span><span class="p">,</span> <span class="s1">'Johnson'</span><span class="p">,</span> <span class="s1">'Williams'</span><span class="p">,</span> <span class="s1">'Brown'</span><span class="p">,</span> 
+    <span class="s1">'Jones'</span><span class="p">,</span> <span class="s1">'Garcia'</span><span class="p">,</span> <span class="s1">'Miller'</span><span class="p">,</span> <span class="s1">'Davis'</span><span class="p">,</span> <span class="s1">'Marinez'</span><span class="p">,</span> <span class="s1">'Lopez'</span><span class="p">,</span> <span class="s1">'Gonzalez'</span><span class="p">,</span> 
+    <span class="s1">'Wilson'</span><span class="p">,</span> <span class="s1">'Anderson'</span><span class="p">,</span> <span class="s1">'Thomas'</span><span class="p">,</span> <span class="s1">'Taylor'</span><span class="p">,</span> <span class="s1">'Moore'</span><span class="p">,</span> <span class="s1">'Jackson'</span><span class="p">,</span> 
+    <span class="s1">'Martin'</span><span class="p">,</span> <span class="s1">'Lee'</span><span class="p">,</span> <span class="s1">'Perez'</span><span class="p">,</span> <span class="s1">'Thompson'</span><span class="p">,</span> <span class="s1">'White'</span><span class="p">,</span> <span class="s1">'Harris'</span><span class="p">,</span> <span class="s1">'Clark'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">FIRST_NAMES</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">#for starters - need proper list</span>
+    <span class="s1">'James'</span><span class="p">,</span> <span class="s1">'Robert'</span><span class="p">,</span> <span class="s1">'Mary'</span><span class="p">,</span> <span class="s1">'Patricia'</span><span class="p">,</span> <span class="s1">'John'</span><span class="p">,</span> <span class="s1">'Jennifer'</span><span class="p">,</span>
+    <span class="s1">'Michael'</span><span class="p">,</span> <span class="s1">'Linda'</span><span class="p">,</span> <span class="s1">'William'</span><span class="p">,</span> <span class="s1">'Elizabeth'</span><span class="p">,</span> <span class="s1">'David'</span><span class="p">,</span> <span class="s1">'Barbara'</span><span class="p">,</span>
+    <span class="s1">'Richard'</span><span class="p">,</span> <span class="s1">'Susan'</span><span class="p">,</span> <span class="s1">'Joseph'</span><span class="p">,</span> <span class="s1">'Jessica'</span><span class="p">,</span> <span class="s1">'Thomas'</span><span class="p">,</span> <span class="s1">'Sarah'</span><span class="p">,</span>
+    <span class="s1">'Charles'</span><span class="p">,</span> <span class="s1">'Karen'</span><span class="p">,</span> <span class="s1">'Christopher'</span><span class="p">,</span> <span class="s1">'Nancy'</span><span class="p">,</span> <span class="s1">'Daniel'</span><span class="p">,</span> <span class="s1">'Lisa'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">STREET_NAMES</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">#for starters - need proper list</span>
+<span class="s1">'Main Street'</span><span class="p">,</span> <span class="s1">'Church Street'</span><span class="p">,</span> <span class="s1">'Main Street North'</span><span class="p">,</span> <span class="s1">'Main Street South'</span><span class="p">,</span> <span class="s1">'Elm Street'</span>
+<span class="s1">'High Street'</span><span class="p">,</span><span class="s1">'Main Street West'</span><span class="p">,</span><span class="s1">'Washington Street'</span><span class="p">,</span><span class="s1">'Main Street East'</span><span class="p">,</span>
+<span class="s1">'Park Avenue'</span><span class="p">,</span><span class="s1">'2nd Street'</span><span class="p">,</span><span class="s1">'Walnut Street'</span><span class="p">,</span><span class="s1">'Chestnut Street'</span><span class="p">,</span><span class="s1">'Maple Avenue'</span><span class="p">,</span>
+<span class="s1">'Maple Street'</span><span class="p">,</span><span class="s1">'Broad Street'</span><span class="p">,</span><span class="s1">'Oak Street'</span><span class="p">,</span><span class="s1">'Center Street'</span><span class="p">,</span><span class="s1">'Pine Street'</span><span class="p">,</span>
+<span class="s1">'River Road'</span><span class="p">,</span><span class="s1">'Market Street'</span><span class="p">,</span><span class="s1">'Water Street'</span><span class="p">,</span><span class="s1">'Union Street'</span><span class="p">,</span><span class="s1">'South Street'</span><span class="p">,</span>
+<span class="s1">'Park Street'</span><span class="p">,</span><span class="s1">'3rd Street'</span><span class="p">,</span><span class="s1">'Washington Avenue'</span><span class="p">,</span><span class="s1">'Cherry Street'</span><span class="p">,</span><span class="s1">'North Street'</span><span class="p">,</span>
+<span class="s1">'4th Street'</span><span class="p">,</span><span class="s1">'Court Street'</span><span class="p">,</span><span class="s1">'Highland Avenue'</span><span class="p">,</span><span class="s1">'Mill Street'</span><span class="p">,</span><span class="s1">'Franklin Street'</span><span class="p">,</span>
+<span class="s1">'Prospect Street'</span><span class="p">,</span><span class="s1">'School Street'</span><span class="p">,</span><span class="s1">'Spring Street'</span><span class="p">,</span><span class="s1">'Central Avenue'</span><span class="p">,</span><span class="s1">'1st Street'</span><span class="p">,</span>
+<span class="s1">'State Street'</span><span class="p">,</span><span class="s1">'Front Street'</span><span class="p">,</span><span class="s1">'West Street'</span><span class="p">,</span><span class="s1">'Jefferson Street'</span><span class="p">,</span><span class="s1">'Cedar Street'</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">CITIES</span> <span class="o">=</span> <span class="p">[</span> <span class="c1">#for starters - need proper list</span>
+<span class="s1">'Alexander City'</span><span class="p">,</span><span class="s1">'Andalusia'</span><span class="p">,</span><span class="s1">'Anniston'</span><span class="p">,</span><span class="s1">'Athens'</span><span class="p">,</span><span class="s1">'Atmore'</span><span class="p">,</span><span class="s1">'Auburn'</span><span class="p">,</span><span class="s1">'Bessemer'</span><span class="p">,</span>
+<span class="s1">'Birmingham'</span><span class="p">,</span><span class="s1">'Chickasaw'</span><span class="p">,</span><span class="s1">'Clanton'</span><span class="p">,</span><span class="s1">'Ketchikan'</span><span class="p">,</span><span class="s1">'Kodiak'</span><span class="p">,</span><span class="s1">'Kotzebue'</span><span class="p">,</span><span class="s1">'Nome'</span><span class="p">,</span>
+<span class="s1">'Palmer'</span><span class="p">,</span><span class="s1">'Seward'</span><span class="p">,</span><span class="s1">'Sitka'</span><span class="p">,</span><span class="s1">'Harrison'</span><span class="p">,</span><span class="s1">'Helena'</span><span class="p">,</span><span class="s1">'Hope'</span><span class="p">,</span><span class="s1">'Hot Springs'</span><span class="p">,</span><span class="s1">'Jacksonville'</span><span class="p">,</span>
+<span class="s1">'Jonesboro'</span><span class="p">,</span><span class="s1">'Little Rock'</span><span class="p">,</span><span class="s1">'Magnolia'</span><span class="p">,</span><span class="s1">'Morrilton'</span><span class="p">,</span><span class="s1">'Newport'</span><span class="p">,</span><span class="s1">'Claremont'</span><span class="p">,</span>
+<span class="s1">'Compton'</span><span class="p">,</span><span class="s1">'Concord'</span><span class="p">,</span><span class="s1">'Corona'</span><span class="p">,</span><span class="s1">'Coronado'</span><span class="p">,</span><span class="s1">'Costa Mesa'</span><span class="p">,</span><span class="s1">'Culver City'</span><span class="p">,</span>
+<span class="s1">'Daly City'</span><span class="p">,</span><span class="s1">'Davis'</span><span class="p">,</span><span class="s1">'Irvine'</span><span class="p">,</span><span class="s1">'La Habra'</span><span class="p">,</span><span class="s1">'Laguna Beach'</span><span class="p">,</span><span class="s1">'Lancaster'</span><span class="p">,</span>
+<span class="s1">'Livermore'</span><span class="p">,</span><span class="s1">'Lodi'</span><span class="p">,</span><span class="s1">'Lompoc'</span><span class="p">,</span><span class="s1">'Long Beach'</span><span class="p">,</span><span class="s1">'Los Angeles'</span><span class="p">,</span><span class="s1">'Malibu'</span><span class="p">,</span><span class="s1">'Martinez'</span><span class="p">,</span>
+<span class="s1">'Marysville'</span><span class="p">,</span><span class="s1">'Menlo Park'</span><span class="p">,</span><span class="s1">'Merced'</span><span class="p">,</span><span class="s1">'Modesto'</span><span class="p">,</span><span class="s1">'Monterey'</span><span class="p">,</span><span class="s1">'Mountain View'</span><span class="p">,</span>
+<span class="s1">'Napa'</span><span class="p">,</span><span class="s1">'Needles'</span><span class="p">,</span><span class="s1">'Newport Beach'</span><span class="p">,</span><span class="s1">'Norwalk'</span><span class="p">,</span><span class="s1">'Novato'</span><span class="p">,</span><span class="s1">'Oakland'</span><span class="p">,</span><span class="s1">'Oceanside'</span><span class="p">,</span>
+<span class="s1">'Ojai'</span><span class="p">,</span><span class="s1">'Alexander City'</span><span class="p">,</span><span class="s1">'Andalusia'</span><span class="p">,</span><span class="s1">'Anniston'</span><span class="p">,</span><span class="s1">'Athens'</span><span class="p">,</span><span class="s1">'Atmore'</span><span class="p">,</span><span class="s1">'Auburn'</span><span class="p">,</span>
+<span class="s1">'Bessemer'</span><span class="p">,</span><span class="s1">'Birmingham'</span><span class="p">,</span><span class="s1">'Chickasaw'</span><span class="p">,</span><span class="s1">'Clanton'</span><span class="p">,</span><span class="s1">'Ketchikan'</span><span class="p">,</span><span class="s1">'Kodiak'</span><span class="p">,</span>
+<span class="s1">'Kotzebue'</span><span class="p">,</span><span class="s1">'Nome'</span><span class="p">,</span><span class="s1">'Palmer'</span><span class="p">,</span><span class="s1">'Seward'</span><span class="p">,</span><span class="s1">'Sitka'</span><span class="p">,</span><span class="s1">'Harrison'</span><span class="p">,</span><span class="s1">'Helena'</span><span class="p">,</span><span class="s1">'Hope'</span><span class="p">,</span>
+<span class="s1">'Hot Springs'</span><span class="p">,</span><span class="s1">'Jacksonville'</span><span class="p">,</span><span class="s1">'Jonesboro'</span><span class="p">,</span><span class="s1">'Little Rock'</span><span class="p">,</span><span class="s1">'Magnolia'</span><span class="p">,</span><span class="s1">'Morrilton'</span><span class="p">,</span>
+<span class="s1">'Newport'</span><span class="p">,</span><span class="s1">'Claremont'</span><span class="p">,</span><span class="s1">'Compton'</span><span class="p">,</span><span class="s1">'Concord'</span><span class="p">,</span><span class="s1">'Corona'</span><span class="p">,</span><span class="s1">'Coronado'</span><span class="p">,</span><span class="s1">'Costa Mesa'</span><span class="p">,</span>
+<span class="s1">'Culver City'</span><span class="p">,</span><span class="s1">'Daly City'</span><span class="p">,</span><span class="s1">'Davis'</span><span class="p">,</span><span class="s1">'Irvine'</span><span class="p">,</span><span class="s1">'La Habra'</span><span class="p">,</span><span class="s1">'Laguna Beach'</span><span class="p">,</span>
+<span class="s1">'Lancaster'</span><span class="p">,</span><span class="s1">'Livermore'</span><span class="p">,</span><span class="s1">'Lodi'</span><span class="p">,</span><span class="s1">'Lompoc'</span><span class="p">,</span><span class="s1">'Long Beach'</span><span class="p">,</span><span class="s1">'Los Angeles'</span><span class="p">,</span>
+<span class="s1">'Malibu'</span><span class="p">,</span><span class="s1">'Martinez'</span><span class="p">,</span><span class="s1">'Marysville'</span><span class="p">,</span><span class="s1">'Menlo Park'</span><span class="p">,</span><span class="s1">'Merced'</span><span class="p">,</span><span class="s1">'Modesto'</span><span class="p">,</span><span class="s1">'Monterey'</span><span class="p">,</span>
+<span class="s1">'Mountain View'</span><span class="p">,</span><span class="s1">'Napa'</span><span class="p">,</span><span class="s1">'Needles'</span><span class="p">,</span><span class="s1">'Newport Beach'</span><span class="p">,</span><span class="s1">'Norwalk'</span><span class="p">,</span><span class="s1">'Novato'</span><span class="p">,</span>
+<span class="s1">'Oakland'</span><span class="p">,</span><span class="s1">'Oceanside'</span><span class="p">,</span><span class="s1">'Ojai'</span>
+<span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_con_med</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'condition_medication.csv'</span><span class="p">)</span>
+<span class="n">df_con_med</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>api_num</th>
+      <th>disease</th>
+      <th>drug</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>Alkylating Agent Cystitis</td>
+      <td>sodium bicarbonate</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>Alkylating Agent Cystitis</td>
+      <td>citric acid / sodium citrate</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>Abdominal Distension</td>
+      <td>bethanechol</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>Abdominal Distension</td>
+      <td>pamabrom</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>Abdominal Distension</td>
+      <td>bethanechol</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>14678</th>
+      <td>14677</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>lansoprazole</td>
+    </tr>
+    <tr>
+      <th>14679</th>
+      <td>14678</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>ranitidine</td>
+    </tr>
+    <tr>
+      <th>14680</th>
+      <td>14679</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>rabeprazole</td>
+    </tr>
+    <tr>
+      <th>14681</th>
+      <td>14680</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>cimetidine</td>
+    </tr>
+    <tr>
+      <th>14682</th>
+      <td>14681</td>
+      <td>Zollinger-Ellison Syndrome</td>
+      <td>esomeprazole</td>
+    </tr>
+  </tbody>
+</table>
+<p>14683 rows × 3 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2-SYNTHESIZE-DATA">
+<a class="anchor" href="#2-SYNTHESIZE-DATA" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 SYNTHESIZE DATA<a class="anchor-link" href="#2-SYNTHESIZE-DATA"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+    <span class="s1">'pat_last'</span><span class="p">,</span> <span class="s1">'pat_first'</span><span class="p">,</span> <span class="s1">'pat_street'</span><span class="p">,</span> <span class="s1">'pat_city'</span><span class="p">,</span> <span class="s1">'pat_zip'</span><span class="p">,</span> <span class="s1">'pat_state'</span><span class="p">,</span> <span class="s1">'pat_dob'</span><span class="p">,</span> <span class="c1">#'pat_gender', #PATIENT</span>
+    <span class="s1">'enc_date'</span><span class="p">,</span> <span class="s1">'enc_practitioner_last'</span><span class="p">,</span> <span class="s1">'enc_practitioner_first'</span><span class="p">,</span> <span class="s1">'enc_practitioner_role'</span><span class="p">,</span> <span class="s1">'enc_type'</span><span class="p">,</span> <span class="c1">#ENCOUNTER</span>
+    <span class="s1">'con_name'</span><span class="p">,</span> <span class="s1">'con_diag_date'</span><span class="p">,</span> <span class="c1">#CONDITION</span>
+    <span class="s1">'med_name'</span> <span class="c1">#MEDICATION</span>
+<span class="p">])</span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="c1">#PATIENT</span>
+    <span class="c1">#hardcoded for now - need to sample from list</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample</span><span class="p">(</span><span class="n">LAST_NAMES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="n">sample</span><span class="p">(</span><span class="n">FIRST_NAMES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="n">sample</span><span class="p">(</span><span class="n">STREET_NAMES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="n">sample</span><span class="p">(</span><span class="n">CITIES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="s1">'98230'</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="s1">'WA'</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="s1">'2007-01-01'</span><span class="p">]</span> <span class="c1">#['M']+ #PATIENT</span>
+    <span class="c1">#ENCOUNTER</span>
+    <span class="c1">#hardcoded for now - need to sample from list</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="n">dp</span> <span class="o">+</span> <span class="p">[</span><span class="s1">'2021-07-22'</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">sample</span><span class="p">(</span><span class="n">LAST_NAMES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="n">sample</span><span class="p">(</span><span class="n">FIRST_NAMES</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="s1">'Physician/RN/PA/etc'</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="s1">'FirstVisit/Checkup/Refil/etc'</span><span class="p">]</span> <span class="c1">#ENCOUNTER    </span>
+    <span class="c1">#CONDITION</span>
+    <span class="n">con_med_sample</span> <span class="o">=</span> <span class="n">df_con_med</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="n">dp</span> <span class="o">+</span> <span class="p">[</span><span class="n">con_med_sample</span><span class="p">[</span><span class="s1">'disease'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="p">[</span><span class="s1">'2001-12-04'</span><span class="p">]</span> <span class="c1">#CONDITION</span>
+    <span class="c1">#MEDICATION    </span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="n">dp</span> <span class="o">+</span> <span class="p">[</span><span class="n">con_med_sample</span><span class="p">[</span><span class="s1">'drug'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="c1">#MEDICATION</span>
+    <span class="c1">#add new datapoint to dataframe</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pat_last</th>
+      <th>pat_first</th>
+      <th>pat_street</th>
+      <th>pat_city</th>
+      <th>pat_zip</th>
+      <th>pat_state</th>
+      <th>pat_dob</th>
+      <th>enc_date</th>
+      <th>enc_practitioner_last</th>
+      <th>enc_practitioner_first</th>
+      <th>enc_practitioner_role</th>
+      <th>enc_type</th>
+      <th>con_name</th>
+      <th>con_diag_date</th>
+      <th>med_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Marinez</td>
+      <td>Linda</td>
+      <td>Prospect Street</td>
+      <td>Mountain View</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Smith</td>
+      <td>Sarah</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Temporal Arteritis</td>
+      <td>2001-12-04</td>
+      <td>triamcinolone</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Williams</td>
+      <td>Karen</td>
+      <td>State Street</td>
+      <td>Claremont</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Gonzalez</td>
+      <td>Robert</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Yellow Fever Prophylaxis</td>
+      <td>2001-12-04</td>
+      <td>yellow fever vaccine</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Brown</td>
+      <td>Sarah</td>
+      <td>State Street</td>
+      <td>Ketchikan</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Miller</td>
+      <td>Patricia</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Breast Cancer</td>
+      <td>2001-12-04</td>
+      <td>capecitabine</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Gonzalez</td>
+      <td>James</td>
+      <td>State Street</td>
+      <td>Oakland</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Moore</td>
+      <td>Jessica</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Acne</td>
+      <td>2001-12-04</td>
+      <td>benzoyl peroxide</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Abrahams</td>
+      <td>Sarah</td>
+      <td>State Street</td>
+      <td>Morrilton</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Williams</td>
+      <td>Thomas</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>CMV Prophylaxis</td>
+      <td>2001-12-04</td>
+      <td>letermovir</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9995</th>
+      <td>Davis</td>
+      <td>John</td>
+      <td>Spring Street</td>
+      <td>Lancaster</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Brown</td>
+      <td>Daniel</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Niemann-Pick Disease</td>
+      <td>2001-12-04</td>
+      <td>miglustat</td>
+    </tr>
+    <tr>
+      <th>9996</th>
+      <td>Moore</td>
+      <td>Robert</td>
+      <td>Mill Street</td>
+      <td>Lompoc</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Perez</td>
+      <td>Nancy</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Lichen Planus</td>
+      <td>2001-12-04</td>
+      <td>clobetasol</td>
+    </tr>
+    <tr>
+      <th>9997</th>
+      <td>Smith</td>
+      <td>Jessica</td>
+      <td>Union Street</td>
+      <td>Novato</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Taylor</td>
+      <td>James</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Osteoarthritis</td>
+      <td>2001-12-04</td>
+      <td>celecoxib</td>
+    </tr>
+    <tr>
+      <th>9998</th>
+      <td>Garcia</td>
+      <td>Joseph</td>
+      <td>Highland Avenue</td>
+      <td>Claremont</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Garcia</td>
+      <td>Charles</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Herpes Zoster</td>
+      <td>2001-12-04</td>
+      <td>valacyclovir</td>
+    </tr>
+    <tr>
+      <th>9999</th>
+      <td>Miller</td>
+      <td>Linda</td>
+      <td>2nd Street</td>
+      <td>Anniston</td>
+      <td>98230</td>
+      <td>WA</td>
+      <td>2007-01-01</td>
+      <td>2021-07-22</td>
+      <td>Clark</td>
+      <td>Jessica</td>
+      <td>Physician/RN/PA/etc</td>
+      <td>FirstVisit/Checkup/Refil/etc</td>
+      <td>Prostatitis</td>
+      <td>2001-12-04</td>
+      <td>doxycycline</td>
+    </tr>
+  </tbody>
+</table>
+<p>10000 rows × 15 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="LearnableLoopAI/portfolio2"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/medical_industry/medical_data_synthesis/2022/04/23/synthesize_medical_data.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Portfolio of Data Science Projects</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/LearnableLoopAI" target="_blank" title="LearnableLoopAI"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
