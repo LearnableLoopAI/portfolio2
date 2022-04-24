@@ -109,7 +109,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      37 min read
+      38 min read
     
 </span></p>
 
@@ -190,6 +190,43 @@ window.onload = wrap_img;
 </div>
 </div>
 </div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Collecting faker
+  Downloading Faker-13.4.0-py3-none-any.whl (1.5 MB)
+     |████████████████████████████████| 1.5 MB 892 kB/s eta 0:00:01     |████████████                    | 573 kB 892 kB/s eta 0:00:02     |█████████████▏                  | 624 kB 892 kB/s eta 0:00:02     |████████████████████            | 952 kB 892 kB/s eta 0:00:01
+Requirement already satisfied: python-dateutil&gt;=2.4 in ./venv_finch/lib/python3.8/site-packages (from faker) (2.8.2)
+Requirement already satisfied: six&gt;=1.5 in ./venv_finch/lib/python3.8/site-packages (from python-dateutil&gt;=2.4-&gt;faker) (1.16.0)
+Installing collected packages: faker
+Successfully installed faker-13.4.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -330,6 +367,8 @@ The term medical condition is also a synonym for medical state, which describes 
 <h3 id="1.2-Condition-Medication-mappings">
 <a class="anchor" href="#1.2-Condition-Medication-mappings" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2 Condition-Medication mappings<a class="anchor-link" href="#1.2-Condition-Medication-mappings"> </a>
 </h3>
+<p>This is a many-to-many mapping. The file <em>condition_medication.csv</em> is an example of a 'starter file' (unless someone wants to volunteer their credit card number; queries against this api are paid for - not ideal when many tests will be run). It should be uploaded to S3, waiting for someone to push the button for everything to start assembling.</p>
+
 </div>
 </div>
 </div>
@@ -459,12 +498,146 @@ The term medical condition is also a synonym for medical state, which describes 
 </div>
     
 
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># test sampling against this file</span>
+<span class="n">con_med_sample</span> <span class="o">=</span> <span class="n">df_con_med</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="n">con_med_sample</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>api_num</th>
+      <th>disease</th>
+      <th>drug</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>13651</th>
+      <td>13656</td>
+      <td>Thyrotoxicosis</td>
+      <td>propranolol</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">con_med_sample</span><span class="p">[</span><span class="s1">'disease'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'Thyrotoxicosis'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">con_med_sample</span><span class="p">[</span><span class="s1">'drug'</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'propranolol'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="2-SYNTHESIZE-DATA">
 <a class="anchor" href="#2-SYNTHESIZE-DATA" aria-hidden="true"><span class="octicon octicon-link"></span></a>2 SYNTHESIZE DATA<a class="anchor-link" href="#2-SYNTHESIZE-DATA"> </a>
 </h2>
+<p>Still need to address the setting of a random seed to ensure reproducability. TODO.</p>
+
 </div>
 </div>
 </div>
@@ -475,7 +648,75 @@ The term medical condition is also a synonym for medical state, which describes 
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">make_patients</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># setup Faker</span>
+<span class="n">fake</span> <span class="o">=</span> <span class="n">faker</span><span class="o">.</span><span class="n">Faker</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># test a profile</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">fake</span><span class="o">.</span><span class="n">profile</span><span class="p">()</span>
+<span class="n">profile</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{'job': 'International aid/development worker',
+ 'company': 'Rasmussen PLC',
+ 'ssn': '787-55-0662',
+ 'residence': '22522 Hendricks Unions\nParsonsmouth, KS 95739',
+ 'current_location': (Decimal('5.960006'), Decimal('120.784558')),
+ 'blood_group': 'AB+',
+ 'website': ['https://www.todd.com/',
+  'http://lewis-murillo.com/',
+  'https://chang-schultz.com/'],
+ 'username': 'rachel21',
+ 'name': 'Erin Smith',
+ 'sex': 'F',
+ 'address': '882 Nicholas Mountain\nSmithberg, NM 79695',
+ 'mail': 'kowens@hotmail.com',
+ 'birthdate': datetime.date(1992, 6, 24)}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#create a dataframe with fake values for patients</span>
+<span class="k">def</span> <span class="nf">make_patients</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
     <span class="c1"># lists to randomly assign to workers</span>
     <span class="n">practitioner_roles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'physician'</span><span class="p">,</span> <span class="s1">'physician assistant'</span><span class="p">,</span> <span class="s1">'registered nurse'</span><span class="p">,</span> <span class="s1">'advanced practice registered nurse'</span><span class="p">]</span>
     <span class="n">encounter_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'first visit'</span><span class="p">,</span> <span class="s1">'checkup'</span><span class="p">,</span> <span class="s1">'refill'</span><span class="p">]</span>
