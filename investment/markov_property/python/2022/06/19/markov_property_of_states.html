@@ -200,7 +200,7 @@ $$ \Large
 $$<p>The probability of a down-move will be</p>
 $$ \Large
 1 - \mathbb P[X_{t+1}=X_t+1] = 1 - \frac{1}{1 + e^{-\alpha(L-X_t)}}
-$$<p>The expression on the RHS is known as a <em>logistic function of $L-X_t$</em>. The steepness of the logistic function is adjusted by $\alpha_1$. It represents how strongly the process tends to revert to its mean value. The parameter $\alpha$ is a positive or zero real number.</p>
+$$<p>The expression on the RHS is known as a <em>logistic function of $L-X_t$</em>. The steepness of the logistic function is adjusted by $\alpha$. It represents how strongly the process tends to revert to its mean value. The parameter $\alpha$ is a positive or zero real number.</p>
 <p>The parameter $L$ is an arbitrary reference level. We interpret this logistic function of $L-X_t$ as follows:</p>
 <ul>
 <li>if $X_t$ &gt; $L$<ul>
@@ -214,7 +214,7 @@ $$<p>The expression on the RHS is known as a <em>logistic function of $L-X_t$</e
 </ul>
 </li>
 </ul>
-<p>In summary, $L$ is the level to which the price mean-reverts, and $\alpha_1$ is the strength of the mean-reversion.</p>
+<p>In summary, $L$ is the level to which the price mean-reverts, and $\alpha$ is the strength of the mean-reversion.</p>
 
 </div>
 </div>
@@ -254,7 +254,8 @@ $$<p>The expression on the RHS is known as a <em>logistic function of $L-X_t$</e
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We now start to implement this random process. <code>class Process</code> has 3 attributes:</p>
+<p>We now start to implement this random process.</p>
+<p><code>class Process</code> has 3 attributes:</p>
 <ul>
 <li><code>class State</code></li>
 <li>
