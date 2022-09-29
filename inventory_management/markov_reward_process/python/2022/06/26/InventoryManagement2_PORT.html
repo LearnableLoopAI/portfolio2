@@ -893,23 +893,23 @@ which is the negative weighted sum of <ul>
 <ul>
 <li>
 <code>transition</code><ul>
-<li>implements the transition propability
+<li>implements the transition probability
 $$
-\begin{align}
-\mathcal P(s,s')&amp;=p(s'|s) \\
-&amp;=\mathbb P[S_{t+1}=s'|S_t=s]
-\end{align}
+\begin{aligned}
+\mathcal P(s,s') &amp;= p(s'|s) \\
+&amp;= \mathbb P[S_{t+1}=s'|S_t=s]
+\end{aligned}
 $$ </li>
 <li>transitions the Markov Reward Process, ignoring the generated reward (which makes this just a normal Markov Process)</li>
 </ul>
 </li>
 <li>
 <code>transition_reward</code><ul>
-<li>implements the transition propability
+<li>implements the transition probability
 $$
 \begin{align}
-\mathcal P_R(s,s',r)&amp;=p(s',r|s) \\
-&amp;=\mathbb P[S_{t+1}=s',R_{t+1}=r|S_t=s]
+\mathcal P_R(s,s',r) &amp;= p(s',r|s) \\
+&amp;= \mathbb P[S_{t+1}=s',R_{t+1}=r|S_t=s]
 \end{align}
 $$</li>
 <li>given a state, returns a distribution of the next state and reward from transitioning between the states</li>
