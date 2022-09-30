@@ -261,10 +261,10 @@ $\mathbb P[S_{t+1},R_{t+1}|S_t,S_{t-1},...,S_0]=P[S_{t+1},R_{t+1}|S_t]$ for all 
 </h2>
 <p>We need to express the transition probabilities of the Markov Reward Process, taking the rewards into account:</p>
 $$
-\begin{align}
+\begin{aligned}
 \mathcal P_R(s,s',r) &amp;= p(s',r|s) \\
 &amp;= \mathbb P[S_{t+1}=s',R_{t+1}=r|S_t=s] 
-\end{align}
+\end{aligned}
 $$<p>for $t=0,1,2,...$, for all $s \in \mathcal N, r \in \mathcal D, s' \in \mathcal S$, such that
 $$
 \sum_{s' \in \mathcal S} \sum_{r \in \mathcal D}\mathcal P_R(s,s'r) = 1
@@ -405,7 +405,7 @@ which is the negative weighted sum of <ul>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following diagram shows the Python classes used with the inheritance relationships between them. We make use of the approach followed in <a href="http://web.stanford.edu/class/cme241/">http://web.stanford.edu/class/cme241/</a></p>
+<p>We make use of the approach followed in <a href="http://web.stanford.edu/class/cme241/">http://web.stanford.edu/class/cme241/</a>.</p>
 
 </div>
 </div>
@@ -442,6 +442,22 @@ which is the negative weighted sum of <ul>
 <h3 id="5.1-Distributions">
 <a class="anchor" href="#5.1-Distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.1 Distributions<a class="anchor-link" href="#5.1-Distributions"> </a>
 </h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 5.1 shows the Python classes used with the inheritance relationships between them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/InventoryManagement2_distribution.png" alt="Figure 5.1 Distribution classes" title="Figure 5.1 Distribution classes"></p>
+
 </div>
 </div>
 </div>
@@ -606,6 +622,22 @@ which is the negative weighted sum of <ul>
 <h3 id="5.2-Markov-Processes">
 <a class="anchor" href="#5.2-Markov-Processes" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.2 Markov Processes<a class="anchor-link" href="#5.2-Markov-Processes"> </a>
 </h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Figure 5.2 shows the Python classes used with the inheritance relationships between them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/images/copied_from_nb/../images/InventoryManagement2_markov.png" alt="Figure 5.2 Markov Process classes" title="Figure 5.2 Markov Process classes"></p>
+
 </div>
 </div>
 </div>
@@ -907,10 +939,10 @@ $$ </li>
 <code>transition_reward</code><ul>
 <li>implements the transition probability
 $$
-\begin{align}
+\begin{aligned}
 \mathcal P_R(s,s',r) &amp;= p(s',r|s) \\
 &amp;= \mathbb P[S_{t+1}=s',R_{t+1}=r|S_t=s]
-\end{align}
+\end{aligned}
 $$</li>
 <li>given a state, returns a distribution of the next state and reward from transitioning between the states</li>
 </ul>
@@ -1265,7 +1297,7 @@ $V=(I_m-\gamma\mathcal P)^{-1} \cdot \mathcal R$ where:<ul>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ---study state_reward_probs_map</span>
 </pre></div>
 
     </div>
@@ -1604,7 +1636,7 @@ $V=(I_m-\gamma\mathcal P)^{-1} \cdot \mathcal R$ where:<ul>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ---end study state_reward_probs_map</span>
 </pre></div>
 
     </div>
