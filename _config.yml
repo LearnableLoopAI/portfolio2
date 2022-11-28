@@ -39,11 +39,15 @@ baseurl: "" # the subpath of your site, e.g. "/blog".
 #baseurl: "/portfolio" # the subpath of your site, e.g. "/blog".
 
 # Github and twitter are optional:
+#minima: FIX, see Portfolio_NOTES.txt
+#  social_links:
+#    twitter: fastdotai
+#    github: LearnableLoopAI
 minima:
   social_links:
-    twitter: fastdotai
-    github: LearnableLoopAI
-
+    - { platform: github,  user_url: "https://github.com/jekyll/jekyll" }
+    - { platform: twitter, user_url: "https://twitter.com/jekyllrb" }
+    
 # Set this to true to get LaTeX math equation support
 use_math: true
 
